@@ -12,11 +12,13 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useLogin } from "@/hooks/api/useLogin";
+import { useNavigate } from "@tanstack/react-router";
 const schema = z.object({
   email: z.string().email().min(1).max(255),
   password: z.string().min(6).max(255),
 });
 const LoginForm = () => {
+  const navigate = useNavigate();
   const form = useForm<z.infer<typeof schema>>({
     resolver: zodResolver(schema),
     defaultValues: {
@@ -28,9 +30,11 @@ const LoginForm = () => {
 
   const { mutate } = useLogin();
   const onSubmit = (data: z.infer<typeof schema>) => {
+    console.log(data);
     mutate(data as any, {
       onSuccess: (data) => {
-        console.log(data);
+        localStorage.setItem("token", data.token);
+        navigate({ to: "/dashboard" });
       },
       onError: (error) => {
         console.log(error);

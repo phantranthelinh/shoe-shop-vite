@@ -1,162 +1,230 @@
-
 import {
-    ColumnDef,
-    ColumnFiltersState,
-    SortingState,
-    VisibilityState,
-    flexRender,
-    getCoreRowModel,
-    getFilteredRowModel,
-    getPaginationRowModel,
-    getSortedRowModel,
-    useReactTable,
+  ColumnDef,
+  ColumnFiltersState,
+  SortingState,
+  VisibilityState,
+  flexRender,
+  getCoreRowModel,
+  getFilteredRowModel,
+  getPaginationRowModel,
+  getSortedRowModel,
+  useReactTable,
 } from "@tanstack/react-table";
-import {
-    ArrowUpDown,
-    ChevronDown,
-    Pencil,
-    Trash2
-} from "lucide-react";
+import { ChevronDown, Pencil, Trash2 } from "lucide-react";
 import * as React from "react";
 
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import {
-    DropdownMenu,
-    DropdownMenuCheckboxItem,
-    DropdownMenuContent,
-    DropdownMenuTrigger,
+  DropdownMenu,
+  DropdownMenuCheckboxItem,
+  DropdownMenuContent,
+  DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Input } from "@/components/ui/input";
 import {
-    Table,
-    TableBody,
-    TableCell,
-    TableHead,
-    TableHeader,
-    TableRow,
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
 } from "@/components/ui/table";
+import { useMutationProduct } from "@/hooks/api/products/useMutationProduct";
+import {
+  Sheet,
+  SheetContent,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from "@/components/ui/sheet";
+import UpdateProduct from "../product/update";
 
-const data: Payment[] = [
-  {
-    id: "m5gr84i9",
-    amount: 316,
-    status: "success",
-    email: "ken99@yahoo.com",
-  },
-  {
-    id: "3u1reuv4",
-    amount: 242,
-    status: "success",
-    email: "Abe45@gmail.com",
-  },
-  {
-    id: "derv1ws0",
-    amount: 837,
-    status: "processing",
-    email: "Monserrat44@gmail.com",
-  },
-  {
-    id: "5kma53ae",
-    amount: 874,
-    status: "success",
-    email: "Silas22@gmail.com",
-  },
-  {
-    id: "bhqecj4p",
-    amount: 721,
-    status: "failed",
-    email: "carmella@hotmail.com",
-  },
-];
+// const data: Payment[] = [
+//   {
+//     id: "m5gr84i9",
+//     amount: 316,
+//     status: "success",
+//     email: "ken99@yahoo.com",
+//   },
+//   {
+//     id: "3u1reuv4",
+//     amount: 242,
+//     status: "success",
+//     email: "Abe45@gmail.com",
+//   },
+//   {
+//     id: "derv1ws0",
+//     amount: 837,
+//     status: "processing",
+//     email: "Monserrat44@gmail.com",
+//   },
+//   {
+//     id: "5kma53ae",
+//     amount: 874,
+//     status: "success",
+//     email: "Silas22@gmail.com",
+//   },
+//   {
+//     id: "bhqecj4p",
+//     amount: 721,
+//     status: "failed",
+//     email: "carmella@hotmail.com",
+//   },
+// ];
 
-export type Payment = {
-  id: string;
-  amount: number;
-  status: "pending" | "processing" | "success" | "failed";
-  email: string;
+// export type Payment = {
+//   id: string;
+//   amount: number;
+//   status: "pending" | "processing" | "success" | "failed";
+//   email: string;
+// };
+
+export type Review = {
+  name: string;
+  rating: number;
+  comment: string;
+  user: string;
 };
 
-export const columns: ColumnDef<Payment>[] = [
-  {
-    id: "select",
-    header: ({ table }) => (
-      <Checkbox
-        checked={
-          table.getIsAllPageRowsSelected() ||
-          (table.getIsSomePageRowsSelected() && "indeterminate")
-        }
-        onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
-        aria-label="Select all"
-      />
-    ),
-    cell: ({ row }) => (
-      <Checkbox
-        checked={row.getIsSelected()}
-        onCheckedChange={(value) => row.toggleSelected(!!value)}
-        aria-label="Select row"
-      />
-    ),
-    enableSorting: false,
-    enableHiding: false,
-  },
-  {
-    accessorKey: "status",
-    header: "Status",
-    cell: ({ row }) => (
-      <div className="capitalize">{row.getValue("status")}</div>
-    ),
-  },
-  {
-    accessorKey: "email",
-    header: ({ column }) => {
-      return (
-        <Button
-          variant="ghost"
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-        >
-          Email
-          <ArrowUpDown />
-        </Button>
-      );
+export type Product = {
+  _id: string;
+  name: string;
+  image?: string;
+  description: string;
+  slug: string;
+  review: Review[];
+  rating: number;
+  numReviews: number;
+  price: number;
+  countInStock: number;
+};
+interface IProps {
+  data: Product[];
+  refetch: () => void;
+}
+export function DataTableDemo({ data, refetch }: IProps) {
+  const { mutate } = useMutationProduct();
+  //#region Column
+  const columns: ColumnDef<Product>[] = [
+    {
+      id: "select",
+      header: ({ table }) => (
+        <Checkbox
+          checked={
+            table.getIsAllPageRowsSelected() ||
+            (table.getIsSomePageRowsSelected() && "indeterminate")
+          }
+          onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
+          aria-label="Select all"
+        />
+      ),
+      cell: ({ row }) => (
+        <Checkbox
+          checked={row.getIsSelected()}
+          onCheckedChange={(value) => row.toggleSelected(!!value)}
+          aria-label="Select row"
+        />
+      ),
+      enableSorting: false,
+      enableHiding: false,
     },
-    cell: ({ row }) => <div className="lowercase">{row.getValue("email")}</div>,
-  },
-  {
-    accessorKey: "amount",
-    header: () => <div className="text-right">Amount</div>,
-    cell: ({ row }) => {
-      const amount = parseFloat(row.getValue("amount"));
-
-      // Format the amount as a dollar amount
-      const formatted = new Intl.NumberFormat("en-US", {
-        style: "currency",
-        currency: "USD",
-      }).format(amount);
-
-      return <div className="text-right font-medium">{formatted}</div>;
+    {
+      accessorKey: "name",
+      header: "Tên  sản phẩm",
+      cell: ({ row }) => (
+        <div className="capitalize">{row.getValue("name")}</div>
+      ),
     },
-  },
-  {
-    id: "actions",
-    enableHiding: false,
-    header: () => <div className="text-right">Thao tác</div>,
-    cell: ({ row }) => {
-      return (
-        <div className="flex gap-3">
-          <Button variant={"outline"} size="icon">
-            <Pencil className="size-4" />
-          </Button>
-          <Button variant={"outline"} size="icon">
-            <Trash2 className="size-4 text-red-500" />
-          </Button>
+    {
+      accessorKey: "image",
+      header: "Hình ảnh",
+      cell: ({ row }) => (
+        <div className="lowercase">
+          <img
+            src={row.getValue("image")}
+            className="size-20 rounded"
+            alt={row.original.name}
+          />
         </div>
-      );
+      ),
     },
-  },
-];
+    {
+      accessorKey: "description",
+      header: () => <div className="">Mô tả sản phẩm</div>,
+      cell: ({ row }) => {
+        return <div className="font-medium">{row.getValue("description")}</div>;
+      },
+    },
+    {
+      accessorKey: "price",
+      header: () => <div className="">Giá sản phẩm</div>,
+      cell: ({ row }) => {
+        const amount = parseFloat(row.getValue("price"));
 
-export function DataTableDemo() {
+        // Format the amount as a dollar amount
+        const formatted = new Intl.NumberFormat("en-US", {
+          style: "currency",
+          currency: "USD",
+        }).format(amount);
+
+        return <div className=" font-medium">{formatted}</div>;
+      },
+    },
+
+    {
+      id: "actions",
+      enableHiding: false,
+      header: () => <div className="">Thao tác</div>,
+      cell: ({ row }) => {
+        return (
+          <div className="flex gap-3">
+            <Sheet>
+              <SheetTrigger asChild>
+                <Button variant={"outline"} size="icon">
+                  <Pencil className="size-4" />
+                </Button>
+              </SheetTrigger>
+              <SheetContent>
+                <SheetHeader>
+                  <SheetTitle>Sửa sản phẩm</SheetTitle>
+                </SheetHeader>
+                <UpdateProduct
+                  id={row.original._id}
+                  data={row.original}
+                  refetch={refetch}
+                />
+              </SheetContent>
+            </Sheet>
+
+            <Button
+              variant={"outline"}
+              size="icon"
+              onClick={() => {
+                const payload = {
+                  type: "delete" as const,
+                  body: {
+                    id: row.original._id,
+                  },
+                };
+                mutate(payload, {
+                  onSuccess: () => {
+                    refetch();
+                  },
+                  onError: (error) => {
+                    console.log(`Error deleting product: ${error}`);
+                  },
+                });
+              }}
+            >
+              <Trash2 className="size-4 text-red-500" />
+            </Button>
+          </div>
+        );
+      },
+    },
+  ];
+  //#endregion
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
     []
@@ -164,7 +232,6 @@ export function DataTableDemo() {
   const [columnVisibility, setColumnVisibility] =
     React.useState<VisibilityState>({});
   const [rowSelection, setRowSelection] = React.useState({});
-
   const table = useReactTable({
     data,
     columns,

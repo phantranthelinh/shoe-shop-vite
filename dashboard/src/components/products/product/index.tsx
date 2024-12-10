@@ -1,3 +1,4 @@
+import Loading from "@/components/common/loading";
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -11,28 +12,45 @@ import { Input } from "@/components/ui/input";
 import {
   Sheet,
   SheetClose,
+  // SheetClose,
   SheetContent,
   SheetFooter,
+  // SheetFooter,
   SheetHeader,
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
+import { useMutationProduct } from "@/hooks/api/products/useMutationProduct";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
+import { useState } from "react";
+import { SubmitHandler, useForm } from "react-hook-form";
 import { z } from "zod";
+
+type FormFields = {
+  name: string;
+  image: string;
+  price: number;
+  description: string;
+  countInStock: number;
+};
 const schema = z.object({
   name: z.string(),
-  iamge: z.string(),
+  image: z.string(),
   price: z.number(),
   description: z.string(),
   countInStock: z.number(),
 });
-const Product = () => {
+interface IProps {
+  refetch: () => void;
+}
+const Product: React.FC<IProps> = ({ refetch }) => {
+  const [open, setOpen] = useState(false);
+
   const form = useForm({
     resolver: zodResolver(schema),
     defaultValues: {
       name: "",
-      iamge: "",
+      image: "",
       price: 0,
       description: "",
       countInStock: 0,
@@ -41,11 +59,33 @@ const Product = () => {
 
   const { control } = form;
 
-  const onSubmit = () => {};
+  const { mutate, isPending } = useMutationProduct();
+
+  const onSubmit: SubmitHandler<FormFields> = (data) => {
+    const payload = {
+      type: "create" as const,
+      body: data,
+    };
+    mutate(payload, {
+      onSuccess: () => {
+        refetch();
+        handleToggleOpen()
+      },
+      onError: (error) => {
+        console.log(`Error:::${error}`);
+      },
+    });
+  };
+
+  const handleToggleOpen = () => {
+    setOpen(!open);
+  };
   return (
-    <Sheet>
+    <Sheet open={open}>
       <SheetTrigger asChild>
-        <Button variant="outline">Thêm sản phẩm</Button>
+        <Button variant="outline" onClick={handleToggleOpen}>
+          Thêm sản phẩm
+        </Button>
       </SheetTrigger>
       <SheetContent>
         <SheetHeader>
@@ -66,7 +106,7 @@ const Product = () => {
                       Tên sản phẩm
                     </FormLabel>
                     <FormControl>
-                      <Input placeholder="example@gmail.com" {...field} />
+                      <Input placeholder="Tên sản phẩm" {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -87,13 +127,72 @@ const Product = () => {
                   </FormItem>
                 )}
               />
+
+              <FormField
+                control={control}
+                name="price"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                      Giá sản phẩm
+                    </FormLabel>
+                    <FormControl>
+                      <Input
+                        placeholder="Giá sản phẩm"
+                        type="number"
+                        {...field}
+                        onChange={(e) => {
+                          field.onChange(Number(e.target.value));
+                        }}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={control}
+                name="countInStock"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                      Số lượng tồn
+                    </FormLabel>
+                    <FormControl>
+                      <Input
+                        placeholder="Số lượng tồn"
+                        {...field}
+                        onChange={(e) => {
+                          field.onChange(Number(e.target.value));
+                        }}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={control}
+                name="image"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                      Hình ảnh
+                    </FormLabel>
+                    <FormControl>
+                      <Input placeholder="Hình ảnh" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <Button type="submit">{isPending ? <Loading /> : "Thêm"}</Button>
             </form>
           </Form>
         </div>
         <SheetFooter>
-          <SheetClose asChild>
-            <Button type="submit">Save changes</Button>
-          </SheetClose>
+          <SheetClose asChild className="btn-close"></SheetClose>
         </SheetFooter>
       </SheetContent>
     </Sheet>
