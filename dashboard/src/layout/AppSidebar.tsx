@@ -9,6 +9,7 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
+import { Link } from "@tanstack/react-router";
 import { Box, Home, ShoppingCart, Table2 } from "lucide-react";
 
 const items = [
@@ -43,10 +44,10 @@ export function AppSidebar() {
           {items.map((item) => (
             <SidebarMenuItem key={item.title}>
               <SidebarMenuButton asChild>
-                <a href={item.url}>
+                <Link href={item.url}>
                   <item.icon />
                   <span>{item.title}</span>
-                </a>
+                </Link>
               </SidebarMenuButton>
             </SidebarMenuItem>
           ))}

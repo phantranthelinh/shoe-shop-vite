@@ -1,6 +1,6 @@
+import Footer from "@/components/common/Footer";
+import Header from "@/components/common/Header";
 import React from "react";
-import Header from "../Header";
-import Footer from "../Footer";
 
 const MainLayout = ({ children }: { children: React.ReactNode }) => {
   return (

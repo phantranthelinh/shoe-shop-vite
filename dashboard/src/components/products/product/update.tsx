@@ -32,11 +32,9 @@ const schema = z.object({
 interface IProps {
   id: string;
   data: Product;
-  refetch: () => void;
 }
 
-const UpdateProduct: React.FC<IProps> = ({ id, data, refetch }) => {
-  console.log(data);
+const UpdateProduct: React.FC<IProps> = ({ id, data }) => {
   const form = useForm({
     resolver: zodResolver(schema),
     defaultValues: {
@@ -50,21 +48,14 @@ const UpdateProduct: React.FC<IProps> = ({ id, data, refetch }) => {
 
   const { control } = form;
 
-  const { mutate } = useMutationProduct();
+  const { mutate: updateProduct } = useMutationProduct();
 
   const onSubmit: SubmitHandler<FormFields> = (data) => {
     const payload = {
       type: "update" as const,
       body: { ...data, id },
     };
-    mutate(payload, {
-      onSuccess: () => {
-        refetch();
-      },
-      onError: (error) => {
-        console.log(`Error:::${error}`);
-      },
-    });
+    updateProduct(payload);
   };
 
   return (

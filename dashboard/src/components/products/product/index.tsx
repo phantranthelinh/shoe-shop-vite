@@ -11,18 +11,15 @@ import {
 import { Input } from "@/components/ui/input";
 import {
   Sheet,
-  SheetClose,
-  // SheetClose,
   SheetContent,
-  SheetFooter,
-  // SheetFooter,
   SheetHeader,
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
 import { useMutationProduct } from "@/hooks/api/products/useMutationProduct";
+import useVisibility from "@/hooks/useVisibility";
+import { methodType } from "@/types/method.type";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { z } from "zod";
 
@@ -40,11 +37,9 @@ const schema = z.object({
   description: z.string(),
   countInStock: z.number(),
 });
-interface IProps {
-  refetch: () => void;
-}
-const Product: React.FC<IProps> = ({ refetch }) => {
-  const [open, setOpen] = useState(false);
+
+const Product = () => {
+  const { isVisible, toggleVisibility } = useVisibility(false);
 
   const form = useForm({
     resolver: zodResolver(schema),
@@ -58,34 +53,30 @@ const Product: React.FC<IProps> = ({ refetch }) => {
   });
 
   const { control } = form;
-
   const { mutate, isPending } = useMutationProduct();
 
   const onSubmit: SubmitHandler<FormFields> = (data) => {
     const payload = {
-      type: "create" as const,
-      body: data,
+      type: "create" as methodType,
+      product: data,
     };
     mutate(payload, {
       onSuccess: () => {
-        refetch();
-        handleToggleOpen()
+        console.log("Submission successful");
       },
       onError: (error) => {
         console.log(`Error:::${error}`);
       },
+      onSettled: () => {
+        toggleVisibility();
+      },
     });
   };
 
-  const handleToggleOpen = () => {
-    setOpen(!open);
-  };
   return (
-    <Sheet open={open}>
+    <Sheet open={isVisible} onOpenChange={toggleVisibility}>
       <SheetTrigger asChild>
-        <Button variant="outline" onClick={handleToggleOpen}>
-          Thêm sản phẩm
-        </Button>
+        <Button variant="outline">Thêm sản phẩm</Button>
       </SheetTrigger>
       <SheetContent>
         <SheetHeader>
@@ -191,9 +182,6 @@ const Product: React.FC<IProps> = ({ refetch }) => {
             </form>
           </Form>
         </div>
-        <SheetFooter>
-          <SheetClose asChild className="btn-close"></SheetClose>
-        </SheetFooter>
       </SheetContent>
     </Sheet>
   );

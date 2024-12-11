@@ -18,8 +18,12 @@ import { Route as rootRoute } from './routes/__root'
 
 const IndexLazyImport = createFileRoute('/')()
 const ProductsIndexLazyImport = createFileRoute('/products/')()
+const PaymentFailedIndexLazyImport = createFileRoute('/payment-failed/')()
 const CartIndexLazyImport = createFileRoute('/cart/')()
 const AboutIndexLazyImport = createFileRoute('/about/')()
+const ProductsProductNameIndexLazyImport = createFileRoute(
+  '/products/$productName/',
+)()
 
 // Create/Update Routes
 
@@ -37,6 +41,14 @@ const ProductsIndexLazyRoute = ProductsIndexLazyImport.update({
   import('./routes/products/index.lazy').then((d) => d.Route),
 )
 
+const PaymentFailedIndexLazyRoute = PaymentFailedIndexLazyImport.update({
+  id: '/payment-failed/',
+  path: '/payment-failed/',
+  getParentRoute: () => rootRoute,
+} as any).lazy(() =>
+  import('./routes/payment-failed/index.lazy').then((d) => d.Route),
+)
+
 const CartIndexLazyRoute = CartIndexLazyImport.update({
   id: '/cart/',
   path: '/cart/',
@@ -48,6 +60,15 @@ const AboutIndexLazyRoute = AboutIndexLazyImport.update({
   path: '/about/',
   getParentRoute: () => rootRoute,
 } as any).lazy(() => import('./routes/about/index.lazy').then((d) => d.Route))
+
+const ProductsProductNameIndexLazyRoute =
+  ProductsProductNameIndexLazyImport.update({
+    id: '/products/$productName/',
+    path: '/products/$productName/',
+    getParentRoute: () => rootRoute,
+  } as any).lazy(() =>
+    import('./routes/products/$productName/index.lazy').then((d) => d.Route),
+  )
 
 // Populate the FileRoutesByPath interface
 
@@ -74,11 +95,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof CartIndexLazyImport
       parentRoute: typeof rootRoute
     }
+    '/payment-failed/': {
+      id: '/payment-failed/'
+      path: '/payment-failed'
+      fullPath: '/payment-failed'
+      preLoaderRoute: typeof PaymentFailedIndexLazyImport
+      parentRoute: typeof rootRoute
+    }
     '/products/': {
       id: '/products/'
       path: '/products'
       fullPath: '/products'
       preLoaderRoute: typeof ProductsIndexLazyImport
+      parentRoute: typeof rootRoute
+    }
+    '/products/$productName/': {
+      id: '/products/$productName/'
+      path: '/products/$productName'
+      fullPath: '/products/$productName'
+      preLoaderRoute: typeof ProductsProductNameIndexLazyImport
       parentRoute: typeof rootRoute
     }
   }
@@ -90,14 +125,18 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexLazyRoute
   '/about': typeof AboutIndexLazyRoute
   '/cart': typeof CartIndexLazyRoute
+  '/payment-failed': typeof PaymentFailedIndexLazyRoute
   '/products': typeof ProductsIndexLazyRoute
+  '/products/$productName': typeof ProductsProductNameIndexLazyRoute
 }
 
 export interface FileRoutesByTo {
   '/': typeof IndexLazyRoute
   '/about': typeof AboutIndexLazyRoute
   '/cart': typeof CartIndexLazyRoute
+  '/payment-failed': typeof PaymentFailedIndexLazyRoute
   '/products': typeof ProductsIndexLazyRoute
+  '/products/$productName': typeof ProductsProductNameIndexLazyRoute
 }
 
 export interface FileRoutesById {
@@ -105,15 +144,36 @@ export interface FileRoutesById {
   '/': typeof IndexLazyRoute
   '/about/': typeof AboutIndexLazyRoute
   '/cart/': typeof CartIndexLazyRoute
+  '/payment-failed/': typeof PaymentFailedIndexLazyRoute
   '/products/': typeof ProductsIndexLazyRoute
+  '/products/$productName/': typeof ProductsProductNameIndexLazyRoute
 }
 
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/about' | '/cart' | '/products'
+  fullPaths:
+    | '/'
+    | '/about'
+    | '/cart'
+    | '/payment-failed'
+    | '/products'
+    | '/products/$productName'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/about' | '/cart' | '/products'
-  id: '__root__' | '/' | '/about/' | '/cart/' | '/products/'
+  to:
+    | '/'
+    | '/about'
+    | '/cart'
+    | '/payment-failed'
+    | '/products'
+    | '/products/$productName'
+  id:
+    | '__root__'
+    | '/'
+    | '/about/'
+    | '/cart/'
+    | '/payment-failed/'
+    | '/products/'
+    | '/products/$productName/'
   fileRoutesById: FileRoutesById
 }
 
@@ -121,14 +181,18 @@ export interface RootRouteChildren {
   IndexLazyRoute: typeof IndexLazyRoute
   AboutIndexLazyRoute: typeof AboutIndexLazyRoute
   CartIndexLazyRoute: typeof CartIndexLazyRoute
+  PaymentFailedIndexLazyRoute: typeof PaymentFailedIndexLazyRoute
   ProductsIndexLazyRoute: typeof ProductsIndexLazyRoute
+  ProductsProductNameIndexLazyRoute: typeof ProductsProductNameIndexLazyRoute
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexLazyRoute: IndexLazyRoute,
   AboutIndexLazyRoute: AboutIndexLazyRoute,
   CartIndexLazyRoute: CartIndexLazyRoute,
+  PaymentFailedIndexLazyRoute: PaymentFailedIndexLazyRoute,
   ProductsIndexLazyRoute: ProductsIndexLazyRoute,
+  ProductsProductNameIndexLazyRoute: ProductsProductNameIndexLazyRoute,
 }
 
 export const routeTree = rootRoute
@@ -144,7 +208,9 @@ export const routeTree = rootRoute
         "/",
         "/about/",
         "/cart/",
-        "/products/"
+        "/payment-failed/",
+        "/products/",
+        "/products/$productName/"
       ]
     },
     "/": {
@@ -156,8 +222,14 @@ export const routeTree = rootRoute
     "/cart/": {
       "filePath": "cart/index.lazy.tsx"
     },
+    "/payment-failed/": {
+      "filePath": "payment-failed/index.lazy.tsx"
+    },
     "/products/": {
       "filePath": "products/index.lazy.tsx"
+    },
+    "/products/$productName/": {
+      "filePath": "products/$productName/index.lazy.tsx"
     }
   }
 }

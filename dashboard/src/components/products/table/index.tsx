@@ -101,9 +101,8 @@ export type Product = {
 };
 interface IProps {
   data: Product[];
-  refetch: () => void;
 }
-export function DataTableDemo({ data, refetch }: IProps) {
+export function DataTableDemo({ data }: IProps) {
   const { mutate } = useMutationProduct();
   //#region Column
   const columns: ColumnDef<Product>[] = [
@@ -192,7 +191,6 @@ export function DataTableDemo({ data, refetch }: IProps) {
                 <UpdateProduct
                   id={row.original._id}
                   data={row.original}
-                  refetch={refetch}
                 />
               </SheetContent>
             </Sheet>
@@ -207,14 +205,7 @@ export function DataTableDemo({ data, refetch }: IProps) {
                     id: row.original._id,
                   },
                 };
-                mutate(payload, {
-                  onSuccess: () => {
-                    refetch();
-                  },
-                  onError: (error) => {
-                    console.log(`Error deleting product: ${error}`);
-                  },
-                });
+                mutate(payload);
               }}
             >
               <Trash2 className="size-4 text-red-500" />

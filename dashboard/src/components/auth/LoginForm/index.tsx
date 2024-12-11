@@ -1,24 +1,22 @@
 import { Button } from "@/components/ui/button";
 import {
+  Form,
   FormControl,
   FormField,
   FormItem,
   FormLabel,
   FormMessage,
-  Form,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { useLogin } from "@/hooks/api/useLogin";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useLogin } from "@/hooks/api/useLogin";
-import { useNavigate } from "@tanstack/react-router";
 const schema = z.object({
   email: z.string().email().min(1).max(255),
   password: z.string().min(6).max(255),
 });
 const LoginForm = () => {
-  const navigate = useNavigate();
   const form = useForm<z.infer<typeof schema>>({
     resolver: zodResolver(schema),
     defaultValues: {
@@ -28,18 +26,9 @@ const LoginForm = () => {
   });
   const { control } = form;
 
-  const { mutate } = useLogin();
+  const { mutate: login } = useLogin();
   const onSubmit = (data: z.infer<typeof schema>) => {
-    console.log(data);
-    mutate(data as any, {
-      onSuccess: (data) => {
-        localStorage.setItem("token", data.token);
-        navigate({ to: "/dashboard" });
-      },
-      onError: (error) => {
-        console.log(error);
-      },
-    });
+    login(data);
   };
   return (
     <div className="w-full bg-white rounded-lg shadow dark:border md:mt-0 sm:max-w-md xl:p-0 dark:bg-gray-800 dark:border-gray-700">
