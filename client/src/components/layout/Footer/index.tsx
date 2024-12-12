@@ -1,6 +1,6 @@
 import { FaFacebookF, FaTwitter, FaYoutube, FaInstagram } from "react-icons/fa";
-import Wrapper from "../Wrapper";
 import { Link } from "@tanstack/react-router";
+import Wrapper from "@/components/common/Wrapper";
 
 const Footer = () => {
   return (

@@ -8,7 +8,7 @@ import { BsCart } from "react-icons/bs";
 import { IoMdHeartEmpty } from "react-icons/io";
 import { VscChromeClose } from "react-icons/vsc";
 import { useSelector } from "react-redux";
-import Wrapper from "../Wrapper";
+import Wrapper from "@/components/common/Wrapper";
 
 const Header = () => {
   const [mobileMenu, setMobileMenu] = useState(false);

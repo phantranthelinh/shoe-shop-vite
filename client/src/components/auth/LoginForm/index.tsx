@@ -8,7 +8,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { useLogin } from "@/hooks/api/useLogin";
+import { useAuth } from "@/hooks/api/useAuth";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
@@ -26,7 +26,7 @@ const LoginForm = () => {
   });
   const { control } = form;
 
-  const { mutate: login } = useLogin();
+  const { login } = useAuth();
   const onSubmit = (data: z.infer<typeof schema>) => {
     login(data);
   };

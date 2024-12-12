@@ -1,6 +1,7 @@
 import Hero from "@/components/Hero";
 import ProductCard from "@/components/ProductCard";
 import Wrapper from "@/components/common/Wrapper";
+import MainLayout from "@/components/layout";
 import { createLazyFileRoute } from "@tanstack/react-router";
 
 function generateProducts(numProducts: number) {
@@ -28,7 +29,7 @@ export const Route = createLazyFileRoute("/")({
 function Index() {
   return (
     <main>
-      <Layouts>
+      <MainLayout>
         <Hero />
         <Wrapper>
           {/* Heading and Paragraph  */}
@@ -50,7 +51,7 @@ function Index() {
             ))}
           </section>
         </Wrapper>
-      </Layouts>
+      </MainLayout>
     </main>
   );
 }
