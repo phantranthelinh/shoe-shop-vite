@@ -1,4 +1,4 @@
-import Loading from "@/components/common/loading";
+import { Loading } from "@/components/common/Loading";
 import { Button } from "@/components/ui/button";
 import {
   Form,

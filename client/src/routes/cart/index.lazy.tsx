@@ -1,8 +1,8 @@
-import CartItem from "@/components/CartItem";
+import CartItem from "@/components/client/CartItem";
 import Wrapper from "@/components/common/Wrapper";
+import { useCart } from "@/store/cart.store";
 import { createLazyFileRoute, Link } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
-import { useSelector } from "react-redux";
 
 export const Route = createLazyFileRoute("/cart/")({
   component: RouteComponent,
@@ -10,8 +10,7 @@ export const Route = createLazyFileRoute("/cart/")({
 
 function RouteComponent() {
   const [loading, setLoading] = useState(false);
-  const { cartItems } = useSelector((state: any) => state.cart);
-
+  const { cartItems } = useCart();
   const subTotal = useMemo(() => {
     return cartItems.reduce(
       (total: any, value: { totalPrice: any }) => total + value.totalPrice,

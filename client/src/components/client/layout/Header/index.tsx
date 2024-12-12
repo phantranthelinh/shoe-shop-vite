@@ -1,14 +1,15 @@
 import { useEffect, useState } from "react";
 
-import Menu from "@/components/Menu";
-import MenuMobile from "@/components/MenuMobile";
+import Menu from "@/components/client/Menu";
+import MenuMobile from "@/components/client/MenuMobile";
+import Wrapper from "@/components/common/Wrapper";
+import { useCart } from "@/store/cart.store";
+import { useWishlist } from "@/store/wishlist.store";
 import { Link } from "@tanstack/react-router";
 import { BiMenuAltRight } from "react-icons/bi";
 import { BsCart } from "react-icons/bs";
 import { IoMdHeartEmpty } from "react-icons/io";
 import { VscChromeClose } from "react-icons/vsc";
-import { useSelector } from "react-redux";
-import Wrapper from "@/components/common/Wrapper";
 
 const Header = () => {
   const [mobileMenu, setMobileMenu] = useState(false);
@@ -18,8 +19,8 @@ const Header = () => {
 
   const [categories, setCategories] = useState(null);
 
-  const { cartItems } = useSelector((state: any) => state.cart);
-  const { wishlistItems } = useSelector((state: any) => state.wishlist);
+  const { cartItems } = useCart();
+  const { wishlistItems } = useWishlist();
 
   const controlNavbar = () => {
     if (window.scrollY > 200) {

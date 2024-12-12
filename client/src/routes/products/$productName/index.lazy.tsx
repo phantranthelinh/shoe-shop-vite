@@ -1,39 +1,38 @@
-import Wrapper from '@/components/common/Wrapper'
-import ProductDetailsCarousel from '@/components/ProductDetailsCarousel'
-import RelatedProducts from '@/components/RelatedProducts'
-import { addToCart } from '@/store/slices/cartSlice'
-import { addToWishlist, deleteFromWishlist } from '@/store/slices/wishlistSlice'
-import { getDiscount } from '@/utils/helper'
-import { createLazyFileRoute } from '@tanstack/react-router'
-import { useState } from 'react'
-import { IoMdHeart, IoMdHeartEmpty } from 'react-icons/io'
-import { useDispatch, useSelector } from 'react-redux'
+import Wrapper from "@/components/common/Wrapper";
+import ProductDetailsCarousel from "@/components/client/ProductDetailsCarousel";
 
-export const Route = createLazyFileRoute('/products/$productName/')({
+import { getDiscount } from "@/utils/helper";
+import { createLazyFileRoute } from "@tanstack/react-router";
+import { useState } from "react";
+import { IoMdHeart, IoMdHeartEmpty } from "react-icons/io";
+import { addToCart } from "@/store/cart.store";
+import {
+  addToWishlist,
+  deleteFromWishlist,
+  useWishlist,
+} from "@/store/wishlist.store";
+
+export const Route = createLazyFileRoute("/products/$productName/")({
   component: RouteComponent,
-})
+});
 
 function RouteComponent({ productData }: { productData: any }) {
-  const [selectedSize, setSelectedSize] = useState()
-  const [showError, setShowError] = useState(false)
-  const product = productData?.data?.[0]?.attributes
-  const { wishlistItems } = useSelector((state: any) => state.wishlist)
-
-  const dispatch = useDispatch()
+  const [selectedSize, setSelectedSize] = useState();
+  const [showError, setShowError] = useState(false);
+  const product = productData?.data?.[0]?.attributes;
+  const { wishlistItems } = useWishlist();
 
   const handleAddingToCart = () => {
     if (!selectedSize) {
-      setShowError(true)
+      setShowError(true);
     } else {
-      dispatch(
-        addToCart({
-          ...productData?.data?.[0],
-          selectedSize,
-        }),
-      )
-      setSelectedSize(undefined)
+      addToCart({
+        ...productData?.data?.[0],
+        selectedSize,
+      });
+      setSelectedSize(undefined);
     }
-  }
+  };
   return (
     <main className="w-full md:py-20">
       <Wrapper>
@@ -91,14 +90,14 @@ function RouteComponent({ productData }: { productData: any }) {
                     key={index}
                     className={`border rounded-md text-center py-3 font-medium  ${
                       item.enabled
-                        ? 'cursor-pointer hover:border-black'
-                        : 'cursor-not-allowed bg-black/[.1] opacity-50'
+                        ? "cursor-pointer hover:border-black"
+                        : "cursor-not-allowed bg-black/[.1] opacity-50"
                     }
-                ${selectedSize === item.size ? 'border-black' : ''}`}
+                ${selectedSize === item.size ? "border-black" : ""}`}
                     onClick={() => {
                       if (item.enabled) {
-                        setSelectedSize(item.size)
-                        setShowError(false)
+                        setSelectedSize(item.size);
+                        setShowError(false);
                       }
                     }}
                   >
@@ -126,13 +125,11 @@ function RouteComponent({ productData }: { productData: any }) {
             {/* Add to Wishlist button */}
 
             {wishlistItems.find(
-              (item) => item.id === productData?.data?.[0]?.id,
+              (item) => item.id === productData?.data?.[0]?.id
             ) ? (
               <button
                 onClick={() => {
-                  dispatch(
-                    deleteFromWishlist({ id: productData?.data?.[0]?.id }),
-                  )
+                  deleteFromWishlist(productData?.data?.[0]?.id);
                 }}
                 className="w-full py-4 rounded-full border border-black text-lg font-medium transition-transform active:scale-95 flex items-center justify-center gap-2 mb-10 hover:opacity-75 "
               >
@@ -142,11 +139,9 @@ function RouteComponent({ productData }: { productData: any }) {
             ) : (
               <button
                 onClick={() => {
-                  dispatch(
-                    addToWishlist({
-                      ...productData?.data?.[0],
-                    }),
-                  )
+                  addToWishlist({
+                    ...productData?.data?.[0],
+                  });
                 }}
                 className="w-full py-4 rounded-full border border-black text-lg font-medium transition-transform active:scale-95 flex items-center justify-center gap-2 mb-10 hover:opacity-75 "
               >
@@ -159,14 +154,14 @@ function RouteComponent({ productData }: { productData: any }) {
             <div>
               <div className="text-lg font-bold mb-5">Product Details</div>
               <div className="markdown text-md mb-5">
-                <ReactMarkdown>{product.description}</ReactMarkdown>
+                {/* <ReactMarkdown>{product.description}</ReactMarkdown> */}
               </div>
             </div>
           </div>
         </section>
 
-        <RelatedProducts relatedProducts={relatedProducts} />
+        {/* <RelatedProducts relatedProducts={relatedProducts} /> */}
       </Wrapper>
     </main>
-  )
+  );
 }

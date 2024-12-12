@@ -1,12 +1,9 @@
-import { updateCart, deleteFromCart } from "@/store/slices/cartSlice";
+import { deleteFromCart, updateCart } from "@/store/cart.store";
 import { Link } from "@tanstack/react-router";
-import React from "react";
 import { RiDeleteBin6Line } from "react-icons/ri";
-import { useDispatch } from "react-redux";
 
 const CartItem = ({ data }: { data: any }) => {
   const item = data.attributes;
-  const dispatch = useDispatch();
 
   // Update cart item fn
   const updateCartItem = (e: any, key: any) => {
@@ -15,7 +12,7 @@ const CartItem = ({ data }: { data: any }) => {
       val: key === "quantity" ? parseInt(e.target.value) : e.target.value,
       id: data.id,
     };
-    dispatch(updateCart(payload));
+    updateCart(key, val, id);
   };
 
   return (
@@ -109,7 +106,7 @@ const CartItem = ({ data }: { data: any }) => {
           {/* Delete Btn */}
           <RiDeleteBin6Line
             className="cursor-pointer text-black/[.5] hover:text-black text-[16px] md:text-[20px]"
-            onClick={() => dispatch(deleteFromCart({ id: data.id }))}
+            onClick={() => deleteFromCart(data.id)}
           />
         </div>
       </div>

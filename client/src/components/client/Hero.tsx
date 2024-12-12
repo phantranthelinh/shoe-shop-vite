@@ -5,7 +5,7 @@ import {
   CarouselApi,
   CarouselContent,
   CarouselItem,
-} from "./ui/carousel";
+} from "../ui/carousel";
 
 const DELAY_AUTOPLAY_SLIDE = 3000;
 const Hero = () => {
@@ -24,7 +24,7 @@ const Hero = () => {
         <CarouselContent>
           {Array.from({ length: 3 }).map((_, index) => {
             return (
-              <CarouselItem className="relative ">
+              <CarouselItem key={index} className="relative ">
                 <img
                   src={`/slide-${index + 1}.png`}
                   alt={`carousel-image-${index + 1}`}
