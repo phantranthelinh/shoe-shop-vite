@@ -20,7 +20,9 @@ import { useMutationProduct } from "@/hooks/api/products/useMutationProduct";
 import useVisibility from "@/hooks/useVisibility";
 import { methodType } from "@/types/method.type";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { AxiosError } from "axios";
 import { SubmitHandler, useForm } from "react-hook-form";
+import { toast } from "sonner";
 import { z } from "zod";
 
 type FormFields = {
@@ -38,7 +40,7 @@ const schema = z.object({
   countInStock: z.number(),
 });
 
-const Product = () => {
+const AddProduct = () => {
   const { isVisible, toggleVisibility } = useVisibility(false);
 
   const form = useForm({
@@ -53,30 +55,33 @@ const Product = () => {
   });
 
   const { control } = form;
-  const { mutate, isPending } = useMutationProduct();
+  const { mutate, isPending, error } = useMutationProduct();
 
   const onSubmit: SubmitHandler<FormFields> = (data) => {
     const payload = {
       type: "create" as methodType,
-      product: data,
+      data,
     };
     mutate(payload, {
       onSuccess: () => {
-        console.log("Submission successful");
+        toast.success("Thêm sản phẩm thành công");
+        form.reset();
       },
-      onError: (error) => {
-        console.log(`Error:::${error}`);
-      },
+
       onSettled: () => {
         toggleVisibility();
       },
     });
   };
 
+  if (error && error instanceof AxiosError) {
+    toast.error(error?.response?.data.message);
+  }
+
   return (
     <Sheet open={isVisible} onOpenChange={toggleVisibility}>
       <SheetTrigger asChild>
-        <Button variant="outline">Thêm sản phẩm</Button>
+        <Button>Thêm sản phẩm</Button>
       </SheetTrigger>
       <SheetContent>
         <SheetHeader>
@@ -187,4 +192,4 @@ const Product = () => {
   );
 };
 
-export default Product;
+export default AddProduct;

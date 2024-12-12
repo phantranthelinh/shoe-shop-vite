@@ -1,26 +1,22 @@
+import { Loading } from "@/components/common/Loading";
 import Layout from "@/components/dashboard/layout";
-import Product from "@/components/dashboard/products/product";
-import { DataTableDemo } from "@/components/dashboard/products/table";
+import AddProduct from "@/components/dashboard/products/AddProduct";
+import { ProductTable } from "@/components/dashboard/products/table";
 import { useGetProducts } from "@/hooks/api/products/useGetProducts";
 import { createLazyFileRoute } from "@tanstack/react-router";
 export const Route = createLazyFileRoute("/dashboard/products/")({
-  component: RouteComponent,
+  component: ProductPage,
 });
-
-function RouteComponent() {
-  const params = {};
-  const { data } = useGetProducts(params);
+function ProductPage() {
+  const { isLoading, data } = useGetProducts();
 
   return (
     <Layout>
-      <div>Sản phẩm</div>
-      Danh sách sản phẩm
-      <div>
-        <Product />
+      <div className="flex justify-between items-center">
+        <div className="text-2xl">Danh sách sản phẩm</div>
+        <AddProduct />
       </div>
-      <div>
-        {data?.products ? <DataTableDemo data={data?.products} /> : null}
-      </div>
+      {isLoading ? <Loading /> : <ProductTable data={data} />}
     </Layout>
   );
 }

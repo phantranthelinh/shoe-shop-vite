@@ -10,17 +10,12 @@ import {
 import { Input } from "@/components/ui/input";
 import { useMutationProduct } from "@/hooks/api/products/useMutationProduct";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { SubmitHandler, useForm } from "react-hook-form";
+import {  useForm } from "react-hook-form";
 import { z } from "zod";
 import { Product } from "../table";
+import { methodType } from "@/types/method.type";
 
-type FormFields = {
-  name: string;
-  image: string;
-  price: number;
-  description: string;
-  countInStock: number;
-};
+
 const schema = z.object({
   name: z.string(),
   image: z.string(),
@@ -50,12 +45,12 @@ const UpdateProduct: React.FC<IProps> = ({ id, data }) => {
 
   const { mutate: updateProduct } = useMutationProduct();
 
-  const onSubmit: SubmitHandler<FormFields> = (data) => {
+  const onSubmit = (data: z.infer<typeof schema>) => {
     const payload = {
-      type: "update" as const,
-      body: { ...data, id },
+      type: "update" as methodType,
+      data: { ...data, id },
     };
-    updateProduct(payload);
+    updateProduct(payload as any);
   };
 
   return (
@@ -63,7 +58,7 @@ const UpdateProduct: React.FC<IProps> = ({ id, data }) => {
       <Form {...form}>
         <form
           className="space-y-4 md:space-y-6"
-          onSubmit={form.handleSubmit(onSubmit)}
+          onSubmit={form.handleSubmit(onSubmit as any)}
         >
           <FormField
             control={control}

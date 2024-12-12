@@ -11,7 +11,7 @@ const ProductList = () => {
         {isLoading ? (
           <Loading />
         ) : (
-          data.products.map((product: Product) => (
+          data?.map((product: Product) => (
             <ProductCard key={product._id} data={product} />
           ))
         )}

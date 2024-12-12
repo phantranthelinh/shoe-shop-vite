@@ -1,4 +1,5 @@
-import axios from 'axios';
+import { getFromLocal, storeInLocal } from "@/utils/local-storage.util";
+import axios from "axios";
 
 const API = axios.create({
   baseURL: import.meta.env.VITE_API_URL,
@@ -6,23 +7,23 @@ const API = axios.create({
 
 const getToken = () => {
   const url = new URL(window.location.href);
-  const token = url.searchParams.get('access_token');
+  const token = url.searchParams.get("access_token");
   if (token) {
-    localStorage.setItem('token', token);
+    storeInLocal("token", token);
     return token;
   }
-  return localStorage.getItem('token');
+  return getFromLocal("token");
 };
 
 API.interceptors.request.use(
   (config) => {
     const token = getToken();
     if (token) {
-      config.headers['Authorization'] = `Bearer ${token}`;
+      config.headers["Authorization"] = `Bearer ${token}`;
     }
     return config;
   },
-  (error) => Promise.reject(error),
+  (error) => Promise.reject(error)
 );
 
 export { API };
@@ -32,4 +33,12 @@ export type ApiResponse<T = unknown> = {
   data: T;
 };
 
-export const getAPIUrl = () => import.meta.env.VITE_API_URL || '';
+export type ApiError = {
+  response: {
+    data: {
+      message: string;
+    };
+  };
+};
+
+export const getAPIUrl = () => import.meta.env.VITE_API_URL || "";

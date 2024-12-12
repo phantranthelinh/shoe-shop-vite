@@ -1,18 +1,8 @@
-import {
-  ColumnDef,
-  ColumnFiltersState,
-  SortingState,
-  VisibilityState,
-  flexRender,
-  getCoreRowModel,
-  getFilteredRowModel,
-  getPaginationRowModel,
-  getSortedRowModel,
-  useReactTable,
-} from "@tanstack/react-table";
+import { ColumnDef } from "@tanstack/react-table";
 import { ChevronDown, Pencil, Trash2 } from "lucide-react";
-import * as React from "react";
 
+import DataTable from "@/components/common/DataTable";
+import DataTablePagination from "@/components/common/DataTable/DataTablePagination";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import {
@@ -23,62 +13,18 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Input } from "@/components/ui/input";
 import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
-import { useMutationProduct } from "@/hooks/api/products/useMutationProduct";
-import {
   Sheet,
   SheetContent,
   SheetHeader,
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
-import UpdateProduct from "../product/update";
-
-// const data: Payment[] = [
-//   {
-//     id: "m5gr84i9",
-//     amount: 316,
-//     status: "success",
-//     email: "ken99@yahoo.com",
-//   },
-//   {
-//     id: "3u1reuv4",
-//     amount: 242,
-//     status: "success",
-//     email: "Abe45@gmail.com",
-//   },
-//   {
-//     id: "derv1ws0",
-//     amount: 837,
-//     status: "processing",
-//     email: "Monserrat44@gmail.com",
-//   },
-//   {
-//     id: "5kma53ae",
-//     amount: 874,
-//     status: "success",
-//     email: "Silas22@gmail.com",
-//   },
-//   {
-//     id: "bhqecj4p",
-//     amount: 721,
-//     status: "failed",
-//     email: "carmella@hotmail.com",
-//   },
-// ];
-
-// export type Payment = {
-//   id: string;
-//   amount: number;
-//   status: "pending" | "processing" | "success" | "failed";
-//   email: string;
-// };
+import { useMutationProduct } from "@/hooks/api/products/useMutationProduct";
+import useDataGrid from "@/hooks/useDataGrid";
+import { formatCurrencyVND } from "@/utils/format-currency";
+import { toast } from "sonner";
+import UpdateProduct from "../UpdateProduct";
+import { cn } from "@/lib/utils";
 
 export type Review = {
   name: string;
@@ -102,9 +48,23 @@ export type Product = {
 interface IProps {
   data: Product[];
 }
-export function DataTableDemo({ data }: IProps) {
+export function ProductTable({ data }: IProps) {
   const { mutate } = useMutationProduct();
-  //#region Column
+
+  const handleDelete = async (product: Product) => {
+    const payload = {
+      type: "delete",
+      product,
+    };
+    mutate(payload as any, {
+      onSuccess: () => {
+        toast("Xóa sản phẩm thành công!");
+      },
+      onError: () => {
+        toast("Xóa sản phẩm thất bại!");
+      },
+    });
+  };
   const columns: ColumnDef<Product>[] = [
     {
       id: "select",
@@ -130,7 +90,7 @@ export function DataTableDemo({ data }: IProps) {
     },
     {
       accessorKey: "name",
-      header: "Tên  sản phẩm",
+      header: "Tên sản phẩm",
       cell: ({ row }) => (
         <div className="capitalize">{row.getValue("name")}</div>
       ),
@@ -150,22 +110,18 @@ export function DataTableDemo({ data }: IProps) {
     },
     {
       accessorKey: "description",
-      header: () => <div className="">Mô tả sản phẩm</div>,
+      header: "Mô tả sản phẩm",
       cell: ({ row }) => {
         return <div className="font-medium">{row.getValue("description")}</div>;
       },
     },
     {
       accessorKey: "price",
-      header: () => <div className="">Giá sản phẩm</div>,
+      header: "Giá sản phẩm",
       cell: ({ row }) => {
         const amount = parseFloat(row.getValue("price"));
 
-        // Format the amount as a dollar amount
-        const formatted = new Intl.NumberFormat("en-US", {
-          style: "currency",
-          currency: "USD",
-        }).format(amount);
+        const formatted = formatCurrencyVND(amount);
 
         return <div className=" font-medium">{formatted}</div>;
       },
@@ -188,25 +144,13 @@ export function DataTableDemo({ data }: IProps) {
                 <SheetHeader>
                   <SheetTitle>Sửa sản phẩm</SheetTitle>
                 </SheetHeader>
-                <UpdateProduct
-                  id={row.original._id}
-                  data={row.original}
-                />
+                <UpdateProduct id={row.original._id} data={row.original} />
               </SheetContent>
             </Sheet>
-
             <Button
               variant={"outline"}
               size="icon"
-              onClick={() => {
-                const payload = {
-                  type: "delete" as const,
-                  body: {
-                    id: row.original._id,
-                  },
-                };
-                mutate(payload);
-              }}
+              onClick={() => handleDelete(row.original)}
             >
               <Trash2 className="size-4 text-red-500" />
             </Button>
@@ -215,30 +159,10 @@ export function DataTableDemo({ data }: IProps) {
       },
     },
   ];
-  //#endregion
-  const [sorting, setSorting] = React.useState<SortingState>([]);
-  const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
-    []
-  );
-  const [columnVisibility, setColumnVisibility] =
-    React.useState<VisibilityState>({});
-  const [rowSelection, setRowSelection] = React.useState({});
-  const table = useReactTable({
-    data,
-    columns,
-    onSortingChange: setSorting,
-    onColumnFiltersChange: setColumnFilters,
-    getCoreRowModel: getCoreRowModel(),
-    getPaginationRowModel: getPaginationRowModel(),
-    getSortedRowModel: getSortedRowModel(),
-    getFilteredRowModel: getFilteredRowModel(),
-    onColumnVisibilityChange: setColumnVisibility,
-    onRowSelectionChange: setRowSelection,
-    state: {
-      sorting,
-      columnFilters,
-      columnVisibility,
-      rowSelection,
+
+  const { table } = useDataGrid(columns, data, {
+    pagination: {
+      pageSize: 20,
     },
   });
 
@@ -246,17 +170,17 @@ export function DataTableDemo({ data }: IProps) {
     <div className="w-full">
       <div className="flex items-center py-4">
         <Input
-          placeholder="Filter emails..."
-          value={(table.getColumn("email")?.getFilterValue() as string) ?? ""}
+          placeholder="Tìm kiếm theo tên"
+          value={(table.getColumn("name")?.getFilterValue() as string) ?? ""}
           onChange={(event) =>
-            table.getColumn("email")?.setFilterValue(event.target.value)
+            table.getColumn("name")?.setFilterValue(event.target.value)
           }
           className="max-w-sm"
         />
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button variant="outline" className="ml-auto">
-              Columns <ChevronDown />
+              Cột <ChevronDown />
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
@@ -273,86 +197,28 @@ export function DataTableDemo({ data }: IProps) {
                       column.toggleVisibility(!!value)
                     }
                   >
-                    {column.id}
+                    {(column.columnDef.header as string) || ""}
                   </DropdownMenuCheckboxItem>
                 );
               })}
           </DropdownMenuContent>
         </DropdownMenu>
       </div>
-      <div className="rounded-md border">
-        <Table>
-          <TableHeader>
-            {table.getHeaderGroups().map((headerGroup) => (
-              <TableRow key={headerGroup.id}>
-                {headerGroup.headers.map((header) => {
-                  return (
-                    <TableHead key={header.id}>
-                      {header.isPlaceholder
-                        ? null
-                        : flexRender(
-                            header.column.columnDef.header,
-                            header.getContext()
-                          )}
-                    </TableHead>
-                  );
-                })}
-              </TableRow>
-            ))}
-          </TableHeader>
-          <TableBody>
-            {table.getRowModel().rows?.length ? (
-              table.getRowModel().rows.map((row) => (
-                <TableRow
-                  key={row.id}
-                  data-state={row.getIsSelected() && "selected"}
-                >
-                  {row.getVisibleCells().map((cell) => (
-                    <TableCell key={cell.id}>
-                      {flexRender(
-                        cell.column.columnDef.cell,
-                        cell.getContext()
-                      )}
-                    </TableCell>
-                  ))}
-                </TableRow>
-              ))
-            ) : (
-              <TableRow>
-                <TableCell
-                  colSpan={columns.length}
-                  className="h-24 text-center"
-                >
-                  No results.
-                </TableCell>
-              </TableRow>
-            )}
-          </TableBody>
-        </Table>
+
+      <div
+        className={cn("text-sm text-muted-foreground opacity-0 pb-2 -mt-2", {
+          "opacity-1": table.getFilteredSelectedRowModel().rows.length > 0,
+        })}
+      >
+        Đã chọn {table.getFilteredSelectedRowModel().rows.length} hàng (
+        {table.getFilteredRowModel().rows.length} hàng tổng cộng)
       </div>
-      <div className="flex items-center justify-end space-x-2 py-4">
-        <div className="flex-1 text-sm text-muted-foreground">
-          {table.getFilteredSelectedRowModel().rows.length} of{" "}
-          {table.getFilteredRowModel().rows.length} row(s) selected.
-        </div>
-        <div className="space-x-2">
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => table.previousPage()}
-            disabled={!table.getCanPreviousPage()}
-          >
-            Previous
-          </Button>
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => table.nextPage()}
-            disabled={!table.getCanNextPage()}
-          >
-            Next
-          </Button>
-        </div>
+
+      <div className="rounded-md border">
+        <DataTable table={table} columns={columns} />
+      </div>
+      <div className="flex items-center py-4 justify-between">
+        <DataTablePagination table={table} />
       </div>
     </div>
   );

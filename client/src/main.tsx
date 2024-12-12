@@ -5,7 +5,7 @@ import "./index.css";
 // Import the generated route tree
 import { routeTree } from "./routeTree.gen";
 import ReactQueryProvider from "./providers/react-query";
-
+import { Toaster } from "@/components/ui/sonner";
 // Create a new router instance
 const router = createRouter({ routeTree });
 
@@ -23,6 +23,7 @@ if (!rootElement.innerHTML) {
     <StrictMode>
       <ReactQueryProvider>
         <RouterProvider router={router} />
+        <Toaster />
       </ReactQueryProvider>
     </StrictMode>
   );
