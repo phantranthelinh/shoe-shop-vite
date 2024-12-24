@@ -17,7 +17,6 @@ const OrderController = {
     if (orderItems && orderItems.length === 0) {
       res.status(400);
       throw new Error("No order items");
-      return;
     } else {
       const newOrder = new Order({
         orderItems,

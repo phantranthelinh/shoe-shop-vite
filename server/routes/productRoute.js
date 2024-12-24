@@ -5,7 +5,11 @@ const router = express.Router();
 
 const ProductController = require("../controllers/ProductController");
 router.get("/all", protect, admin, ProductController.getAllProductsByAdmin);
+router.get("/:slug", ProductController.getProductBySlug);
+router.get("/related-products", ProductController.getRelatedProducts);
+
 router.get("/:id", ProductController.getAProduct);
+
 
 router.delete("/:id", protect, ProductController.deleteProduct);
 router.put("/:id", protect, admin, ProductController.editProduct);

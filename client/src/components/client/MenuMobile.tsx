@@ -1,13 +1,8 @@
+import { navList } from "@/data";
+import { Category } from "@/entities/category";
 import { Link } from "@tanstack/react-router";
 import React from "react";
 import { BsChevronDown } from "react-icons/bs";
-
-const data = [
-  { id: 1, name: "Home", url: "/" },
-  { id: 2, name: "About", url: "/about" },
-  { id: 3, name: "Categories", subMenu: true },
-  { id: 4, name: "Contact", url: "mailto:contact@nike.com" },
-];
 
 const MenuMobile = ({
   showCatMenu,
@@ -18,16 +13,16 @@ const MenuMobile = ({
   showCatMenu: boolean;
   setShowCatMenu: any;
   setMobileMenu: any;
-  categories: any;
+  categories: Category[];
 }) => {
   return (
-    <ul className="flex flex-col md:hidden font-bold absolute top-[50px] left-0 w-full h-[calc(100vh-50px)] bg-white border-t text-black">
-      {data.map((item) => {
+    <ul className="top-[50px] left-0 absolute flex flex-col md:hidden bg-white border-t w-full h-[calc(100vh-50px)] font-bold text-black">
+      {navList.map((item) => {
         return (
           <React.Fragment key={item.id}>
             {!!item?.subMenu ? (
               <li
-                className="cursor-pointer py-4 px-5 border-b flex flex-col relative"
+                className="relative flex flex-col px-5 py-4 border-b cursor-pointer"
                 onClick={() => setShowCatMenu(!showCatMenu)}
               >
                 <div className="flex justify-between items-center">
@@ -36,22 +31,22 @@ const MenuMobile = ({
                 </div>
 
                 {showCatMenu && (
-                  <ul className="bg-black/0.05 -mx-5 mt-4  mb-4">
-                    {categories?.map((category: any) => {
+                  <ul className="bg-black/0.05 -mx-5 mt-4 mb-4">
+                    {categories?.map((category) => {
                       return (
                         <Link
-                          key={category?.id}
-                          href={`/category/${category?.attributes?.slug}`}
+                          key={category._id}
+                          href={`/category/${category.slug}`}
                           onClick={() => {
                             setShowCatMenu(false);
                             setMobileMenu(false);
                           }}
                         >
-                          <li className="py-4 px-8 border-t flex justify-between">
-                            {category.attributes.name}
+                          <li className="flex justify-between px-8 py-4 border-t">
+                            {category.name}
                             <span className="opacity-50 text-sm">
                               &#40;
-                              {category?.attributes?.products?.data?.length}
+                              {category?.products?.length}
                               &#41;
                             </span>
                           </li>
@@ -62,7 +57,7 @@ const MenuMobile = ({
                 )}
               </li>
             ) : (
-              <li className="py-4 px-5 border-b">
+              <li className="px-5 py-4 border-b">
                 <Link href={item?.url} onClick={() => setMobileMenu(false)}>
                   {item.name}
                 </Link>

@@ -1,25 +1,26 @@
-import Wrapper from "@/components/common/Wrapper";
 import ProductDetailsCarousel from "@/components/client/ProductDetailsCarousel";
+import Wrapper from "@/components/common/Wrapper";
 
+import { useGetProduct } from "@/hooks/api/products/useGetProduct";
+import { addToCart } from "@/store/cart.store";
+import {
+  useWishlist
+} from "@/store/wishlist.store";
 import { getDiscount } from "@/utils/helper";
 import { createLazyFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
-import { IoMdHeart, IoMdHeartEmpty } from "react-icons/io";
-import { addToCart } from "@/store/cart.store";
-import {
-  addToWishlist,
-  deleteFromWishlist,
-  useWishlist,
-} from "@/store/wishlist.store";
 
 export const Route = createLazyFileRoute("/products/$productName/")({
-  component: RouteComponent,
+  component: DetailProductPage,
 });
 
-function RouteComponent({ productData }: { productData: any }) {
+function DetailProductPage() {
   const [selectedSize, setSelectedSize] = useState();
   const [showError, setShowError] = useState(false);
-  const product = productData?.data?.[0]?.attributes;
+
+
+  const { productName } = Route.useParams()
+  const { data: product } = useGetProduct(productName);
   const { wishlistItems } = useWishlist();
 
   const handleAddingToCart = () => {
@@ -27,55 +28,52 @@ function RouteComponent({ productData }: { productData: any }) {
       setShowError(true);
     } else {
       addToCart({
-        ...productData?.data?.[0],
+        ...product,
         selectedSize,
       });
       setSelectedSize(undefined);
     }
   };
+
+
+  console.log(product)
+ 
   return (
     <main className="w-full md:py-20">
       <Wrapper>
         <section className="flex flex-col lg:flex-row md:px-10 gap-[50px] lg:gap-[100px]">
-          {/* Left Column - Prodct Preview Section */}
           <div className="w-full md:w-auto flex-[1.5] max-w-[500px] lg:max-w-full mx-auto lg-mx-0">
             <ProductDetailsCarousel images={product?.image} />
           </div>
-          {/* Right Column - Prodct Details Section */}
           <div className="flex-1 py-3">
-            {/* Product Tittle */}
             <h1 className="text-[34px] font-semibold mb-2 leading-tight">
-              {product.name}
+              {product?.name}
             </h1>
-
-            {/* Product Price */}
 
             <div className="flex items-center">
               <p className="mr-2 text-lg font-semibold">
-                MRP : &#8377; {product.price}
+                {product?.price} VNĐ
               </p>
-              {product.original_price && (
+              {product?.original_price && (
                 <>
                   <p className="text-base font-semibold line-through">
-                    &#8377; {product.original_price}
+                    &#8377; {product?.original_price}
                   </p>
                   <p className="ml-auto text-base font-medium text-green-500">
-                    {getDiscount(product.original_price, product.price)}% off
+                    {getDiscount(product?.original_price, product?.price)}% off
                   </p>
                 </>
               )}
             </div>
 
             <p className="text-md font-medium text-black/[.5]">
-              incl. of taxes
+             Đã bao gồm thuế
             </p>
             <p className="text-md font-medium text-black/[.5] mb-20">
-              &#40;Also includes all applicable duties&#41;
+              &#40;Cũng bao gồm tất cả các nhiệm vụ áp dụng được&#41;
             </p>
 
-            {/* Product Size Selection Section */}
             <div className="mb-10">
-              {/* Heading */}
               <div className="flex justify-between mb-2 ">
                 <div className="text-md font-semibold">Select Size</div>
                 <div className="text-md font-medium text-black/[.5] cursor-pointer">
@@ -83,8 +81,7 @@ function RouteComponent({ productData }: { productData: any }) {
                 </div>
               </div>
 
-              {/* Size Chart */}
-              <div className="grid grid-cols-3 gap-2" id="sizesGrid">
+              {/* <div className="grid grid-cols-3 gap-2" id="sizesGrid">
                 {product.size.data.map((item, index) => (
                   <div
                     key={index}
@@ -104,9 +101,8 @@ function RouteComponent({ productData }: { productData: any }) {
                     {item.size}
                   </div>
                 ))}
-              </div>
+              </div> */}
 
-              {/* Error Message */}
               {showError && (
                 <div className="text-red-600 mt-1">
                   Size selection is required
@@ -114,7 +110,6 @@ function RouteComponent({ productData }: { productData: any }) {
               )}
             </div>
 
-            {/* Add to Cart button */}
             <button
               className="w-full py-4 rounded-full bg-black text-white text-lg font-medium transition-transform active:scale-95 mb-3 hover:opacity-75"
               onClick={handleAddingToCart}
@@ -122,9 +117,7 @@ function RouteComponent({ productData }: { productData: any }) {
               Add to Cart
             </button>
 
-            {/* Add to Wishlist button */}
-
-            {wishlistItems.find(
+            {/* {wishlistItems.find(
               (item) => item.id === productData?.data?.[0]?.id
             ) ? (
               <button
@@ -148,13 +141,12 @@ function RouteComponent({ productData }: { productData: any }) {
                 Wishlist
                 <IoMdHeartEmpty size={20} />
               </button>
-            )}
+            )} */}
 
-            {/* Product Details */}
             <div>
               <div className="text-lg font-bold mb-5">Product Details</div>
               <div className="markdown text-md mb-5">
-                {/* <ReactMarkdown>{product.description}</ReactMarkdown> */}
+                <div>{product.description}</div>
               </div>
             </div>
           </div>

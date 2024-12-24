@@ -10,12 +10,21 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import {
   Sheet,
   SheetContent,
   SheetHeader,
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
+import { Category } from "@/entities/category";
+import { useGetCategories } from "@/hooks/api/categories/useGetCategories";
 import { useMutationProduct } from "@/hooks/api/products/useMutationProduct";
 import useVisibility from "@/hooks/useVisibility";
 import { methodType } from "@/types/method.type";
@@ -25,19 +34,13 @@ import { SubmitHandler, useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { z } from "zod";
 
-type FormFields = {
-  name: string;
-  image: string;
-  price: number;
-  description: string;
-  countInStock: number;
-};
 const schema = z.object({
   name: z.string(),
   image: z.string(),
   price: z.number(),
   description: z.string(),
   countInStock: z.number(),
+  category: z.string(),
 });
 
 const AddProduct = () => {
@@ -51,13 +54,14 @@ const AddProduct = () => {
       price: 0,
       description: "",
       countInStock: 0,
+      category: "",
     },
   });
 
   const { control } = form;
   const { mutate, isPending, error } = useMutationProduct();
 
-  const onSubmit: SubmitHandler<FormFields> = (data) => {
+  const onSubmit: SubmitHandler<z.infer<typeof schema>> = (data) => {
     const payload = {
       type: "create" as methodType,
       data,
@@ -78,6 +82,8 @@ const AddProduct = () => {
     toast.error(error?.response?.data.message);
   }
 
+  const { data } = useGetCategories();
+
   return (
     <Sheet open={isVisible} onOpenChange={toggleVisibility}>
       <SheetTrigger asChild>
@@ -87,7 +93,7 @@ const AddProduct = () => {
         <SheetHeader>
           <SheetTitle>Thêm sản phẩm</SheetTitle>
         </SheetHeader>
-        <div className="grid gap-4 py-4">
+        <div className="gap-4 grid py-4">
           <Form {...form}>
             <form
               className="space-y-4 md:space-y-6"
@@ -98,7 +104,7 @@ const AddProduct = () => {
                 name="name"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                    <FormLabel className="block mb-2 font-medium text-gray-900 text-sm dark:text-white">
                       Tên sản phẩm
                     </FormLabel>
                     <FormControl>
@@ -113,7 +119,7 @@ const AddProduct = () => {
                 name="description"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                    <FormLabel className="block mb-2 font-medium text-gray-900 text-sm dark:text-white">
                       Mô tả sản phẩm
                     </FormLabel>
                     <FormControl>
@@ -129,7 +135,7 @@ const AddProduct = () => {
                 name="price"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                    <FormLabel className="block mb-2 font-medium text-gray-900 text-sm dark:text-white">
                       Giá sản phẩm
                     </FormLabel>
                     <FormControl>
@@ -152,7 +158,7 @@ const AddProduct = () => {
                 name="countInStock"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                    <FormLabel className="block mb-2 font-medium text-gray-900 text-sm dark:text-white">
                       Số lượng tồn
                     </FormLabel>
                     <FormControl>
@@ -173,11 +179,37 @@ const AddProduct = () => {
                 name="image"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                    <FormLabel className="block mb-2 font-medium text-gray-900 text-sm dark:text-white">
                       Hình ảnh
                     </FormLabel>
                     <FormControl>
                       <Input placeholder="Hình ảnh" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={control}
+                name="category"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel className="block mb-2 font-medium text-gray-900 text-sm dark:text-white">
+                      Danh mục
+                    </FormLabel>
+                    <FormControl>
+                      <Select {...field} >
+                        <SelectTrigger className="w-full">
+                          <SelectValue placeholder="Chọn danh mục sản phẩm" />
+                        </SelectTrigger>
+                        <SelectContent >
+                          {data.map((item: Category) => (
+                            <SelectItem value={item._id}>
+                              {item.name}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
                     </FormControl>
                     <FormMessage />
                   </FormItem>

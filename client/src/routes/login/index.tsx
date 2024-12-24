@@ -2,10 +2,10 @@ import LoginForm from "@/components/auth/LoginForm";
 import { createFileRoute } from "@tanstack/react-router";
 
 export const Route = createFileRoute("/login/")({
-  component: RouteComponent,
+  component: LoginPage,
 });
 
-function RouteComponent() {
+function LoginPage() {
   return (
     <section className="bg-gray-50 dark:bg-gray-900">
       <div className="flex flex-col items-center justify-center px-6 py-8 mx-auto md:h-screen lg:py-0">
@@ -15,10 +15,10 @@ function RouteComponent() {
         >
           <img
             className="w-8 h-8 mr-2"
-            src="https://flowbite.s3.amazonaws.com/blocks/marketing-ui/logo.svg"
+            src="nike-brand.svg"
             alt="logo"
           />
-          Store name
+          Nike
         </a>
         <LoginForm />
       </div>
