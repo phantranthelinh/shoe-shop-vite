@@ -1,6 +1,8 @@
 import CartItem from "@/components/client/CartItem";
+import MainLayout from "@/components/client/layout";
 import Wrapper from "@/components/common/Wrapper";
 import { useCart } from "@/store/cart.store";
+import { formatCurrencyVND } from "@/utils/format-currency";
 import { createLazyFileRoute, Link } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
 
@@ -21,94 +23,85 @@ function RouteComponent() {
   const handlePayment = async () => {
     setLoading(true);
   };
+
   return (
-    <main className="w-full md:py-20">
+    <MainLayout>
       <Wrapper>
-        {cartItems.length > 0 ? (
-          <>
-            {/* Heading  */}
-            <div className="text-center max-w-[800px] mx-auto mt-8 md:mt-0">
-              <div className="text-[28px] md:text-[32px] mb-5 font-semibold leading-tight">
-                Shopping cart
-              </div>
-            </div>
-
-            {/* Cart Content */}
-            <div className="flex flex-col lg:flex-row gap-12 py-10">
-              {/* Cart Items */}
-              <section className="flex-[2]">
-                <h2 className="text-lg font-bold">Cart Items</h2>
-                {cartItems.map((item: { id: any }) => (
-                  <CartItem key={item.id} data={item} />
-                ))}
-              </section>
-
-              {/* Cart Sumamry */}
-              <section className="flex-1">
-                <h2 className="text-lg font-bold">Summary</h2>
-                <div className="p-5 my-5 bg-black/[0.05] rounded-xl">
-                  {/* Subtotal div */}
-                  <div className="flex justify-between">
-                    <div className="uppercase text-base md:text-xl font-medium text-black">
-                      Subtotal
-                    </div>
-                    <div className="text-base md:text-xl font-medium text-black ">
-                      MRP: &#8377;{subTotal}
-                    </div>
-                  </div>
-
-                  {/* Message */}
-                  <div className="text-sm md:text-base py-5 border-t mt-5">
-                    The subtotal reflects the total price of your order,
-                    including duties and taxes, before any applicable discounts.
-                    It does not include delivery costs and international
-                    transaction fees.
-                  </div>
+        <div className="mt-10 h-[calc(100vh-400px)]">
+          {cartItems.length > 0 ? (
+            <>
+              <div className="mx-auto mt-8 md:mt-0 max-w-[800px] text-center">
+                <div className="mb-5 font-semibold text-[28px] md:text-[32px] leading-tight">
+                  Giỏ hàng
                 </div>
+              </div>
 
-                {/* Checkout Btn */}
-                <button
-                  onClick={handlePayment}
-                  className="flex items-center justify-center gap-5 w-full py-4 rounded-full bg-black text-white text-lg font-medium transition-transform active:scale-95 mb-3 hover:opacity-75"
+              <div className="flex lg:flex-row flex-col gap-12 py-10">
+                <section className="flex-[2]">
+                  <h2 className="font-bold text-lg">
+                    Các mặt hàng trong giỏ hàng
+                  </h2>
+                  {cartItems.map((item: { id: any }) => (
+                    <CartItem key={item.id} data={item} />
+                  ))}
+                </section>
+
+                <section className="flex-1">
+                  <h2 className="font-bold text-lg">Tóm tắt</h2>
+                  <div className="bg-black/[0.05] my-5 p-5 rounded-xl">
+                    <div className="flex justify-between">
+                      <div className="font-medium text-base text-black md:text-xl uppercase">
+                        Tổng cộng {formatCurrencyVND(subTotal)}
+                      </div>
+                      <div className="font-medium text-base text-black md:text-xl"></div>
+                    </div>
+
+                    <div className="mt-5 py-5 border-t text-sm md:text-base">
+                      Đã bao gồm thuế và phí VAT
+                    </div>
+                  </div>
+
+                  <button
+                    onClick={handlePayment}
+                    className="flex justify-center items-center gap-5 bg-black hover:opacity-75 mb-3 py-4 rounded-full w-full font-medium text-lg text-white transition-transform active:scale-95"
+                  >
+                    Thanh toán
+                    {loading && <img src="/spinner.svg" />}
+                  </button>
+                </section>
+              </div>
+            </>
+          ) : (
+            <>
+              <div className="flex flex-col flex-[2] items-center md:-mt-14 pb-[50px]">
+                <img
+                  src="/empty-cart.jpg"
+                  alt="Empty Cart"
+                  width={300}
+                  height={300}
+                  className="w-[300px] md:w-[400px]"
+                />
+
+                <span className="font-bold text-xl">
+                  Giỏ hàng của bạn đang trống
+                </span>
+                <span className="mt-4 text-center">
+                  Có vẻ như bạn chưa thêm bất kỳ sản phẩm nào vào giỏ hàng.
+                  <br />
+                  Hãy khám phá các danh mục hàng đầu ngay bây giờ.
+                </span>
+
+                <Link
+                  className="bg-black hover:opacity-75 mt-8 mb-3 px-8 py-4 rounded-full font-medium text-lg text-white transition-transform active:scale-95"
+                  href="/"
                 >
-                  Checkout
-                  {loading && <img src="/spinner.svg" />}
-                </button>
-              </section>
-            </div>
-          </>
-        ) : (
-          <>
-            {/* Empty cart  Screen*/}
-            <div className="flex-[2] flex flex-col items-center pb-[50px] md:-mt-14">
-              {/* Empty cart Image  */}
-              <img
-                src="/empty-cart.jpg"
-                alt="Empty Cart"
-                width={300}
-                height={300}
-                className="w-[300px] md:w-[400px]"
-              />
-
-              {/* Empty cart Message */}
-              <span className="text-xl font-bold">Your cart is empty</span>
-              <span className="text-center mt-4">
-                Looks like you have not added anything in your cart.
-                <br />
-                Go ahead and explore top categories.
-              </span>
-
-              {/* Link to homepage */}
-              <Link
-                className="py-4 px-8 rounded-full bg-black text-white text-lg font-medium transition-transform active:scale-95 mb-3 hover:opacity-75 mt-8"
-                href="/"
-              >
-                Continue Shopping
-              </Link>
-            </div>
-          </>
-        )}
+                  Continue Shopping
+                </Link>
+              </div>
+            </>
+          )}
+        </div>
       </Wrapper>
-    </main>
+    </MainLayout>
   );
 }

@@ -12,8 +12,8 @@ export const useMutationProduct = () => {
   const apiMethods = {
     create: (data: TProduct) => API.post("/api/products", data),
     update: (data: TProduct) => {
-      const { _id, ...productUpdate } = data;
-      return API.put(`/api/products/${_id}`, productUpdate);
+      const { id, ...productUpdate } = data;
+      return API.put(`/api/products/${id}`, productUpdate);
     },
     delete: (data: TProduct) => API.delete(`/api/products/${data._id}`),
   };

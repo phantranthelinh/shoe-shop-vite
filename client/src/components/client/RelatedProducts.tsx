@@ -1,31 +1,28 @@
+import { Carousel } from "../ui/carousel";
+import ProductCard from "./ProductCard";
 
-const RelatedProducts = ({ relatedProducts }: { relatedProducts: any }) => {
-  const responsive = Object.freeze({
-    desktop: {
-      breakpoint: { max: 3000, min: 1024 },
-      items: 3,
-    },
-    tablet: {
-      breakpoint: { max: 1023, min: 464 },
-      items: 2,
-    },
-    mobile: {
-      breakpoint: { max: 767, min: 0 },
-      items: 1,
-    },
-  });
+type Product = {
+  id: string | number;
+  name: string;
+  price: number;
+  imageUrl: string;
+};
+
+type RelatedProductsProps = {
+  relatedProducts: {
+    data: Product[];
+  };
+};
+
+const RelatedProducts = ({ relatedProducts }: RelatedProductsProps) => {
   return (
-    <section className="mt-[50px] mdLmt-[100px] mb-[100px] md:mb-0">
-      <h1 className="text-2xl font-bold mb-5">You Might Also Like</h1>
-      {/* <Carousel
-        responsive={responsive}
-        containerClass="-mx-[10px]"
-        itemClass="px-[10px]"
-      >
+    <section className="mdLmt-[100px] mt-[50px] mb-[100px] md:mb-0">
+      <h1 className="mb-5 font-bold text-2xl">Có thể bạn thích</h1>
+      <Carousel>
         {relatedProducts?.data?.map((prod) => (
-          <ProductCard key={prod?.id} data={prod} />
+          <ProductCard key={prod.id} data={prod} />
         ))}
-      </Carousel> */}
+      </Carousel>
     </section>
   );
 };

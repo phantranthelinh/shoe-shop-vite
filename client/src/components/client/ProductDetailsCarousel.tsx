@@ -1,23 +1,9 @@
-import React from "react";
+import { Product } from "@/entities/product";
 
-const ProductDetailsCarousel = ({ images }: { images: any }) => {
+const ProductDetailsCarousel = ({ product }: { product: Product }) => {
   return (
-    <div className="text-white text-[20px] w-full max-w-[1360px] mx-auto sticky top-[50px]">
-      {/* <Carousel
-        infiniteLoop={true}
-        showIndicators={false}
-        showStatus={false}
-        thumbWidth={60}
-        className="productCarousel"
-      >
-        {images?.map((img) => (
-          <img
-            key={img.id}
-            src={img.attributes.url}
-            alt={images.attributes?.name}
-          />
-        ))}
-      </Carousel> */}
+    <div className="top-[50px] sticky mx-auto w-full max-w-[1360px] text-[20px] text-white">
+      <img src={product?.image} alt={product?.name} />
     </div>
   );
 };

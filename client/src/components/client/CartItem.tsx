@@ -1,113 +1,73 @@
-import { deleteFromCart, updateCart } from "@/store/cart.store";
+import { updateCart } from "@/store/cart.store";
+import { formatCurrencyVND } from "@/utils/format-currency";
 import { Link } from "@tanstack/react-router";
-import { RiDeleteBin6Line } from "react-icons/ri";
+import { Minus, Plus } from "lucide-react";
+import { Button } from "../ui/button";
 
 const CartItem = ({ data }: { data: any }) => {
-  const item = data.attributes;
-
-  // Update cart item fn
   const updateCartItem = (e: any, key: any) => {
     let payload = {
       key,
       val: key === "quantity" ? parseInt(e.target.value) : e.target.value,
       id: data.id,
     };
-    updateCart(key, val, id);
+    updateCart(payload.id, payload.key, payload.val);
   };
 
   return (
-    <div className="flex py-5 gap-3 mf:gap-5 border-0 border-b last:border-b-0">
-      {/* Product Image */}
+    <div className="flex gap-3 mf:gap-5 border-0 py-5 border-b last:border-b-0">
       <Link
-        href={`/product/${item.slug}`}
-        className="shrink-0 aspect-square w-[50px] md:w-[120px]"
+        href={`/product/${data?.slug}`}
+        className="w-[50px] md:w-[120px] aspect-square shrink-0"
       >
-        <img
-          src={item?.thumbnail?.data?.attributes?.url}
-          alt={item.slug}
-          width={120}
-          height={120}
-        />
+        <img src={data?.image} alt={data?.name} width={120} height={120} />
       </Link>
 
-      {/* Product Details */}
-      <div className="w-full flex flex-col">
-        <div className="flex flex-col md:flex-row justify-between">
-          {/* Product Title */}
-          <h2 className="text-lg md:text-2xl font-semibold text-black/[.8]">
-            {item.name}
+      <div className="flex flex-col w-full">
+        <div className="flex md:flex-row flex-col justify-between">
+          <h2 className="font-semibold text-black/[.8] text-lg md:text-2xl">
+            {data?.name}
           </h2>
 
-          {/* Product Subtitle Mobile */}
-          <h3 className="text-sm md:text-md font-medium text-black/[.5] block md:hidden">
-            {item.subtitle}
-          </h3>
-
-          {/* Product Price */}
-          <h3 className="text-sm md:text-md font-bold text-black/[.5] mt-2">
-            MRP: &#8377;{item.price}
+          <h3 className="mt-2 font-bold text-black/[.5] text-sm md:text-md">
+            {formatCurrencyVND(data?.price)}
           </h3>
         </div>
 
-        {/* Product Subtitle Desktop */}
-        <h3 className="text-sm md:text-md font-medium text-black/[.5] hidden md:block">
-          {item.subtitle}
-        </h3>
-
-        {/* Selectors  */}
-        <div className="flex item justify-between mt-4">
-          <div className="flex items-center gap-2 md:gap-10 text-blaack/[.5] text-sm md:text-md">
-            {/* Size Selector */}
-            <div className="flex items-center gap-1">
-              {/* label for size selector */}
-              <div className="font-semibold">Size:</div>
-              {/* dropdown for size selector */}
-              <select
-                className="hover:text-black bg-white rounded "
-                onChange={(e) => updateCartItem(e, "selectedSize")}
-              >
-                {item.size.data.map((sizeData: any, index: any) => (
-                  <option
-                    key={index}
-                    value={sizeData.size}
-                    disabled={!sizeData.enabled}
-                    selected={data.selectedSize === sizeData.size}
-                  >
-                    {sizeData.size}
-                  </option>
-                ))}
-              </select>
-            </div>
-
-            {/* Quantity Selector */}
-            <div className="flex items-center gap-1">
-              {/* label for quantity selector */}
-              <div className="font-semibold">Quantity: </div>
-              {/* dropdown for quantity selector */}
-              <select
-                className="hover:text-black bg-white rounded "
-                onChange={(e) => updateCartItem(e, "quantity")}
-              >
-                {Array.from({ length: 10 }, (_, i) => i + 1).map(
-                  (elem, index) => (
-                    <option
-                      selected={data.quantity === elem}
-                      key={index}
-                      value={elem}
-                    >
-                      {elem}
-                    </option>
+        <div className="flex justify-between items-center mt-4">
+          <div className="flex items-center gap-2 md:gap-10 text-gray-600 text-sm md:text-md">
+            <label htmlFor="quantity" className="font-semibold">
+              Số lượng:
+            </label>
+            <div className="flex items-center gap-3">
+              <Button
+                size="icon"
+                variant="outline"
+                onClick={() =>
+                  updateCartItem(
+                    { target: { value: data.quantity - 1 } },
+                    "quantity"
                   )
-                )}
-              </select>
+                }
+                disabled={data.quantity <= 1}
+              >
+                <Minus />
+              </Button>
+              <span className="font-medium text-lg">{data.quantity}</span>
+              <Button
+                variant="outline"
+                size="icon"
+                onClick={() =>
+                  updateCartItem(
+                    { target: { value: data.quantity + 1 } },
+                    "quantity"
+                  )
+                }
+              >
+                <Plus />
+              </Button>
             </div>
           </div>
-
-          {/* Delete Btn */}
-          <RiDeleteBin6Line
-            className="cursor-pointer text-black/[.5] hover:text-black text-[16px] md:text-[20px]"
-            onClick={() => deleteFromCart(data.id)}
-          />
         </div>
       </div>
     </div>

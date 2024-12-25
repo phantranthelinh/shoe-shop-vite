@@ -8,7 +8,7 @@ export const Route = createLazyFileRoute("/dashboard/products/")({
   component: ProductPage,
 });
 function ProductPage() {
-  const { isLoading, data } = useGetProducts();
+  const { isLoading, data } = useGetProducts(true);
 
   return (
     <Layout>

@@ -23,6 +23,7 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
+import { Textarea } from "@/components/ui/textarea";
 import { Category } from "@/entities/category";
 import { useGetCategories } from "@/hooks/api/categories/useGetCategories";
 import { useMutationProduct } from "@/hooks/api/products/useMutationProduct";
@@ -123,7 +124,7 @@ const AddProduct = () => {
                       Mô tả sản phẩm
                     </FormLabel>
                     <FormControl>
-                      <Input placeholder="Mô tả sản phẩm" {...field} />
+                      <Textarea placeholder="Mô tả sản phẩm" {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -198,13 +199,16 @@ const AddProduct = () => {
                       Danh mục
                     </FormLabel>
                     <FormControl>
-                      <Select {...field} >
+                      <Select
+                        onValueChange={(value) => field.onChange(value)}
+                        value={field.value}
+                      >
                         <SelectTrigger className="w-full">
                           <SelectValue placeholder="Chọn danh mục sản phẩm" />
                         </SelectTrigger>
-                        <SelectContent >
+                        <SelectContent>
                           {data.map((item: Category) => (
-                            <SelectItem value={item._id}>
+                            <SelectItem value={item._id} key={item._id}>
                               {item.name}
                             </SelectItem>
                           ))}

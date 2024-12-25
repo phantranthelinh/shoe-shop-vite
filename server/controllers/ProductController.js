@@ -3,7 +3,8 @@ const asyncHandler = require("express-async-handler");
 
 const ProductController = {
   addProduct: asyncHandler(async (req, res) => {
-    const { name, price, description, image, countInStock, category } = req.body;
+    const { name, price, description, image, countInStock, category } =
+      req.body;
     const productExits = await Product.findOne({ name });
 
     if (productExits) {
@@ -30,7 +31,9 @@ const ProductController = {
   }),
   getAProduct: asyncHandler(async (req, res) => {
     try {
-      const product = await Product.findById(req.params.id);
+      const product = await Product.findById(req.params.id).populate(
+        "category"
+      );
       res.json(product);
     } catch (err) {
       res.status(404);
@@ -41,7 +44,7 @@ const ProductController = {
     try {
       const product = await Product.findOne({
         slug: req.params.slug,
-      });
+      }).populate("category reviews");
 
       res.json(product);
     } catch (err) {
@@ -51,7 +54,7 @@ const ProductController = {
   }),
   getAllProducts: asyncHandler(async (req, res) => {
     try {
-      const pageSize = 6;
+      const pageSize = 10;
       const page = Number(req.query.pageNumber) || 1;
       const keyword = req.query.keyword
         ? {
@@ -64,6 +67,7 @@ const ProductController = {
       const count = await Product.countDocuments({ ...keyword });
 
       const products = await Product.find({ ...keyword })
+        .populate("category")
         .limit(pageSize)
         .skip(pageSize * (page - 1))
         .sort({ _id: -1 });
@@ -75,11 +79,14 @@ const ProductController = {
     }
   }),
   getAllProductsByAdmin: asyncHandler(async (req, res) => {
-    const products = await Product.find({}).sort({ _id: -1 });
+    const products = await Product.find({})
+      .sort({ createdAt: -1 })
+      .populate("category");
     res.json(products);
   }),
   editProduct: asyncHandler(async (req, res) => {
-    const { name, price, description, image, countInStock } = req.body;
+    const { name, price, description, image, countInStock, category } =
+      req.body;
     const product = await Product.findById(req.params.id);
 
     if (product) {
@@ -88,6 +95,7 @@ const ProductController = {
       product.description = description || product.description;
       product.image = image || product.description;
       product.countInStock = countInStock || product.countInStock;
+      product.category = category || product.category;
 
       const updatedProduct = await product.save();
       res.status(200).json(updatedProduct);
@@ -106,13 +114,21 @@ const ProductController = {
       throw new Error("Product not found");
     }
   }),
- 
+
   getRelatedProducts: asyncHandler(async (req, res) => {
     try {
-      const products = await Product.find({
-        _id: { $ne: req.params.id },
+      const product = await Product.findOne({
+        slug: req.params.slug,
       });
-      res.json(products);
+      if (product) {
+        const products = await Product.find({
+          _id: { $ne: product.id },
+          category: product.category,
+        })
+          .populate("category")
+          .sort({ createdAt: -1 });
+        res.json(products);
+      }
     } catch (err) {
       res.status(404);
       throw new Error("Product not found");

@@ -1,5 +1,5 @@
 import { ColumnDef } from "@tanstack/react-table";
-import { ChevronDown, Pencil, Trash2 } from "lucide-react";
+import { ChevronDown, Trash2 } from "lucide-react";
 
 import DataTable from "@/components/common/DataTable";
 import DataTablePagination from "@/components/common/DataTable/DataTablePagination";
@@ -12,19 +12,13 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Input } from "@/components/ui/input";
-import {
-  Sheet,
-  SheetContent,
-  SheetHeader,
-  SheetTitle,
-  SheetTrigger,
-} from "@/components/ui/sheet";
 import { useMutationProduct } from "@/hooks/api/products/useMutationProduct";
 import useDataGrid from "@/hooks/useDataGrid";
+import { cn } from "@/lib/utils";
 import { formatCurrencyVND } from "@/utils/format-currency";
 import { toast } from "sonner";
 import UpdateProduct from "../UpdateProduct";
-import { cn } from "@/lib/utils";
+import { Badge } from "@/components/ui/badge";
 
 export type Review = {
   name: string;
@@ -44,6 +38,7 @@ export type Product = {
   numReviews: number;
   price: number;
   countInStock: number;
+  category: any;
 };
 interface IProps {
   data: Product[];
@@ -54,7 +49,7 @@ export function ProductTable({ data }: IProps) {
   const handleDelete = async (product: Product) => {
     const payload = {
       type: "delete",
-      product,
+      data: product,
     };
     mutate(payload as any, {
       onSuccess: () => {
@@ -102,11 +97,26 @@ export function ProductTable({ data }: IProps) {
         <div className="lowercase">
           <img
             src={row.getValue("image")}
-            className="size-20 rounded"
+            className="rounded size-20"
             alt={row.original.name}
           />
         </div>
       ),
+    },
+    {
+      accessorKey: "category",
+      header: "Danh mục sản phẩm",
+      cell: ({ row }) => {
+        return (
+          <div className="font-medium">
+            {row.original.category ? (
+              <Badge variant="outline">{row.original.category?.name}</Badge>
+            ) : (
+              "Chưa có danh mục"
+            )}
+          </div>
+        );
+      },
     },
     {
       accessorKey: "description",
@@ -123,7 +133,7 @@ export function ProductTable({ data }: IProps) {
 
         const formatted = formatCurrencyVND(amount);
 
-        return <div className=" font-medium">{formatted}</div>;
+        return <div className="font-medium">{formatted}</div>;
       },
     },
 
@@ -134,25 +144,13 @@ export function ProductTable({ data }: IProps) {
       cell: ({ row }) => {
         return (
           <div className="flex gap-3">
-            <Sheet>
-              <SheetTrigger asChild>
-                <Button variant={"outline"} size="icon">
-                  <Pencil className="size-4" />
-                </Button>
-              </SheetTrigger>
-              <SheetContent>
-                <SheetHeader>
-                  <SheetTitle>Sửa sản phẩm</SheetTitle>
-                </SheetHeader>
-                <UpdateProduct id={row.original._id} data={row.original} />
-              </SheetContent>
-            </Sheet>
+            <UpdateProduct id={row.original._id} data={row.original} />
             <Button
               variant={"outline"}
               size="icon"
               onClick={() => handleDelete(row.original)}
             >
-              <Trash2 className="size-4 text-red-500" />
+              <Trash2 className="text-red-500 size-4" />
             </Button>
           </div>
         );
@@ -214,10 +212,10 @@ export function ProductTable({ data }: IProps) {
         {table.getFilteredRowModel().rows.length} hàng tổng cộng)
       </div>
 
-      <div className="rounded-md border">
+      <div className="border rounded-md">
         <DataTable table={table} columns={columns} />
       </div>
-      <div className="flex items-center py-4 justify-between">
+      <div className="flex justify-between items-center py-4">
         <DataTablePagination table={table} />
       </div>
     </div>
