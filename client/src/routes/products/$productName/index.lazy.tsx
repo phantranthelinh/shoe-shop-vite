@@ -27,7 +27,7 @@ function ProductDetailPage() {
   };
 
   return (
-    <main className="md:py-20 w-full">
+    <main className="w-full">
       <MainLayout>
         <Wrapper>
           <section className="flex lg:flex-row flex-col gap-[50px] lg:gap-[100px] md:px-10">
