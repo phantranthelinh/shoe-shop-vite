@@ -11,6 +11,7 @@ import { Input } from "@/components/ui/input";
 import { useAuth } from "@/hooks/api/useAuth";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
+import { toast } from "sonner";
 import { z } from "zod";
 const schema = z.object({
   email: z.string().email().min(1).max(255),
@@ -25,15 +26,21 @@ const LoginForm = () => {
     },
   });
   const { control } = form;
-
   const { login } = useAuth();
   const onSubmit = (data: z.infer<typeof schema>) => {
-    login(data);
+    login(data, {
+      onSuccess: () => {
+        toast.success("Đăng nhập thành công!");
+      },
+      onError() {
+        toast.error("Đăng nhập thất bại, Tài khoản hoặc mật khẩu không đúng");
+      },
+    });
   };
   return (
-    <div className="w-full bg-white rounded-lg shadow dark:border md:mt-0 sm:max-w-md xl:p-0 dark:bg-gray-800 dark:border-gray-700">
-      <div className="p-6 space-y-4 md:space-y-6 sm:p-8">
-        <h1 className="text-xl font-bold leading-tight tracking-tight text-gray-900 md:text-2xl dark:text-white">
+    <div className="dark:border-gray-700 bg-white dark:bg-gray-800 shadow md:mt-0 xl:p-0 dark:border rounded-lg w-full sm:max-w-md">
+      <div className="space-y-4 md:space-y-6 p-6 sm:p-8">
+        <h1 className="font-bold text-gray-900 text-xl md:text-2xl dark:text-white leading-tight tracking-tight">
           Sign in
         </h1>
         <Form {...form}>
@@ -46,7 +53,7 @@ const LoginForm = () => {
               name="email"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                  <FormLabel className="block mb-2 font-medium text-gray-900 text-sm dark:text-white">
                     Email
                   </FormLabel>
                   <FormControl>
@@ -61,7 +68,7 @@ const LoginForm = () => {
               name="password"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                  <FormLabel className="block mb-2 font-medium text-gray-900 text-sm dark:text-white">
                     Password
                   </FormLabel>
                   <FormControl>
@@ -71,14 +78,14 @@ const LoginForm = () => {
                 </FormItem>
               )}
             />
-            <div className="flex items-center justify-between">
+            <div className="flex justify-between items-center">
               <div className="flex items-start">
                 <div className="flex items-center h-5">
                   <input
                     id="remember"
                     aria-describedby="remember"
                     type="checkbox"
-                    className="w-4 h-4 border border-gray-300 rounded bg-gray-50 focus:ring-3 focus:ring-primary-300 dark:bg-gray-700 dark:border-gray-600 dark:focus:ring-primary-600 dark:ring-offset-gray-800"
+                    className="border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-gray-700 border rounded focus:ring-3 focus:ring-primary-300 dark:focus:ring-primary-600 dark:ring-offset-gray-800 w-4 h-4"
                   />
                 </div>
                 <div className="ml-3 text-sm">
@@ -92,7 +99,7 @@ const LoginForm = () => {
               </div>
               <a
                 href="#"
-                className="text-sm font-medium text-primary-600 hover:underline dark:text-primary-500"
+                className="font-medium text-primary-600 text-sm dark:text-primary-500 hover:underline"
               >
                 Forgot password?
               </a>

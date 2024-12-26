@@ -13,7 +13,7 @@ import { createFileRoute } from '@tanstack/react-router'
 // Import Routes
 
 import { Route as rootRoute } from './routes/__root'
-import { Route as DashboardIndexImport } fr./routes/login/index.lazyrd/index'
+import { Route as DashboardIndexImport } from './routes/dashboard/index'
 
 // Create Virtual Routes
 

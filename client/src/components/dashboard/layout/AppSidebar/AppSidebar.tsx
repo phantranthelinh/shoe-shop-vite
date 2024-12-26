@@ -1,3 +1,4 @@
+import { Button } from "@/components/ui/button";
 import {
   Sidebar,
   SidebarContent,
@@ -9,6 +10,7 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
+import { useAuth } from "@/hooks/api/useAuth";
 import { Link } from "@tanstack/react-router";
 import { Box, Home, ShoppingCart, Table2 } from "lucide-react";
 
@@ -35,6 +37,7 @@ const items = [
   },
 ];
 export function AppSidebar() {
+  const { logout } = useAuth();
   return (
     <Sidebar>
       <SidebarHeader />
@@ -55,7 +58,9 @@ export function AppSidebar() {
         <SidebarGroup />
         <SidebarGroup />
       </SidebarContent>
-      <SidebarFooter />
+      <SidebarFooter>
+        <Button onClick={() => logout()}>Đăng xuất</Button>
+      </SidebarFooter>
     </Sidebar>
   );
 }
