@@ -14,6 +14,7 @@ import { createFileRoute } from '@tanstack/react-router'
 
 import { Route as rootRoute } from './routes/__root'
 import { Route as DashboardIndexImport } from './routes/dashboard/index'
+import { Route as CategoryCategoryNameImport } from './routes/category/$categoryName'
 
 // Create Virtual Routes
 
@@ -81,6 +82,12 @@ const DashboardIndexRoute = DashboardIndexImport.update({
   getParentRoute: () => rootRoute,
 } as any)
 
+const CategoryCategoryNameRoute = CategoryCategoryNameImport.update({
+  id: '/category/$categoryName',
+  path: '/category/$categoryName',
+  getParentRoute: () => rootRoute,
+} as any)
+
 const ProductsProductNameIndexLazyRoute =
   ProductsProductNameIndexLazyImport.update({
     id: '/products/$productName/',
@@ -120,6 +127,13 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexLazyImport
+      parentRoute: typeof rootRoute
+    }
+    '/category/$categoryName': {
+      id: '/category/$categoryName'
+      path: '/category/$categoryName'
+      fullPath: '/category/$categoryName'
+      preLoaderRoute: typeof CategoryCategoryNameImport
       parentRoute: typeof rootRoute
     }
     '/dashboard/': {
@@ -192,6 +206,7 @@ declare module '@tanstack/react-router' {
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexLazyRoute
+  '/category/$categoryName': typeof CategoryCategoryNameRoute
   '/dashboard': typeof DashboardIndexRoute
   '/about': typeof AboutIndexLazyRoute
   '/cart': typeof CartIndexLazyRoute
@@ -205,6 +220,7 @@ export interface FileRoutesByFullPath {
 
 export interface FileRoutesByTo {
   '/': typeof IndexLazyRoute
+  '/category/$categoryName': typeof CategoryCategoryNameRoute
   '/dashboard': typeof DashboardIndexRoute
   '/about': typeof AboutIndexLazyRoute
   '/cart': typeof CartIndexLazyRoute
@@ -219,6 +235,7 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRoute
   '/': typeof IndexLazyRoute
+  '/category/$categoryName': typeof CategoryCategoryNameRoute
   '/dashboard/': typeof DashboardIndexRoute
   '/about/': typeof AboutIndexLazyRoute
   '/cart/': typeof CartIndexLazyRoute
@@ -234,6 +251,7 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/category/$categoryName'
     | '/dashboard'
     | '/about'
     | '/cart'
@@ -246,6 +264,7 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/category/$categoryName'
     | '/dashboard'
     | '/about'
     | '/cart'
@@ -258,6 +277,7 @@ export interface FileRouteTypes {
   id:
     | '__root__'
     | '/'
+    | '/category/$categoryName'
     | '/dashboard/'
     | '/about/'
     | '/cart/'
@@ -272,6 +292,7 @@ export interface FileRouteTypes {
 
 export interface RootRouteChildren {
   IndexLazyRoute: typeof IndexLazyRoute
+  CategoryCategoryNameRoute: typeof CategoryCategoryNameRoute
   DashboardIndexRoute: typeof DashboardIndexRoute
   AboutIndexLazyRoute: typeof AboutIndexLazyRoute
   CartIndexLazyRoute: typeof CartIndexLazyRoute
@@ -285,6 +306,7 @@ export interface RootRouteChildren {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexLazyRoute: IndexLazyRoute,
+  CategoryCategoryNameRoute: CategoryCategoryNameRoute,
   DashboardIndexRoute: DashboardIndexRoute,
   AboutIndexLazyRoute: AboutIndexLazyRoute,
   CartIndexLazyRoute: CartIndexLazyRoute,
@@ -308,6 +330,7 @@ export const routeTree = rootRoute
       "filePath": "__root.tsx",
       "children": [
         "/",
+        "/category/$categoryName",
         "/dashboard/",
         "/about/",
         "/cart/",
@@ -321,6 +344,9 @@ export const routeTree = rootRoute
     },
     "/": {
       "filePath": "index.lazy.tsx"
+    },
+    "/category/$categoryName": {
+      "filePath": "category/$categoryName.tsx"
     },
     "/dashboard/": {
       "filePath": "dashboard/index.tsx"

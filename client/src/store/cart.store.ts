@@ -81,4 +81,5 @@ export const useCart = () => {
   return useCartStore();
 };
 
-export const { addToCart, updateCart, deleteFromCart, clearCart } = useCartStore.getState()
+export const { addToCart, updateCart, deleteFromCart, clearCart } =
+  useCartStore.getState();

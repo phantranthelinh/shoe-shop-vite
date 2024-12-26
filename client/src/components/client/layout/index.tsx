@@ -6,7 +6,7 @@ const MainLayout = ({ children }: { children: React.ReactNode }) => {
   return (
     <>
       <Header />
-      <div className="flex flex-col items-center justify-center">
+      <div className="flex flex-col justify-center items-center min-h-[calc(100vh-300px)]">
         {children}
       </div>
       <Footer />

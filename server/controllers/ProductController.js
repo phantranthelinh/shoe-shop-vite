@@ -1,4 +1,5 @@
 const Product = require("../models/ProductModel");
+const ProductCategory = require("../models/ProductCategoryModel");
 const asyncHandler = require("express-async-handler");
 
 const ProductController = {
@@ -22,10 +23,15 @@ const ProductController = {
       });
       if (product) {
         const createdProduct = await product.save();
-        res.status(200).json(createdProduct);
-      } else {
-        res.status(400);
-        throw new Error("Invalid product data");
+        const categoryToUpdate = await ProductCategory.findById(category);
+        if (categoryToUpdate) {
+          categoryToUpdate.products.push(createdProduct._id);
+          await categoryToUpdate.save();
+          res.status(200).json(createdProduct);
+        } else {
+          res.status(400);
+          throw new Error("Invalid product data");
+        }
       }
     }
   }),
@@ -50,6 +56,22 @@ const ProductController = {
     } catch (err) {
       res.status(404);
       throw new Error("Product not found");
+    }
+  }),
+
+  getProductByCategorySlug: asyncHandler(async (req, res) => {
+    try {
+      const { slug } = req.params;
+      const category = await ProductCategory.findOne({ slug }).populate(
+        "products"
+      );
+
+      res.status(200).json({
+        data: category,
+      });
+    } catch (err) {
+      res.status(404);
+      throw new Error(`Category with slug "${slug}" not found`);
     }
   }),
   getAllProducts: asyncHandler(async (req, res) => {
@@ -97,6 +119,26 @@ const ProductController = {
       product.countInStock = countInStock || product.countInStock;
       product.category = category || product.category;
 
+      const oldCategory = product.category;
+      const newCategory = category || product.category;
+      if (oldCategory !== newCategory) {
+        if (oldCategory) {
+          const oldCategoryDoc = await ProductCategory.findById(oldCategory);
+          if (oldCategoryDoc) {
+            oldCategoryDoc.products = oldCategoryDoc.products.filter(
+              (prodId) => prodId.toString() !== product._id.toString()
+            );
+            await oldCategoryDoc.save();
+          }
+        }
+        const newCategoryDoc = await ProductCategory.findById(newCategory);
+        if (newCategoryDoc) {
+          if (!newCategoryDoc.products.includes(product._id)) {
+            newCategoryDoc.products.push(product._id);
+            await newCategoryDoc.save();
+          }
+        }
+      }
       const updatedProduct = await product.save();
       res.status(200).json(updatedProduct);
     } else {
@@ -107,6 +149,15 @@ const ProductController = {
   deleteProduct: asyncHandler(async (req, res) => {
     const product = await Product.findById(req.params.id);
     if (product) {
+      const category = await ProductCategory.findOne({
+        name: product.category,
+      });
+      if (category) {
+        category.products = category.products.filter(
+          (prodId) => prodId.toString() !== product._id.toString()
+        );
+        await category.save();
+      }
       await product.remove();
       res.json({ message: "Product deleted" });
     } else {

@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 
 import { BiMenuAltRight } from "react-icons/bi";
 import { BsCart } from "react-icons/bs";
@@ -20,7 +20,6 @@ const Header = () => {
   const [showCatMenu, setShowCatMenu] = useState(false);
   const [show, setShow] = useState("translate-y-0");
   const [lastScrollY, setLastScrollY] = useState(0);
-
 
   const { cartItems } = useCart();
   const { wishlistItems } = useWishlist();
@@ -46,9 +45,12 @@ const Header = () => {
     return () => {
       window.removeEventListener("scroll", controlNavbar);
     };
-    // eslint-disable-next-line
   }, [lastScrollY]);
 
+  const totalCartItems = useMemo(
+    () => cartItems.reduce((total, item) => total + item.quantity, 0),
+    [cartItems.length]
+  );
   return (
     <header
       className={`w-full h-[50px] md:h-[80px] bg-white flex items-center justify-between z-20 sticky top-0 transition-transform duration-300 ${show}`}
@@ -104,7 +106,7 @@ const Header = () => {
               <BsCart className="text-[15px] md:text-[20px]" />
               {cartItems.length > 0 && (
                 <div className="top-1 left-5 md:left-7 absolute flex justify-center items-center bg-red-600 px-[2px] md:px-[5px] rounded-full min-w-[14px] md:min-w-[18px] h-[14px] md:h-[18px] text-[10px] text-white md:text-[12px]">
-                  {cartItems.length}
+                  {totalCartItems}
                 </div>
               )}
             </div>

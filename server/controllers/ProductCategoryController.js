@@ -1,6 +1,6 @@
 const asyncHandler = require("express-async-handler");
 
-const ProductCategory = require("../models/ProductCategory");
+const ProductCategory = require("../models/ProductCategoryModel");
 const ProductCategoryController = {
   getCategory: asyncHandler(async (req, res) => {
     const category = await ProductCategory.findById(req.params.id);
