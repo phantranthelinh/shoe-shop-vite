@@ -25,18 +25,18 @@ import { cn } from "@/lib/utils";
 import { toast } from "sonner";
 import UpdateCategory from "../UpdateCategory";
 import { Category } from "@/entities/category";
-
+import { useMutationCategory } from "@/hooks/api/categories/useMutationCategory";
 
 interface IProps {
   data?: Category[];
 }
 export function CategoryTable({ data = [] }: IProps) {
-  const { mutate } = useMutationProduct();
+  const { mutate } = useMutationCategory();
 
-  const handleDelete = async (category: Category) => {
+  const handleDelete = async (data: Category) => {
     const payload = {
       type: "delete",
-      category,
+      data,
     };
     mutate(payload as any, {
       onSuccess: () => {
@@ -108,19 +108,7 @@ export function CategoryTable({ data = [] }: IProps) {
       cell: ({ row }) => {
         return (
           <div className="flex gap-3">
-            <Sheet>
-              <SheetTrigger asChild>
-                <Button variant={"outline"} size="icon">
-                  <Pencil className="size-4" />
-                </Button>
-              </SheetTrigger>
-              <SheetContent>
-                <SheetHeader>
-                  <SheetTitle>Sửa sản phẩm</SheetTitle>
-                </SheetHeader>
-                <UpdateCategory id={row.original._id} data={row.original} />
-              </SheetContent>
-            </Sheet>
+            <UpdateCategory id={row.original._id} data={row.original} />
             <Button
               variant={"outline"}
               size="icon"

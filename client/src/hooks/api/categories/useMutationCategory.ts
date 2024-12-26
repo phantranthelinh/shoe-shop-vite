@@ -2,20 +2,17 @@ import { API } from "@/app/api";
 import QUERY_KEYS from "@/constants/query-key";
 import { TCategory } from "@/types/category.type";
 import { methodType } from "@/types/method.type";
-import {
-  useMutation,
-  useQueryClient,
-} from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 export const useMutationCategory = () => {
-  const queryClient = useQueryClient(); 
+  const queryClient = useQueryClient();
   const apiMethods = {
     create: (data: TCategory) => API.post("/api/categories", data),
     update: (data: TCategory) => {
-      const { id, ...productUpdate } = data;
-      return API.put(`/api/categories/${id}`, productUpdate);
+      const { id, ...rest } = data;
+      return API.put(`/api/categories/${data._id}`, rest);
     },
-    delete: (data: TCategory) => API.delete(`/api/categories/${data.id}`),
+    delete: (data: TCategory) => API.delete(`/api/categories/${data._id}`),
   };
 
   const mutationFn = async ({

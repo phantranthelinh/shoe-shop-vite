@@ -11,8 +11,8 @@ const ProductCategoryController = {
     res.json(categories);
   }),
   addCategory: asyncHandler(async (req, res) => {
-    const { name , description} = req.body;
-    const category = new ProductCategory({ name ,description});
+    const { name, description } = req.body;
+    const category = new ProductCategory({ name, description });
     const createdCategory = await category.save();
     res.status(200).json(createdCategory);
   }),

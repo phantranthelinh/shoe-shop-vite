@@ -13,14 +13,14 @@ import { createFileRoute } from '@tanstack/react-router'
 // Import Routes
 
 import { Route as rootRoute } from './routes/__root'
-import { Route as LoginIndexImport } from './routes/login/index'
-import { Route as DashboardIndexImport } from './routes/dashboard/index'
+import { Route as DashboardIndexImport } fr./routes/login/index.lazyrd/index'
 
 // Create Virtual Routes
 
 const IndexLazyImport = createFileRoute('/')()
 const ProductsIndexLazyImport = createFileRoute('/products/')()
 const PaymentFailedIndexLazyImport = createFileRoute('/payment-failed/')()
+const LoginIndexLazyImport = createFileRoute('/login/')()
 const CartIndexLazyImport = createFileRoute('/cart/')()
 const AboutIndexLazyImport = createFileRoute('/about/')()
 const ProductsProductNameIndexLazyImport = createFileRoute(
@@ -57,6 +57,12 @@ const PaymentFailedIndexLazyRoute = PaymentFailedIndexLazyImport.update({
   import('./routes/payment-failed/index.lazy').then((d) => d.Route),
 )
 
+const LoginIndexLazyRoute = LoginIndexLazyImport.update({
+  id: '/login/',
+  path: '/login/',
+  getParentRoute: () => rootRoute,
+} as any).lazy(() => import('./routes/login/index.lazy').then((d) => d.Route))
+
 const CartIndexLazyRoute = CartIndexLazyImport.update({
   id: '/cart/',
   path: '/cart/',
@@ -68,12 +74,6 @@ const AboutIndexLazyRoute = AboutIndexLazyImport.update({
   path: '/about/',
   getParentRoute: () => rootRoute,
 } as any).lazy(() => import('./routes/about/index.lazy').then((d) => d.Route))
-
-const LoginIndexRoute = LoginIndexImport.update({
-  id: '/login/',
-  path: '/login/',
-  getParentRoute: () => rootRoute,
-} as any)
 
 const DashboardIndexRoute = DashboardIndexImport.update({
   id: '/dashboard/',
@@ -129,13 +129,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DashboardIndexImport
       parentRoute: typeof rootRoute
     }
-    '/login/': {
-      id: '/login/'
-      path: '/login'
-      fullPath: '/login'
-      preLoaderRoute: typeof LoginIndexImport
-      parentRoute: typeof rootRoute
-    }
     '/about/': {
       id: '/about/'
       path: '/about'
@@ -148,6 +141,13 @@ declare module '@tanstack/react-router' {
       path: '/cart'
       fullPath: '/cart'
       preLoaderRoute: typeof CartIndexLazyImport
+      parentRoute: typeof rootRoute
+    }
+    '/login/': {
+      id: '/login/'
+      path: '/login'
+      fullPath: '/login'
+      preLoaderRoute: typeof LoginIndexLazyImport
       parentRoute: typeof rootRoute
     }
     '/payment-failed/': {
@@ -193,9 +193,9 @@ declare module '@tanstack/react-router' {
 export interface FileRoutesByFullPath {
   '/': typeof IndexLazyRoute
   '/dashboard': typeof DashboardIndexRoute
-  '/login': typeof LoginIndexRoute
   '/about': typeof AboutIndexLazyRoute
   '/cart': typeof CartIndexLazyRoute
+  '/login': typeof LoginIndexLazyRoute
   '/payment-failed': typeof PaymentFailedIndexLazyRoute
   '/products': typeof ProductsIndexLazyRoute
   '/dashboard/product-categories': typeof DashboardProductCategoriesIndexLazyRoute
@@ -206,9 +206,9 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexLazyRoute
   '/dashboard': typeof DashboardIndexRoute
-  '/login': typeof LoginIndexRoute
   '/about': typeof AboutIndexLazyRoute
   '/cart': typeof CartIndexLazyRoute
+  '/login': typeof LoginIndexLazyRoute
   '/payment-failed': typeof PaymentFailedIndexLazyRoute
   '/products': typeof ProductsIndexLazyRoute
   '/dashboard/product-categories': typeof DashboardProductCategoriesIndexLazyRoute
@@ -220,9 +220,9 @@ export interface FileRoutesById {
   __root__: typeof rootRoute
   '/': typeof IndexLazyRoute
   '/dashboard/': typeof DashboardIndexRoute
-  '/login/': typeof LoginIndexRoute
   '/about/': typeof AboutIndexLazyRoute
   '/cart/': typeof CartIndexLazyRoute
+  '/login/': typeof LoginIndexLazyRoute
   '/payment-failed/': typeof PaymentFailedIndexLazyRoute
   '/products/': typeof ProductsIndexLazyRoute
   '/dashboard/product-categories/': typeof DashboardProductCategoriesIndexLazyRoute
@@ -235,9 +235,9 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/dashboard'
-    | '/login'
     | '/about'
     | '/cart'
+    | '/login'
     | '/payment-failed'
     | '/products'
     | '/dashboard/product-categories'
@@ -247,9 +247,9 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/dashboard'
-    | '/login'
     | '/about'
     | '/cart'
+    | '/login'
     | '/payment-failed'
     | '/products'
     | '/dashboard/product-categories'
@@ -259,9 +259,9 @@ export interface FileRouteTypes {
     | '__root__'
     | '/'
     | '/dashboard/'
-    | '/login/'
     | '/about/'
     | '/cart/'
+    | '/login/'
     | '/payment-failed/'
     | '/products/'
     | '/dashboard/product-categories/'
@@ -273,9 +273,9 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexLazyRoute: typeof IndexLazyRoute
   DashboardIndexRoute: typeof DashboardIndexRoute
-  LoginIndexRoute: typeof LoginIndexRoute
   AboutIndexLazyRoute: typeof AboutIndexLazyRoute
   CartIndexLazyRoute: typeof CartIndexLazyRoute
+  LoginIndexLazyRoute: typeof LoginIndexLazyRoute
   PaymentFailedIndexLazyRoute: typeof PaymentFailedIndexLazyRoute
   ProductsIndexLazyRoute: typeof ProductsIndexLazyRoute
   DashboardProductCategoriesIndexLazyRoute: typeof DashboardProductCategoriesIndexLazyRoute
@@ -286,9 +286,9 @@ export interface RootRouteChildren {
 const rootRouteChildren: RootRouteChildren = {
   IndexLazyRoute: IndexLazyRoute,
   DashboardIndexRoute: DashboardIndexRoute,
-  LoginIndexRoute: LoginIndexRoute,
   AboutIndexLazyRoute: AboutIndexLazyRoute,
   CartIndexLazyRoute: CartIndexLazyRoute,
+  LoginIndexLazyRoute: LoginIndexLazyRoute,
   PaymentFailedIndexLazyRoute: PaymentFailedIndexLazyRoute,
   ProductsIndexLazyRoute: ProductsIndexLazyRoute,
   DashboardProductCategoriesIndexLazyRoute:
@@ -309,9 +309,9 @@ export const routeTree = rootRoute
       "children": [
         "/",
         "/dashboard/",
-        "/login/",
         "/about/",
         "/cart/",
+        "/login/",
         "/payment-failed/",
         "/products/",
         "/dashboard/product-categories/",
@@ -325,14 +325,14 @@ export const routeTree = rootRoute
     "/dashboard/": {
       "filePath": "dashboard/index.tsx"
     },
-    "/login/": {
-      "filePath": "login/index.tsx"
-    },
     "/about/": {
       "filePath": "about/index.lazy.tsx"
     },
     "/cart/": {
       "filePath": "cart/index.lazy.tsx"
+    },
+    "/login/": {
+      "filePath": "login/index.lazy.tsx"
     },
     "/payment-failed/": {
       "filePath": "payment-failed/index.lazy.tsx"

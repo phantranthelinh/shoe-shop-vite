@@ -27,7 +27,7 @@ function RouteComponent() {
   return (
     <MainLayout>
       <Wrapper>
-        <div className="mt-10 h-[calc(100vh-400px)]">
+        <div className="mt-10 h-[calc(100vh-200px)]">
           {cartItems.length > 0 ? (
             <>
               <div className="mx-auto mt-8 md:mt-0 max-w-[800px] text-center">
