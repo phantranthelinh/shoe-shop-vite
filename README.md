@@ -25,7 +25,7 @@ yarn install
 ```
 4. Navigate to the client directory
 ```shell
-cd server
+cd client
 ```
 3. Install dependendcies using Yarn:
 ```shell
