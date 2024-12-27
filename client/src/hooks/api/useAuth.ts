@@ -32,7 +32,6 @@ export const useAuth = () => {
 
   const logout = () => {
     removeFromLocal("token");
-
     navigate({
       to: "/login",
     });

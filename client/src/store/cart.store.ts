@@ -1,7 +1,7 @@
 import { create } from "zustand";
 
 interface CartItem {
-  id: string;
+  _id: string;
   quantity: number;
   totalPrice: number;
   price: number;
@@ -20,7 +20,7 @@ const useCartStore = create<CartState>((set, get) => ({
   cartItems: JSON.parse(localStorage.getItem("cartItems") || "[]"),
 
   addToCart: (item) => {
-    const existingItem = get().cartItems.find((p) => p.id === item.id);
+    const existingItem = get().cartItems.find((p) => p._id === item._id);
 
     if (existingItem) {
       const updatedItem = {
@@ -31,7 +31,7 @@ const useCartStore = create<CartState>((set, get) => ({
 
       set((state) => ({
         cartItems: state.cartItems.map((i) =>
-          i.id === item.id ? updatedItem : i
+          i._id === item._id ? updatedItem : i
         ),
       }));
     } else {
@@ -51,7 +51,7 @@ const useCartStore = create<CartState>((set, get) => ({
 
   updateCart: (id, key, val) => {
     const updatedCartItems = get().cartItems.map((item) => {
-      if (item.id === id) {
+      if (item._id === id) {
         const updatedItem = { ...item, [key]: val };
         if (key === "quantity") {
           updatedItem.totalPrice = updatedItem.price * val;
@@ -66,7 +66,7 @@ const useCartStore = create<CartState>((set, get) => ({
   },
 
   deleteFromCart: (id) => {
-    const updatedCartItems = get().cartItems.filter((item) => item.id !== id);
+    const updatedCartItems = get().cartItems.filter((item) => item._id !== id);
     set({ cartItems: updatedCartItems });
     localStorage.setItem("cartItems", JSON.stringify(updatedCartItems));
   },

@@ -83,4 +83,7 @@ body{
   body {
     @apply bg-background text-foreground;
     }
+  html {
+    font-family: "Mona Sans", serif;
+  }
 }

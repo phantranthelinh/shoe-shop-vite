@@ -49,7 +49,7 @@ const Header = () => {
 
   const totalCartItems = useMemo(
     () => cartItems.reduce((total, item) => total + item.quantity, 0),
-    [cartItems.length]
+    [cartItems]
   );
   return (
     <header

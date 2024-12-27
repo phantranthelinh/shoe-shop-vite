@@ -1,4 +1,3 @@
-import Hero from "@/components/client/Hero";
 import MainLayout from "@/components/client/layout";
 import ProductDetailsCarousel from "@/components/client/ProductDetailsCarousel";
 import RelatedProducts from "@/components/client/RelatedProducts";
@@ -21,9 +20,7 @@ function ProductDetailPage() {
   const { data: relatedProducts } = useGetRelatedProducts(productName);
 
   const handleAddingToCart = () => {
-    addToCart({
-      ...product,
-    });
+    addToCart(product);
   };
 
   return (

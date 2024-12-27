@@ -15,7 +15,8 @@ function RouteComponent() {
   const { cartItems } = useCart();
   const subTotal = useMemo(() => {
     return cartItems.reduce(
-      (total: any, value: { totalPrice: any }) => total + value.totalPrice,
+      (total: number, value: { totalPrice: number }) =>
+        total + value.totalPrice,
       0
     );
   }, [cartItems]);
@@ -23,7 +24,6 @@ function RouteComponent() {
   const handlePayment = async () => {
     setLoading(true);
   };
-
   return (
     <MainLayout>
       <Wrapper>
@@ -40,8 +40,8 @@ function RouteComponent() {
                 <h2 className="font-bold text-lg">
                   Các mặt hàng trong giỏ hàng
                 </h2>
-                {cartItems.map((item: { id: any }) => (
-                  <CartItem key={item.id} data={item} />
+                {cartItems.map((item: any) => (
+                  <CartItem key={item._id} data={item} />
                 ))}
               </section>
 
