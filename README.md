@@ -1,6 +1,5 @@
 ## Techstack <a name="techstack"></a>
 - Framework: [React](https://react.dev/)
-- Workspace Management: [NX](https://nx.dev/)
 - Styling: [Tailwind CSS](https://tailwindcss.com/)
 - State Management: [Zustand](https://github.com/pmndrs/zustand)
 - Forms: [React-Hook-Form](https://www.react-hook-form.com/)
@@ -30,4 +29,11 @@ cd client
 3. Install dependendcies using Yarn:
 ```shell
 yarn install
+```
+## Usage  <a name="usage"></a>
+### Running the Project
+- Start the application in development mode:
+```shell
+cd server && yarn dev
+cd client && yarn dev
 ```
