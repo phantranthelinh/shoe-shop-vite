@@ -34,7 +34,7 @@ function ContactPage() {
   });
   return (
     <MainLayout>
-      <div className="flex flex-row justify-center gap-10">
+      <div className="flex sm:flex-row flex-col sm:justify-center items-center gap-10 px-4 py-6">
         <div className="max-w-[360px]">
           <div className="flex items-center gap-2">
             <Link href="/">
