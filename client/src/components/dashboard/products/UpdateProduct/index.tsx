@@ -57,10 +57,11 @@ const UpdateProduct: React.FC<IProps> = ({ id, data }) => {
       price: data.price,
       description: data.description,
       countInStock: data.countInStock,
-      category: data.category,
+      category: data.category._id,
     },
   });
 
+  console.log(form.getValues());
   const { isVisible, toggleVisibility } = useVisibility(false);
 
   const { control } = form;

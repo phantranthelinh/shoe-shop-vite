@@ -40,7 +40,7 @@ const ProductController = {
       const product = await Product.findById(req.params.id).populate(
         "category"
       );
-      res.json(product);
+      res.status(200).json(product);
     } catch (err) {
       res.status(404);
       throw new Error("Product not found");
