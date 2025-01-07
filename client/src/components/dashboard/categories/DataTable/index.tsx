@@ -1,5 +1,5 @@
 import { ColumnDef } from "@tanstack/react-table";
-import { ChevronDown, Pencil, Trash2 } from "lucide-react";
+import { ChevronDown, Trash2 } from "lucide-react";
 
 import DataTable from "@/components/common/DataTable";
 import DataTablePagination from "@/components/common/DataTable/DataTablePagination";
@@ -12,20 +12,12 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Input } from "@/components/ui/input";
-import {
-  Sheet,
-  SheetContent,
-  SheetHeader,
-  SheetTitle,
-  SheetTrigger,
-} from "@/components/ui/sheet";
-import { useMutationProduct } from "@/hooks/api/products/useMutationProduct";
+import { Category } from "@/entities/category";
+import { useMutationCategory } from "@/hooks/api/categories/useMutationCategory";
 import useDataGrid from "@/hooks/useDataGrid";
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
 import UpdateCategory from "../UpdateCategory";
-import { Category } from "@/entities/category";
-import { useMutationCategory } from "@/hooks/api/categories/useMutationCategory";
 
 interface IProps {
   data?: Category[];

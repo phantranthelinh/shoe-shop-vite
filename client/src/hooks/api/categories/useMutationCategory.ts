@@ -10,7 +10,7 @@ export const useMutationCategory = () => {
     create: (data: TCategory) => API.post("/api/categories", data),
     update: (data: TCategory) => {
       const { id, ...rest } = data;
-      return API.put(`/api/categories/${data._id}`, rest);
+      return API.put(`/api/categories/${id}`, rest);
     },
     delete: (data: TCategory) => API.delete(`/api/categories/${data._id}`),
   };
