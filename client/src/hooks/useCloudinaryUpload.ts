@@ -1,89 +1,139 @@
-import { useState, useCallback } from 'react';
+import axios, { AxiosError } from "axios";
+import { useState, useCallback } from "react";
 
-type UploadState = {
-  uploading: boolean;
+// Types
+interface UploadState {
+  isUploading: boolean;
   uploadedUrl: string | null;
   error: string | null;
-};
+}
 
-type CloudinaryResponse = {
+interface CloudinaryResponse {
   secure_url: string;
-  // Add other Cloudinary response fields if needed
-};
+  public_id: string;
+  format: string;
+  bytes: number;
+}
 
-const INITIAL_STATE: UploadState = {
-  uploading: false,
-  uploadedUrl: null,
-  error: null,
-};
+interface CloudinaryConfig {
+  readonly CLOUD_NAME: string;
+  readonly UPLOAD_PRESET: string;
+  readonly MAX_FILE_SIZE: number; // in bytes
+  readonly ALLOWED_FORMATS: readonly string[];
+}
 
-// Fixed values
-const CLOUDINARY_CONFIG = {
+// Configuration
+const CLOUDINARY_CONFIG: CloudinaryConfig = {
   CLOUD_NAME: import.meta.env.VITE_CLOUDINARY_CLOUD_NAME,
   UPLOAD_PRESET: import.meta.env.VITE_CLOUDINARY_UPLOAD_PRESET,
-  API_KEY: import.meta.env.VITE_CLOUDINARY_API_KEY
+  MAX_FILE_SIZE: 5 * 1024 * 1024, // 5MB
+  ALLOWED_FORMATS: ["image/jpeg", "image/png", "image/webp"] as const,
 } as const;
 
-const useCloudinaryUpload = () => {
-  const [state, setState] = useState<UploadState>(INITIAL_STATE);
+// Custom error class
+class UploadError extends Error {
+  constructor(message: string) {
+    super(message);
+    this.name = "UploadError";
+  }
+}
 
-  const reset = useCallback(() => {
-    setState(INITIAL_STATE);
+const useCloudinaryUpload = () => {
+  const [state, setState] = useState<UploadState>({
+    isUploading: false,
+    uploadedUrl: null,
+    error: null,
+  });
+
+  const validateFile = useCallback((file: File): void => {
+    if (!file) {
+      throw new UploadError("No file selected");
+    }
+
+    if (!CLOUDINARY_CONFIG.ALLOWED_FORMATS.includes(file.type)) {
+      throw new UploadError(
+        `Invalid file format. Allowed formats: ${CLOUDINARY_CONFIG.ALLOWED_FORMATS.join(", ")}`
+      );
+    }
+
+    if (file.size > CLOUDINARY_CONFIG.MAX_FILE_SIZE) {
+      throw new UploadError(
+        `File size exceeds ${CLOUDINARY_CONFIG.MAX_FILE_SIZE / (1024 * 1024)}MB limit`
+      );
+    }
+  }, []);
+
+  const createFormData = useCallback((file: File): FormData => {
+    const formData = new FormData();
+    formData.append("file", file);
+    formData.append("upload_preset", CLOUDINARY_CONFIG.UPLOAD_PRESET);
+    return formData;
   }, []);
 
   const uploadImage = useCallback(
-    async (file: File): Promise<void> => {
-      if (!file) {
-        setState(prev => ({ ...prev, error: 'No file provided' }));
+    async (files: FileList | null): Promise<void> => {
+      if (!files?.length) {
+        setState((prev) => ({ ...prev, error: "No file selected" }));
         return;
       }
 
-      setState(prev => ({ ...prev, uploading: true, error: null }));
-
-      const formData = new FormData();
-      formData.append('file', file);
-      formData.append('upload_preset', CLOUDINARY_CONFIG.UPLOAD_PRESET);
-      formData.append('api_key', CLOUDINARY_CONFIG.API_KEY);
+      setState((prev) => ({ ...prev, isUploading: true, error: null }));
 
       try {
-        const response = await fetch(
-          `https://api.cloudinary.com/v1_1/${CLOUDINARY_CONFIG.CLOUD_NAME}/image/upload`,
+        const file = files[0];
+        validateFile(file);
+
+        const formData = createFormData(file);
+        const response = await axios.post<CloudinaryResponse>(
+          `https://api.cloudinary.com/v1_1/${CLOUDINARY_CONFIG.CLOUD_NAME}/upload`,
+          formData,
           {
-            method: 'POST',
-            body: formData,
+            headers: {
+              "Content-Type": "multipart/form-data",
+            },
           }
         );
 
-        if (!response.ok) {
-          throw new Error(`Upload failed with status: ${response.status}`);
-        }
-
-        const data = (await response.json()) as CloudinaryResponse;
-
-        setState(prev => ({
+        setState((prev) => ({
           ...prev,
-          uploadedUrl: data.secure_url,
-          error: null,
+          uploadedUrl: response.data.secure_url,
+          isUploading: false,
         }));
       } catch (error) {
-        setState(prev => ({
+        let errorMessage = "Failed to upload image";
+
+        if (error instanceof UploadError) {
+          errorMessage = error.message;
+        } else if (error instanceof AxiosError) {
+          errorMessage = error.response?.data?.message || error.message;
+        }
+
+        setState((prev) => ({
           ...prev,
-          error: error instanceof Error ? error.message : 'Upload failed',
-          uploadedUrl: null,
+          error: errorMessage,
+          isUploading: false,
         }));
-      } finally {
-        setState(prev => ({ ...prev, uploading: false }));
       }
     },
-    []
+    [validateFile, createFormData]
   );
 
+  const resetUpload = useCallback(() => {
+    setState({
+      isUploading: false,
+      uploadedUrl: null,
+      error: null,
+    });
+  }, []);
+
   return {
-    ...state,
     uploadImage,
-    reset,
-  };
+    resetUpload,
+    isUploading: state.isUploading,
+    error: state.error,
+    uploadedUrl: state.uploadedUrl,
+  } as const;
 };
 
-export type { UploadState };
+export type { UploadState, CloudinaryResponse, CloudinaryConfig };
 export default useCloudinaryUpload;

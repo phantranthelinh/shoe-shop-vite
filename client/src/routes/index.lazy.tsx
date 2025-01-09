@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import Hero from "@/components/client/Hero";
 import HeadingText from "@/components/client/Home/HeadingText";
 import ProductList from "@/components/client/Home/ProductList";
@@ -12,6 +13,7 @@ export const Route = createLazyFileRoute("/")({
 });
 function HomePage() {
   const { data, isLoading } = useGetProducts();
+
   return (
     <main>
       <MainLayout>

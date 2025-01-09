@@ -27,6 +27,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Category } from "@/entities/category";
 import { useGetCategories } from "@/hooks/api/categories/useGetCategories";
 import { useMutationProduct } from "@/hooks/api/products/useMutationProduct";
+import useCloudinaryUpload from "@/hooks/useCloudinaryUpload";
 import useVisibility from "@/hooks/useVisibility";
 import { methodType } from "@/types/method.type";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -85,6 +86,9 @@ const AddProduct = () => {
 
   const { data } = useGetCategories();
 
+  const { isUploading, uploadedUrl, uploadImage } = useCloudinaryUpload();
+
+  console.log({ isUploading, uploadedUrl });
   return (
     <Sheet open={isVisible} onOpenChange={toggleVisibility}>
       <SheetTrigger asChild>
@@ -184,7 +188,17 @@ const AddProduct = () => {
                       Hình ảnh
                     </FormLabel>
                     <FormControl>
-                      <Input placeholder="Hình ảnh" {...field} />
+                      <Input
+                        type="file"
+                        placeholder="Hình ảnh"
+                        {...field}
+                        onChange={(e) => {
+                          uploadImage(e.target.files);
+                          if (!isUploading) {
+                            field.onChange(uploadedUrl);
+                          }
+                        }}
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
