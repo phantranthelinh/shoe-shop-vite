@@ -42,7 +42,7 @@ function ProductDetailPage() {
                         <h6 className="mb-3">BÌNH LUẬN</h6>
                         {product?.reviews?.length === 0 && (
                           <Message variant={"alert-info mt-3"}>
-                            Không có đánh giá
+                            Không có đánh giá 1
                           </Message>
                         )}
                         {product?.reviews?.map((review: any) => {
