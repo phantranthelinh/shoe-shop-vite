@@ -38,7 +38,7 @@ const ProductController = {
   getAProduct: asyncHandler(async (req, res) => {
     try {
       const product = await Product.findById(req.params.id).populate(
-        "category"
+        "category review"
       );
       res.status(200).json(product);
     } catch (err) {

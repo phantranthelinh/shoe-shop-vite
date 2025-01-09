@@ -1,7 +1,11 @@
 import { API } from "@/app/api";
 import QUERY_KEYS from "@/constants/query-key";
 import { TUser } from "@/types/user.type";
-import { removeFromLocal, storeInLocal } from "@/utils/local-storage.util";
+import {
+  getFromLocal,
+  removeFromLocal,
+  storeInLocal,
+} from "@/utils/local-storage.util";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { useNavigate } from "@tanstack/react-router";
 
@@ -13,6 +17,7 @@ export const useAuth = () => {
       const response = await API.get("/api/users/profile");
       return response.data;
     },
+    enabled: !getFromLocal("token"),
     retry: 3,
   });
 
@@ -36,10 +41,12 @@ export const useAuth = () => {
       to: "/login",
     });
   };
+  const isLogged = getFromLocal("token") ? true : false;
   return {
     login,
     logout,
     isAuthenticated,
+    isLogged,
   };
 };
 export type AuthContext = ReturnType<typeof useAuth>;

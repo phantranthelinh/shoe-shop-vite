@@ -1,20 +1,10 @@
 import { StrictMode } from "react";
 import ReactDOM from "react-dom/client";
-import { RouterProvider, createRouter } from "@tanstack/react-router";
 import "./index.css";
 // Import the generated route tree
-import { routeTree } from "./routeTree.gen";
+import App from "./App";
 import ReactQueryProvider from "./providers/react-query";
-import { Toaster } from "@/components/ui/sonner";
-// Create a new router instance
-const router = createRouter({ routeTree });
 
-// Register the router instance for type safety
-declare module "@tanstack/react-router" {
-  interface Register {
-    router: typeof router;
-  }
-}
 // Render the app
 const rootElement = document.getElementById("root")!;
 if (!rootElement.innerHTML) {
@@ -22,8 +12,7 @@ if (!rootElement.innerHTML) {
   root.render(
     <StrictMode>
       <ReactQueryProvider>
-        <RouterProvider router={router} />
-        <Toaster />
+        <App />
       </ReactQueryProvider>
     </StrictMode>
   );

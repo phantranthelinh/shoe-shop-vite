@@ -94,7 +94,7 @@ function RouteComponent() {
                 className="bg-black hover:opacity-75 mt-8 mb-3 px-8 py-4 rounded-full font-medium text-lg text-white transition-transform active:scale-95"
                 href="/"
               >
-                Continue Shopping
+                Tiếp tục mua sắm
               </Link>
             </div>
           </>
