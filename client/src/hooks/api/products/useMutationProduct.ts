@@ -2,13 +2,10 @@ import { API } from "@/app/api";
 import QUERY_KEYS from "@/constants/query-key";
 import { methodType } from "@/types/method.type";
 import { TProduct } from "@/types/product.type";
-import {
-  useMutation,
-  useQueryClient,
-} from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 export const useMutationProduct = () => {
-  const queryClient = useQueryClient(); 
+  const queryClient = useQueryClient();
   const apiMethods = {
     create: (data: TProduct) => API.post("/api/products", data),
     update: (data: TProduct) => {

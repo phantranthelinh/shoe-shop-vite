@@ -1,8 +1,10 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { ColumnDef } from "@tanstack/react-table";
 import { ChevronDown, Trash2 } from "lucide-react";
 
 import DataTable from "@/components/common/DataTable";
 import DataTablePagination from "@/components/common/DataTable/DataTablePagination";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import {
@@ -18,7 +20,6 @@ import { cn } from "@/lib/utils";
 import { formatCurrencyVND } from "@/utils/format-currency";
 import { toast } from "sonner";
 import UpdateProduct from "../UpdateProduct";
-import { Badge } from "@/components/ui/badge";
 
 export type Review = {
   name: string;
@@ -144,7 +145,7 @@ export function ProductTable({ data }: IProps) {
       cell: ({ row }) => {
         return (
           <div className="flex gap-3">
-            <UpdateProduct id={row.original._id} data={row.original} />
+            <UpdateProduct productId={row.original._id} data={row.original} />
             <Button
               variant={"outline"}
               size="icon"

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -8,12 +9,6 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { useMutationProduct } from "@/hooks/api/products/useMutationProduct";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
-import { z } from "zod";
-import { Product } from "../table";
-import { methodType } from "@/types/method.type";
 import {
   Select,
   SelectContent,
@@ -21,18 +16,25 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 import { Category } from "@/entities/category";
 import { useGetCategories } from "@/hooks/api/categories/useGetCategories";
-import { toast } from "sonner";
+import { useMutationProduct } from "@/hooks/api/products/useMutationProduct";
 import useVisibility from "@/hooks/useVisibility";
-import {
-  Sheet,
-  SheetContent,
-  SheetHeader,
-  SheetTitle,
-  SheetTrigger,
-} from "@/components/ui/sheet";
+import { methodType } from "@/types/method.type";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { Pencil } from "lucide-react";
+import { useForm } from "react-hook-form";
+import { toast } from "sonner";
+import { z } from "zod";
+import { Product } from "../table";
+import { useGetProductById } from "@/hooks/api/products/useGetProductById";
 
 const schema = z.object({
   name: z.string(),
@@ -44,11 +46,11 @@ const schema = z.object({
 });
 
 interface IProps {
-  id: string;
+  productId: string;
   data: Product;
 }
 
-const UpdateProduct: React.FC<IProps> = ({ id, data }) => {
+const UpdateProduct: React.FC<IProps> = ({ productId, data }) => {
   const form = useForm({
     resolver: zodResolver(schema),
     defaultValues: {
@@ -61,7 +63,6 @@ const UpdateProduct: React.FC<IProps> = ({ id, data }) => {
     },
   });
 
-  console.log(form.getValues());
   const { isVisible, toggleVisibility } = useVisibility(false);
 
   const { control } = form;
@@ -71,7 +72,7 @@ const UpdateProduct: React.FC<IProps> = ({ id, data }) => {
   const onSubmit = (data: z.infer<typeof schema>) => {
     const payload = {
       type: "update" as methodType,
-      data: { ...data, id },
+      data: { ...data, id: productId },
     };
     updateProduct(payload as any, {
       onSuccess: () => {
@@ -87,17 +88,19 @@ const UpdateProduct: React.FC<IProps> = ({ id, data }) => {
   };
   const { data: categories } = useGetCategories();
 
+  const { data: product } = useGetProductById(productId);
+  console.log("🚀 ~ AddProduct ~ product:", productId, product);
   return (
-    <Sheet open={isVisible} onOpenChange={toggleVisibility}>
-      <SheetTrigger asChild>
+    <Dialog open={isVisible} onOpenChange={toggleVisibility}>
+      <DialogTrigger asChild>
         <Button variant={"outline"} size="icon">
           <Pencil className="size-4" />
         </Button>
-      </SheetTrigger>
-      <SheetContent>
-        <SheetHeader>
-          <SheetTitle>Sửa sản phẩm</SheetTitle>
-        </SheetHeader>
+      </DialogTrigger>
+      <DialogContent style={{ maxWidth: "50vw" }}>
+        <DialogHeader>
+          <DialogTitle>Sửa sản phẩm</DialogTitle>
+        </DialogHeader>
         <div className="gap-4 grid py-4">
           <Form {...form}>
             <form
@@ -227,8 +230,8 @@ const UpdateProduct: React.FC<IProps> = ({ id, data }) => {
             </form>
           </Form>
         </div>
-      </SheetContent>
-    </Sheet>
+      </DialogContent>
+    </Dialog>
   );
 };
 

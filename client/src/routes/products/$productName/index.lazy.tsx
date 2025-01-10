@@ -7,7 +7,7 @@ import { Loading } from "@/components/common/Loading";
 import Rating from "@/components/common/Rating";
 import Wrapper from "@/components/common/Wrapper";
 
-import { useGetProduct } from "@/hooks/api/products/useGetProduct";
+import { useGetProductBySlug } from "@/hooks/api/products/useGetProductBySlug";
 import { useGetRelatedProducts } from "@/hooks/api/products/useGetRelatedProducts";
 import { addToCart } from "@/store/cart.store";
 import { getDiscount } from "@/utils/helper";
@@ -19,7 +19,7 @@ export const Route = createLazyFileRoute("/products/$productName/")({
 
 function ProductDetailPage() {
   const { productName } = Route.useParams();
-  const { isLoading, data: product } = useGetProduct(productName);
+  const { isLoading, data: product } = useGetProductBySlug(productName);
   const { data: relatedProducts } = useGetRelatedProducts(productName);
   const handleAddingToCart = () => {
     addToCart(product);
