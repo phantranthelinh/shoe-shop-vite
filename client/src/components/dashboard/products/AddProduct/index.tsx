@@ -1,6 +1,14 @@
 import { Loading } from "@/components/common/Loading";
 import { Button } from "@/components/ui/button";
 import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import {
   Form,
   FormControl,
   FormField,
@@ -17,18 +25,9 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
 import { Textarea } from "@/components/ui/textarea";
 import { Category } from "@/entities/category";
 import { useGetCategories } from "@/hooks/api/categories/useGetCategories";
-import { useGetProductById } from "@/hooks/api/products/useGetProductById";
 import { useMutationProduct } from "@/hooks/api/products/useMutationProduct";
 import useCloudinaryUpload from "@/hooks/useCloudinaryUpload";
 import useVisibility from "@/hooks/useVisibility";
@@ -36,7 +35,6 @@ import { methodType } from "@/types/method.type";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { AxiosError } from "axios";
 import { Pencil, UploadIcon, X } from "lucide-react";
-import { useEffect } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { z } from "zod";
@@ -90,20 +88,6 @@ const AddProduct = ({ productId }: { productId?: string }) => {
   }
 
   const { data: categories } = useGetCategories();
-
-  const { data: product } = useGetProductById(productId);
-  console.log("🚀 ~ AddProduct ~ product:", productId, product);
-
-  useEffect(() => {
-    if (product) {
-      form.setValue("name", product.name);
-      form.setValue("image", product.image);
-      form.setValue("price", product.price);
-      form.setValue("description", product.description);
-      form.setValue("countInStock", product.countInStock);
-      form.setValue("category", product.category);
-    }
-  }, [form, product, productId]);
 
   const { isUploading, uploadedUrl, uploadImage } = useCloudinaryUpload();
 

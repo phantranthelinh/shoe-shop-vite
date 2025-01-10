@@ -20,6 +20,7 @@ import { cn } from "@/lib/utils";
 import { formatCurrencyVND } from "@/utils/format-currency";
 import { toast } from "sonner";
 import UpdateProduct from "../UpdateProduct";
+import { Category } from "@/entities/category";
 
 export type Review = {
   name: string;
@@ -39,7 +40,7 @@ export type Product = {
   numReviews: number;
   price: number;
   countInStock: number;
-  category: any;
+  category: Category;
 };
 interface IProps {
   data: Product[];
