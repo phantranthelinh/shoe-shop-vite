@@ -1,75 +1,45 @@
-import {
-  addToWishlist,
-  deleteFromWishlist,
-} from "@/store/slices/wishlistSlice";
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import { Product } from "@/entities/product";
+import { useCart } from "@/store/cart.store";
+import { useWishlist } from "@/store/wishlist.store";
 import { Link } from "@tanstack/react-router";
-import { IoMdHeart, IoMdHeartEmpty } from "react-icons/io";
-import { useDispatch } from "react-redux";
+import { HeartOff } from "lucide-react";
+import { Button } from "../ui/button";
+import { Card } from "../ui/card";
 
-const WishlistItem = ({ data }: { data: any }) => {
-  const item = data.attributes;
-  const dispatch = useDispatch();
-
+const WishlistItem = ({ data }: { data: Product }) => {
+  const { deleteFromWishlist } = useWishlist();
+  const { addToCart } = useCart();
   return (
-    <div className="flex py-5 gap-3 mf:gap-5  border-b last:border-b-0 ">
-      {/* Product Image */}
-      <Link
-        href={"/product/" + item.slug}
-        className="shrink-0 aspect-square w-[50px] md:w-[120px]"
-      >
-        <img
-          src={item?.thumbnail?.data?.attributes?.url}
-          alt={item.slug}
-          width={120}
-          height={120}
-        />
-      </Link>
-
-      {/* Product Details */}
-      <div className="w-full flex flex-col">
-        <div className="flex flex-col md:flex-row justify-between">
-          {/* Product Title */}
-          <h2 className="text-lg md:text-2xl font-semibold text-black/[.8]">
-            {item.name}
-          </h2>
-
-          {/* Product Subtitle Mobile */}
-          <h3 className="text-sm md:text-md font-medium text-black/[.5] block md:hidden">
-            {item.subtitle}
-          </h3>
-
-          {/* Product Price */}
-          <h3 className="text-sm md:text-md font-bold text-black/[.5] mt-2">
-            MRP: &#8377;{item.price}
-          </h3>
+    <Card className="flex flex-col p-4 border w-full min-h-[300px] transform duration-200 cursor-pointer">
+      <div className="relative flex justify-center bg-gray-100 rounded-lg">
+        <div
+          onClick={() => deleteFromWishlist(data._id as string)}
+          className="top-2 right-2 z-10 absolute flex justify-center items-center hover:bg-black/[0.05] p-1 border rounded-full cursor-pointer size-8"
+        >
+          <HeartOff className="size-5" />
         </div>
-
-        {/* Product Subtitle Desktop */}
-        <h3 className="text-sm md:text-md font-medium text-black/[.5] hidden md:block">
-          {item.subtitle}
-        </h3>
-        <div className=" flex flex-col md:flex-row  md:justify-between ">
-          <div className="text-sm">
-            {item.description.substring(0, item.description.indexOf(".") + 1)}
-          </div>
-          {/* Selectors  */}
-          <div className="flex items-center md:justify-center my-3 md:my-0  ">
-            {/* Delete Btn */}
-            {false ? (
-              <IoMdHeartEmpty
-                className="cursor-pointer text-black/[.5] hover:text-black text-[20px] md:text-[24px]"
-                onClick={() => dispatch(addToWishlist({ id: data.id }))}
-              />
-            ) : (
-              <IoMdHeart
-                className="cursor-pointer text-red-600  hover:text-red-700 text-[20px] md:text-[24px]"
-                onClick={() => dispatch(deleteFromWishlist({ id: data.id }))}
-              />
-            )}
-          </div>
-        </div>
+        <Link
+          className="bg-gray-100 rounded-lg w-full transform duration-200 cursor-pointer"
+          href={`/products/${data.slug}`}
+        >
+          <img
+            className="rounded-lg w-full h-[210px] object-contain"
+            alt={data.name}
+            src={data.image}
+          />
+        </Link>
       </div>
-    </div>
+      <section className="p-2 text-black/[.9]">
+        <Link href={`/products/${data.slug}`}>
+          <h2 className="line-clamp-1 font-medium text-lg">{data.name}</h2>
+        </Link>
+        <div className="flex justify-between">
+          <p className="mr-2 font-semibold text-lg">{data.price} VNĐ</p>
+        </div>
+      </section>
+      <Button onClick={() => addToCart(data as any)}>Thêm vào giỏ hàng</Button>
+    </Card>
   );
 };
 

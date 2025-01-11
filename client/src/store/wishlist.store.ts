@@ -1,32 +1,28 @@
+import { Product } from "@/entities/product";
 import { create } from "zustand";
 
-interface WishlistItem {
-  id: string;
-  [key: string]: any; // Allow for additional properties
-}
-
-interface WishlistState {
-  wishlistItems: WishlistItem[];
-  addToWishlist: (item: WishlistItem) => void;
+type WishlistState = {
+  wishlistItems: Product[];
+  addToWishlist: (item: Product) => void;
   deleteFromWishlist: (id: string) => void;
-}
+};
 
 const useWishlistStore = create<WishlistState>((set) => ({
   wishlistItems: [],
 
   addToWishlist: (item) => {
     set((state) => {
-      const existingItem = state.wishlistItems.find((p) => p.id === item.id);
+      const existingItem = state.wishlistItems.find((p) => p._id === item._id);
       if (!existingItem) {
         return { wishlistItems: [...state.wishlistItems, item] };
       }
-      return state; // No change if the item already exists
+      return state;
     });
   },
 
   deleteFromWishlist: (id) => {
     set((state) => ({
-      wishlistItems: state.wishlistItems.filter((item) => item.id !== id),
+      wishlistItems: state.wishlistItems.filter((item) => item._id !== id),
     }));
   },
 }));
@@ -37,4 +33,5 @@ export const useWishlist = () => {
 };
 
 // Exporting methods for direct use
-export const { addToWishlist, deleteFromWishlist } = useWishlistStore.getState();
+export const { addToWishlist, deleteFromWishlist } =
+  useWishlistStore.getState();
