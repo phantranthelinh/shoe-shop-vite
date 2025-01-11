@@ -1,3 +1,5 @@
+/* eslint-disable no-extra-boolean-cast */
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { navList } from "@/data";
 import { Category } from "@/entities/category";
 import { Link } from "@tanstack/react-router";
