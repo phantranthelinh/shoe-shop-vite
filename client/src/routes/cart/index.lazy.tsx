@@ -1,17 +1,17 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import CartItem from "@/components/client/CartItem";
 import MainLayout from "@/components/client/layout";
 import Wrapper from "@/components/common/Wrapper";
 import { useCart } from "@/store/cart.store";
 import { formatCurrencyVND } from "@/utils/format-currency";
 import { createLazyFileRoute, Link } from "@tanstack/react-router";
-import { useMemo, useState } from "react";
+import { useMemo } from "react";
 
 export const Route = createLazyFileRoute("/cart/")({
   component: RouteComponent,
 });
 
 function RouteComponent() {
-  const [loading, setLoading] = useState(false);
   const { cartItems } = useCart();
   const subTotal = useMemo(() => {
     return cartItems.reduce(
@@ -21,9 +21,6 @@ function RouteComponent() {
     );
   }, [cartItems]);
 
-  const handlePayment = async () => {
-    setLoading(true);
-  };
   return (
     <MainLayout>
       <Wrapper>
@@ -60,13 +57,12 @@ function RouteComponent() {
                   </div>
                 </div>
 
-                <button
-                  onClick={handlePayment}
+                <Link
+                  href="/checkout"
                   className="flex justify-center items-center gap-5 bg-black hover:opacity-75 mb-3 py-4 rounded-full w-full font-medium text-lg text-white transition-transform active:scale-95"
                 >
-                  Thanh toán
-                  {loading && <img src="/spinner.svg" />}
-                </button>
+                  Đặt hàng
+                </Link>
               </section>
             </div>
           </>
