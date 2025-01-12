@@ -168,21 +168,19 @@ const ProductController = {
 
   getRelatedProducts: asyncHandler(async (req, res) => {
     try {
-      const product = await Product.findOne({
-        slug: req.params.slug,
-      });
-      if (product) {
-        const products = await Product.find({
-          _id: { $ne: product.id },
-          category: product.category,
-        })
-          .populate("category")
-          .sort({ createdAt: -1 });
-        res.json(products);
+      const product = await Product.findOne({ slug: req.params.slug });
+      if (!product) {
+        throw new Error("Product not found");
       }
+      const relatedProducts = await Product.find({
+        _id: { $ne: product.id },
+        category: product.category,
+      })
+        .populate("category")
+        .sort({ createdAt: -1 });
+      res.status(200).json(relatedProducts);
     } catch (err) {
-      res.status(404);
-      throw new Error("Product not found");
+      res.status(404).json({ message: "Product not found" });
     }
   }),
 

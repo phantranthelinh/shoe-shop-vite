@@ -11,7 +11,6 @@ import { useGetProductBySlug } from "@/hooks/api/products/useGetProductBySlug";
 import { useGetRelatedProducts } from "@/hooks/api/products/useGetRelatedProducts";
 import { addToCart } from "@/store/cart.store";
 import { formatCurrencyVND } from "@/utils/format-currency";
-import { getDiscount } from "@/utils/helper";
 import { createLazyFileRoute } from "@tanstack/react-router";
 
 export const Route = createLazyFileRoute("/products/$productName/")({
@@ -26,6 +25,7 @@ function ProductDetailPage() {
     addToCart(product);
   };
 
+  console.log(relatedProducts);
   return (
     <main className="w-full">
       <MainLayout>
@@ -126,17 +126,6 @@ function ProductDetailPage() {
                     <p className="mr-2 font-semibold text-lg">
                       {formatCurrencyVND(product?.price)}
                     </p>
-                    {product?.original_price && (
-                      <>
-                        <p className="font-semibold text-base line-through">
-                          &#8377; {product?.original_price}
-                        </p>
-                        <p className="ml-auto font-medium text-base text-green-500">
-                          {getDiscount(product?.original_price, product?.price)}
-                          % off
-                        </p>
-                      </>
-                    )}
                   </div>
 
                   <p className="font-medium text-black/[.5] text-md">
@@ -166,7 +155,7 @@ function ProductDetailPage() {
             </>
           )}
 
-          {relatedProducts > 0 && (
+          {relatedProducts.length > 0 && (
             <RelatedProducts relatedProducts={relatedProducts} />
           )}
         </Wrapper>

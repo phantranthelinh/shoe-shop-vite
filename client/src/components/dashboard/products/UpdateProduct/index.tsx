@@ -92,7 +92,6 @@ const UpdateProduct: React.FC<IProps> = ({ productId, data }) => {
   };
   const { data: categories } = useGetCategories();
 
-  console.log(form.getValues());
   const handleOpenChange = () => {
     toggleVisibility();
     form.reset();
