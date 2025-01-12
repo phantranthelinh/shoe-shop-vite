@@ -11,6 +11,7 @@ import { useGetProductBySlug } from "@/hooks/api/products/useGetProductBySlug";
 import { useGetRelatedProducts } from "@/hooks/api/products/useGetRelatedProducts";
 import { addToCart } from "@/store/cart.store";
 import { formatCurrencyVND } from "@/utils/format-currency";
+import { parseHtml } from "@/utils/parse-html";
 import { createLazyFileRoute } from "@tanstack/react-router";
 
 export const Route = createLazyFileRoute("/products/$productName/")({
@@ -147,7 +148,7 @@ function ProductDetailPage() {
                       Chi tiết sản phẩm
                     </div>
                     <div className="mb-5 text-md markdown">
-                      <div>{product?.description}</div>
+                      <div>{parseHtml(product?.description)}</div>
                     </div>
                   </div>
                 </div>

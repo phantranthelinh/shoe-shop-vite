@@ -120,13 +120,7 @@ export function ProductTable({ data }: IProps) {
         );
       },
     },
-    {
-      accessorKey: "description",
-      header: "Mô tả sản phẩm",
-      cell: ({ row }) => {
-        return <div className="font-medium">{row.getValue("description")}</div>;
-      },
-    },
+
     {
       accessorKey: "price",
       header: "Giá sản phẩm",

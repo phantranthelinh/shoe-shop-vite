@@ -26,6 +26,7 @@ import { AxiosError } from "axios";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { z } from "zod";
+import { Plus } from "lucide-react";
 
 type FormFields = {
   name: string;
@@ -74,7 +75,10 @@ const AddCategory = () => {
   return (
     <Dialog open={isVisible} onOpenChange={toggleVisibility}>
       <DialogTrigger asChild>
-        <Button>Thêm danh mục sản phẩm</Button>
+        <Button>
+          Thêm
+          <Plus />
+        </Button>
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>

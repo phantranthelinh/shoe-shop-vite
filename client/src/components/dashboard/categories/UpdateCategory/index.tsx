@@ -74,7 +74,7 @@ const UpdateCategory: React.FC<IProps> = ({ id, data }) => {
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Sửa sản phẩm</DialogTitle>
+          <DialogTitle>Sửa danh mục</DialogTitle>
         </DialogHeader>
         <DialogDescription />
 

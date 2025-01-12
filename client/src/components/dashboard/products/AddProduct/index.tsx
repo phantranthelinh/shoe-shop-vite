@@ -34,7 +34,7 @@ import useVisibility from "@/hooks/useVisibility";
 import { methodType } from "@/types/method.type";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { AxiosError } from "axios";
-import { Pencil, UploadIcon, X } from "lucide-react";
+import { Pencil, Plus, UploadIcon, X } from "lucide-react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { z } from "zod";
@@ -104,7 +104,10 @@ const AddProduct = ({ productId }: { productId?: string }) => {
             <Pencil className="size-4" />
           </Button>
         ) : (
-          <Button>Thêm sản phẩm</Button>
+          <Button>
+            Thêm
+            <Plus />
+          </Button>
         )}
       </DialogTrigger>
       <DialogContent
