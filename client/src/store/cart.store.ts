@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { create } from "zustand";
 
 interface CartItem {
@@ -9,9 +10,11 @@ interface CartItem {
 
 interface CartState {
   cartItems: CartItem[];
+  selectedItems: CartItem[];
   addToCart: (item: Omit<CartItem, "quantity" | "totalPrice">) => void;
   updateCart: (id: string, key: keyof CartItem, val: number) => void;
   deleteFromCart: (id: string) => void;
+  addToSelectedItems: (item: any) => void;
   clearCart: () => void;
 }
 
@@ -75,11 +78,23 @@ const useCartStore = create<CartState>((set, get) => ({
     set({ cartItems: [] });
     localStorage.setItem("cartItems", JSON.stringify([]));
   },
+
+  addToSelectedItems: (item) => {
+    set((state) => ({
+      selectedItems: [...state.selectedItems, item],
+    }));
+  },
+  selectedItems: [],
 }));
 
 export const useCart = () => {
   return useCartStore();
 };
 
-export const { addToCart, updateCart, deleteFromCart, clearCart } =
-  useCartStore.getState();
+export const {
+  addToCart,
+  updateCart,
+  deleteFromCart,
+  clearCart,
+  addToSelectedItems,
+} = useCartStore.getState();

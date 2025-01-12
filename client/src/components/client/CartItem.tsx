@@ -1,12 +1,18 @@
-import { deleteFromCart, updateCart } from "@/store/cart.store";
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import {
+  addToSelectedItems,
+  deleteFromCart,
+  updateCart,
+} from "@/store/cart.store";
 import { formatCurrencyVND } from "@/utils/format-currency";
 import { Link } from "@tanstack/react-router";
 import { Minus, Plus, X } from "lucide-react";
 import { Button } from "../ui/button";
+import { Checkbox } from "../ui/checkbox";
 
 const CartItem = ({ data }: { data: any }) => {
   const updateCartItem = (e: any, key: any) => {
-    let payload = {
+    const payload = {
       key,
       val: key === "quantity" ? parseInt(e.target.value) : e.target.value,
       id: data._id,
@@ -16,6 +22,11 @@ const CartItem = ({ data }: { data: any }) => {
 
   return (
     <div className="flex gap-3 mf:gap-5 border-0 py-5 border-b last:border-b-0">
+      <Checkbox
+        onCheckedChange={() => {
+          addToSelectedItems(data);
+        }}
+      />
       <Link
         href={`/products/${data?.slug}`}
         className="flex border-2 w-[50px] md:w-[160px] h-[160px] aspect-square"

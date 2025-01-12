@@ -11,7 +11,7 @@ const QUERY_KEYS = {
   PRODUCTS_BY_CATEGORY: "products-by-category",
   PROVINCES: "provinces",
   DISTRICTS: "districts",
-  WARD: "wards",
+  WARDS: "wards",
 };
 
 export default QUERY_KEYS;
