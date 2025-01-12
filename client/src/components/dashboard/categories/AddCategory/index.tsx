@@ -10,12 +10,13 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import {
-  Sheet,
-  SheetContent,
-  SheetHeader,
-  SheetTitle,
-  SheetTrigger,
-} from "@/components/ui/sheet";
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 import { Textarea } from "@/components/ui/textarea";
 import { useMutationCategory } from "@/hooks/api/categories/useMutationCategory";
 import useVisibility from "@/hooks/useVisibility";
@@ -71,14 +72,15 @@ const AddCategory = () => {
   }
 
   return (
-    <Sheet open={isVisible} onOpenChange={toggleVisibility}>
-      <SheetTrigger asChild>
+    <Dialog open={isVisible} onOpenChange={toggleVisibility}>
+      <DialogTrigger asChild>
         <Button>Thêm danh mục sản phẩm</Button>
-      </SheetTrigger>
-      <SheetContent>
-        <SheetHeader>
-          <SheetTitle>Thêm danh mục sản phẩm</SheetTitle>
-        </SheetHeader>
+      </DialogTrigger>
+      <DialogContent>
+        <DialogHeader>
+          <DialogTitle>Thêm danh mục sản phẩm</DialogTitle>
+        </DialogHeader>
+        <DialogDescription />
         <div className="gap-4 grid py-4">
           <Form {...form}>
             <form
@@ -109,7 +111,10 @@ const AddCategory = () => {
                       Mô tả danh mục sản phẩm
                     </FormLabel>
                     <FormControl>
-                      <Textarea placeholder="Mô tả danh mục sản phẩm" {...field} />
+                      <Textarea
+                        placeholder="Mô tả danh mục sản phẩm"
+                        {...field}
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -120,8 +125,8 @@ const AddCategory = () => {
             </form>
           </Form>
         </div>
-      </SheetContent>
-    </Sheet>
+      </DialogContent>
+    </Dialog>
   );
 };
 

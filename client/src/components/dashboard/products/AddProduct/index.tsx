@@ -1,4 +1,5 @@
 import { Loading } from "@/components/common/Loading";
+import Tiptap from "@/components/common/Tiptap";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -25,7 +26,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Textarea } from "@/components/ui/textarea";
 import { Category } from "@/entities/category";
 import { useGetCategories } from "@/hooks/api/categories/useGetCategories";
 import { useMutationProduct } from "@/hooks/api/products/useMutationProduct";
@@ -108,7 +108,7 @@ const AddProduct = ({ productId }: { productId?: string }) => {
         )}
       </DialogTrigger>
       <DialogContent
-        style={{ maxWidth: "50vw" }}
+        style={{ maxWidth: "70vw" }}
         className="p-0"
         onInteractOutside={(e) => {
           e.preventDefault();
@@ -151,7 +151,7 @@ const AddProduct = ({ productId }: { productId?: string }) => {
                         Mô tả sản phẩm
                       </FormLabel>
                       <FormControl>
-                        <Textarea placeholder="Mô tả sản phẩm" {...field} />
+                        <Tiptap {...field} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>

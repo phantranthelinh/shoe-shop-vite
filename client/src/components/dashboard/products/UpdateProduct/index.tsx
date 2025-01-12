@@ -26,7 +26,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Textarea } from "@/components/ui/textarea";
 import { Category } from "@/entities/category";
 import { useGetCategories } from "@/hooks/api/categories/useGetCategories";
 import { useMutationProduct } from "@/hooks/api/products/useMutationProduct";
@@ -39,6 +38,7 @@ import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { z } from "zod";
 import { Product } from "../table";
+import Tiptap from "@/components/common/Tiptap";
 
 const schema = z.object({
   name: z.string(),
@@ -110,7 +110,7 @@ const UpdateProduct: React.FC<IProps> = ({ productId, data }) => {
         )}
       </DialogTrigger>
       <DialogContent
-        style={{ maxWidth: "50vw" }}
+        style={{ maxWidth: "70vw" }}
         className="p-0"
         onInteractOutside={(e) => {
           e.preventDefault();
@@ -151,7 +151,7 @@ const UpdateProduct: React.FC<IProps> = ({ productId, data }) => {
                         Mô tả sản phẩm
                       </FormLabel>
                       <FormControl>
-                        <Textarea placeholder="Mô tả sản phẩm" {...field} />
+                        <Tiptap {...field} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>

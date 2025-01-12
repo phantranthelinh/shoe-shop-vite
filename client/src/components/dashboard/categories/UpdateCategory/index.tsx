@@ -10,12 +10,13 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import {
-  Sheet,
-  SheetContent,
-  SheetHeader,
-  SheetTitle,
-  SheetTrigger,
-} from "@/components/ui/sheet";
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 import { Textarea } from "@/components/ui/textarea";
 import { Category } from "@/entities/category";
 import { useMutationCategory } from "@/hooks/api/categories/useMutationCategory";
@@ -65,16 +66,18 @@ const UpdateCategory: React.FC<IProps> = ({ id, data }) => {
   };
 
   return (
-    <Sheet open={isVisible} onOpenChange={toggleVisibility}>
-      <SheetTrigger asChild>
+    <Dialog open={isVisible} onOpenChange={toggleVisibility}>
+      <DialogTrigger asChild>
         <Button variant={"outline"} size="icon">
           <Pencil className="size-4" />
         </Button>
-      </SheetTrigger>
-      <SheetContent>
-        <SheetHeader>
-          <SheetTitle>Sửa sản phẩm</SheetTitle>
-        </SheetHeader>
+      </DialogTrigger>
+      <DialogContent>
+        <DialogHeader>
+          <DialogTitle>Sửa sản phẩm</DialogTitle>
+        </DialogHeader>
+        <DialogDescription />
+
         <div className="gap-4 grid py-4">
           <Form {...form}>
             <form
@@ -116,8 +119,8 @@ const UpdateCategory: React.FC<IProps> = ({ id, data }) => {
             </form>
           </Form>
         </div>
-      </SheetContent>
-    </Sheet>
+      </DialogContent>
+    </Dialog>
   );
 };
 
