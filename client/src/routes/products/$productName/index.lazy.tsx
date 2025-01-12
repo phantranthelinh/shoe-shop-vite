@@ -155,7 +155,7 @@ function ProductDetailPage() {
             </>
           )}
 
-          {relatedProducts.length > 0 && (
+          {relatedProducts?.length > 0 && (
             <RelatedProducts relatedProducts={relatedProducts} />
           )}
         </Wrapper>

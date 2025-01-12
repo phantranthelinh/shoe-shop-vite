@@ -24,7 +24,7 @@ const RelatedProducts = ({
         className="w-full"
       >
         <CarouselContent>
-          {relatedProducts.map((prod, index) => (
+          {relatedProducts?.map((prod, index) => (
             <CarouselItem key={index} className="md:basis-1/3 lg:basis-1/5">
               <ProductCard key={prod.id} data={prod} />
             </CarouselItem>

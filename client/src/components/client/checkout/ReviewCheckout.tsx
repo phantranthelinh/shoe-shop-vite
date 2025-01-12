@@ -24,7 +24,7 @@ const ReviewCheckout = ({ form }: any) => {
       <ScrollArea className="h-[260px]">
         <div className="flex flex-col gap-5 mt-6">
           {cartItems.map((item: any) => (
-            <div className="flex gap-3 mf:gap-5 border-0">
+            <div className="flex gap-3 mf:gap-5 border-0" key={item?._id}>
               <div className="flex justify-center items-center border rounded-lg w-[100px] h-[100px]">
                 <img src={item?.image} alt={item?.name} className="w-full" />
               </div>
