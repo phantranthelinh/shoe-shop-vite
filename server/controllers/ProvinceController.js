@@ -6,18 +6,29 @@ const ProvinceController = {
     res.json(provinces);
   },
   getDistricts: async (req, res) => {
-    const { province_code } = req.params;
-    const districts = await District.find({
-      province_code: province_code,
-    });
-    res.status(200).json(districts);
+    const { provinceId } = req.params;
+    try {
+      const province = await Province.findById(provinceId);
+      const districts = await District.find({
+        province_code: province.code,
+      });
+      res.status(200).json(districts);
+    } catch (error) {
+      res.status(400).json(error);
+    }
   },
   getWards: async (req, res) => {
-    const { district_code } = req.params;
-    const wards = await Ward.find({
-      district_code: district_code,
-    });
-    res.status(200).json(wards);
+    const { districtId } = req.params;
+
+    try {
+      const district = await District.findById(districtId);
+      const wards = await Ward.find({
+        district_code: district.code,
+      });
+      res.status(200).json(wards);
+    } catch (error) {
+      res.status(400).json(error);
+    }
   },
 };
 

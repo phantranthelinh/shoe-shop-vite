@@ -19,15 +19,19 @@ const saveProvinceToDb = async () => {
       for (let province of dataObj) {
         for (let district of province.districts) {
           for (let ward of district.wards) {
-            wards.push({
-              ...ward,
-              district_code: district.code,
+            if (!wards.some((w) => w.code === ward.code)) {
+              wards.push({
+                ...ward,
+                district_code: district.code,
+              });
+            }
+          }
+          if (!districts.some((d) => d.code === district.code)) {
+            districts.push({
+              ...district,
+              province_code: province.code,
             });
           }
-          districts.push({
-            ...district,
-            province_code: province.code,
-          });
         }
         provinces.push(province);
       }
