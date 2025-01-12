@@ -1,4 +1,4 @@
-const mongoose = require("mongoose")
+const mongoose = require("mongoose");
 const orderSchema = mongoose.Schema(
   {
     user: {
@@ -8,10 +8,10 @@ const orderSchema = mongoose.Schema(
     },
     orderItems: [
       {
-        name: {type: String, required: true},
-        qty: {type: Number, required: true},
-        image: {type: String, required: true},
-        price: {type: Number, required: true},
+        name: { type: String, required: true },
+        qty: { type: Number, required: true },
+        image: { type: String, required: true },
+        price: { type: Number, required: true },
         product: {
           type: mongoose.Schema.Types.ObjectId,
           required: true,
@@ -20,9 +20,22 @@ const orderSchema = mongoose.Schema(
       },
     ],
     shippingAddress: {
-      address: {type: String, required: true},
-      city: {type: String, required: true},
-      country: {type: String, required: true},
+      address: { type: String, required: true },
+      province: {
+        type: mongoose.Schema.Types.ObjectId,
+        required: true,
+        ref: "Province",
+      },
+      district: {
+        type: mongoose.Schema.Types.ObjectId,
+        required: true,
+        ref: "District",
+      },
+      ward: {
+        type: mongoose.Schema.Types.ObjectId,
+        required: true,
+        ref: "Ward",
+      },
     },
     paymentMethod: {
       type: String,
@@ -59,8 +72,8 @@ const orderSchema = mongoose.Schema(
   {
     timestamps: true,
   }
-)
+);
 
-const Order = mongoose.model("Order", orderSchema)
+const Order = mongoose.model("Order", orderSchema);
 
-module.exports = Order
+module.exports = Order;
