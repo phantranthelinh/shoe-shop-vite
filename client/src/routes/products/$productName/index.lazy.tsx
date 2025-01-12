@@ -10,6 +10,7 @@ import Wrapper from "@/components/common/Wrapper";
 import { useGetProductBySlug } from "@/hooks/api/products/useGetProductBySlug";
 import { useGetRelatedProducts } from "@/hooks/api/products/useGetRelatedProducts";
 import { addToCart } from "@/store/cart.store";
+import { formatCurrencyVND } from "@/utils/format-currency";
 import { getDiscount } from "@/utils/helper";
 import { createLazyFileRoute } from "@tanstack/react-router";
 
@@ -123,7 +124,7 @@ function ProductDetailPage() {
 
                   <div className="flex items-center">
                     <p className="mr-2 font-semibold text-lg">
-                      {product?.price} VNĐ
+                      {formatCurrencyVND(product?.price)}
                     </p>
                     {product?.original_price && (
                       <>

@@ -6,6 +6,7 @@ import { Link } from "@tanstack/react-router";
 import { HeartOff } from "lucide-react";
 import { Button } from "../ui/button";
 import { Card } from "../ui/card";
+import { formatCurrencyVND } from "@/utils/format-currency";
 
 const WishlistItem = ({ data }: { data: Product }) => {
   const { deleteFromWishlist } = useWishlist();
@@ -35,7 +36,9 @@ const WishlistItem = ({ data }: { data: Product }) => {
           <h2 className="line-clamp-1 font-medium text-lg">{data.name}</h2>
         </Link>
         <div className="flex justify-between">
-          <p className="mr-2 font-semibold text-lg">{data.price} VNĐ</p>
+          <p className="mr-2 font-semibold text-lg">
+            {formatCurrencyVND(data.price)}
+          </p>
         </div>
       </section>
       <Button onClick={() => addToCart(data as any)}>Thêm vào giỏ hàng</Button>

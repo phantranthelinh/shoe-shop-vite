@@ -4,6 +4,7 @@ import { Link } from "@tanstack/react-router";
 import { Heart } from "lucide-react";
 import { Card } from "../ui/card";
 import { useWishlist } from "@/store/wishlist.store";
+import { formatCurrencyVND } from "@/utils/format-currency";
 
 const ProductCard = ({ data }: { data: Product }) => {
   const imageUrl = data.image || IMAGE_PLACEHOLDER;
@@ -35,17 +36,9 @@ const ProductCard = ({ data }: { data: Product }) => {
           <h2 className="line-clamp-1 font-medium text-lg">{data.name}</h2>
         </Link>
         <div className="flex justify-between">
-          <p className="mr-2 font-semibold text-lg">{data.price} VNĐ</p>
-          {/* {data.original_price && (
-              <>
-                <p className="font-medium text-base line-through">
-                  {data.original_price} VNĐ
-                </p>
-                <p className="ml-auto font-medium text-base text-green-500">
-                  {getDiscount(data.original_price, data.price)}% off
-                </p>
-              </>
-            )} */}
+          <p className="mr-2 font-semibold text-lg">
+            {formatCurrencyVND(data.price)}
+          </p>
         </div>
       </section>
     </Card>

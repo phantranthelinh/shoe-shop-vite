@@ -1,6 +1,3 @@
 export function formatCurrencyVND(amount: number) {
-  return new Intl.NumberFormat("vi-VN", {
-    style: "currency",
-    currency: "VND",
-  }).format(amount);
+  return amount.toLocaleString("it-IT", { style: "currency", currency: "VND" });
 }

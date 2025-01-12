@@ -2,6 +2,7 @@
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { useCart } from "@/store/cart.store";
+import { formatCurrencyVND } from "@/utils/format-currency";
 import { useMemo } from "react";
 
 const ReviewCheckout = ({ form }: any) => {
@@ -30,7 +31,9 @@ const ReviewCheckout = ({ form }: any) => {
               <div className="flex flex-col justify-between w-full">
                 <div className="font-bold text-base">{item?.name}</div>
                 <div>x {item.quantity}</div>
-                <div className="font-bold text-md">{item?.price}</div>
+                <div className="font-bold text-md">
+                  {formatCurrencyVND(item?.price)}
+                </div>
               </div>
             </div>
           ))}
@@ -40,15 +43,15 @@ const ReviewCheckout = ({ form }: any) => {
       <div className="flex flex-col gap-3 mt-6 text-base">
         <div className="flex justify-between">
           <span>Tổng cộng </span>
-          <span className="font-bold">{subTotal} VNĐ</span>
+          <span className="font-bold">{formatCurrencyVND(subTotal)}</span>
         </div>
         <div className="flex justify-between">
           <span>Phí vận chuyển</span>
-          <span className="font-bold">0 VNĐ</span>
+          <span className="font-bold">0</span>
         </div>
         <div className="flex justify-between">
           <span>Thành tiền</span>
-          <span className="font-bold">{subTotal} VNĐ</span>
+          <span className="font-bold">{formatCurrencyVND(subTotal)}</span>
         </div>
       </div>
       <Button onClick={handleCheckout} className="mt-4 w-full">
