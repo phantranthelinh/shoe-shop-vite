@@ -26,6 +26,19 @@ API.interceptors.request.use(
   (error) => Promise.reject(error)
 );
 
+API.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    if (error.response.status === 401) {
+      window.location.href = "/login";
+    } else if (error.response.status === 500) {
+      // handle server error
+    } else {
+      // handle other errors
+    }
+    return Promise.reject(error);
+  }
+);
 export { API };
 
 export type ApiResponse<T = unknown> = {
