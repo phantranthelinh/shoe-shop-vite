@@ -11,14 +11,13 @@ import { useNavigate } from "@tanstack/react-router";
 
 export const useAuth = () => {
   const navigate = useNavigate();
-  const { isSuccess: isAuthenticated } = useQuery({
+  const { isSuccess: isAuthenticated, data } = useQuery({
     queryKey: [QUERY_KEYS.AUTH],
     queryFn: async () => {
       const response = await API.get("/api/users/profile");
       return response.data;
     },
-    enabled: !getFromLocal("token"),
-    retry: 3,
+    retry: 5,
   });
 
   const { mutate: login } = useMutation({
@@ -28,7 +27,26 @@ export const useAuth = () => {
     },
     onSuccess: (data) => {
       storeInLocal("token", data.token);
-      navigate({ to: "/dashboard" });
+      if (data.isAdmin) {
+        navigate({ to: "/dashboard" });
+      } else {
+        navigate({ to: "/" });
+      }
+    },
+    onError: (error) => {
+      console.log(error);
+    },
+  });
+
+  const { mutate: register } = useMutation({
+    mutationFn: async (data: TUser) => {
+      const response = await API.post("/api/users/register", data);
+      return response.data;
+    },
+    onSuccess: () => {
+      navigate({
+        to: "/",
+      });
     },
     onError: (error) => {
       console.log(error);
@@ -47,6 +65,8 @@ export const useAuth = () => {
     logout,
     isAuthenticated,
     isLogged,
+    data,
+    register,
   };
 };
 export type AuthContext = ReturnType<typeof useAuth>;

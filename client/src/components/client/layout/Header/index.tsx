@@ -11,9 +11,18 @@ import Menu from "@/components/client/Menu";
 import MenuMobile from "@/components/client/MenuMobile";
 import { Loading } from "@/components/common/Loading";
 import Wrapper from "@/components/common/Wrapper";
+import { buttonVariants } from "@/components/ui/button";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import { useGetCategories } from "@/hooks/api/categories/useGetCategories";
+import { useAuth } from "@/hooks/api/useAuth";
 import { useCart } from "@/store/cart.store";
 import { useWishlist } from "@/store/wishlist.store";
+import { LogOut, User, UserRound } from "lucide-react";
 
 const Header = () => {
   const [mobileMenu, setMobileMenu] = useState(false);
@@ -25,6 +34,8 @@ const Header = () => {
   const { wishlistItems } = useWishlist();
 
   const { data, isLoading } = useGetCategories();
+
+  const { isAuthenticated, data: userInfo, logout } = useAuth();
 
   const controlNavbar = () => {
     if (window.scrollY > 200) {
@@ -127,6 +138,49 @@ const Header = () => {
               />
             )}
           </div>
+
+          {isAuthenticated ? (
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <div className="flex items-center gap-2">
+                  <UserRound />
+                  {userInfo?.name}
+                </div>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent className="space-y-4">
+                <DropdownMenuItem className="flex items-center gap-2 focus:ring-0 focus:ring-offset-0 cursor-pointer">
+                  <User />
+                  Tài khoản
+                </DropdownMenuItem>
+                <DropdownMenuItem
+                  className="flex items-center gap-2 focus:ring-0 focus:ring-offset-0 cursor-pointer"
+                  onClick={logout}
+                >
+                  <LogOut />
+                  Đăng xuất
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          ) : (
+            <div className="space-x-2">
+              <Link
+                href="/login"
+                className={buttonVariants({
+                  variant: "default",
+                })}
+              >
+                Đăng nhập
+              </Link>
+              <Link
+                href="/register"
+                className={buttonVariants({
+                  variant: "outline",
+                })}
+              >
+                Đăng ký
+              </Link>
+            </div>
+          )}
         </section>
       </Wrapper>
     </header>
