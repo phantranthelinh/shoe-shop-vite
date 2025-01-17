@@ -10,6 +10,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { useAuth } from "@/hooks/api/useAuth";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { Link } from "@tanstack/react-router";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { z } from "zod";
@@ -115,6 +116,12 @@ const LoginForm = () => {
             >
               Đăng nhập
             </Button>
+            <div className="mt-0">
+              Bạn chưa có tài khoản?
+              <Link className="ml-2" to="/register">
+                Đăng ký
+              </Link>
+            </div>
           </form>
         </Form>
       </div>

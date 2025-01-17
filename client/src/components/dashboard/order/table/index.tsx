@@ -14,13 +14,13 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Input } from "@/components/ui/input";
+import { Category } from "@/entities/category";
 import { useMutationProduct } from "@/hooks/api/products/useMutationProduct";
 import useDataGrid from "@/hooks/useDataGrid";
 import { cn } from "@/lib/utils";
 import { formatCurrencyVND } from "@/utils/format-currency";
 import { toast } from "sonner";
-import UpdateProduct from "../UpdateProduct";
-import { Category } from "@/entities/category";
+import OrderDetail from "../detail";
 
 export type Review = {
   name: string;
@@ -45,7 +45,7 @@ export type Product = {
 interface IProps {
   data: Product[];
 }
-export function ProductTable({ data }: IProps) {
+export function OrderTable({ data }: IProps) {
   const { mutate } = useMutationProduct();
 
   const handleDelete = async (product: Product) => {
@@ -87,14 +87,14 @@ export function ProductTable({ data }: IProps) {
     },
     {
       accessorKey: "name",
-      header: "Tên sản phẩm",
+      header: "Mã đơn hàng",
       cell: ({ row }) => (
         <div className="capitalize">{row.getValue("name")}</div>
       ),
     },
     {
       accessorKey: "image",
-      header: "Hình ảnh",
+      header: "Tên khách hàng",
       cell: ({ row }) => (
         <div className="lowercase">
           <img
@@ -106,8 +106,8 @@ export function ProductTable({ data }: IProps) {
       ),
     },
     {
-      accessorKey: "category",
-      header: "Danh mục sản phẩm",
+      accessorKey: "totalPrice",
+      header: "Tổng tiền",
       cell: ({ row }) => {
         return (
           <div className="font-medium">
@@ -122,8 +122,8 @@ export function ProductTable({ data }: IProps) {
     },
 
     {
-      accessorKey: "price",
-      header: "Giá sản phẩm",
+      accessorKey: "isPaid",
+      header: "Trạng thái",
       cell: ({ row }) => {
         const amount = parseFloat(row.getValue("price"));
 
@@ -134,13 +134,35 @@ export function ProductTable({ data }: IProps) {
     },
 
     {
+      accessorKey: "isDelivered",
+      header: "Vận chuyển",
+      cell: ({ row }) => {
+        const amount = parseFloat(row.getValue("price"));
+
+        const formatted = formatCurrencyVND(amount);
+
+        return <div className="font-medium">{formatted}</div>;
+      },
+    },
+    {
+      accessorKey: "createdAt",
+      header: "Ngày đặt hàng",
+      cell: ({ row }) => {
+        const amount = parseFloat(row.getValue("price"));
+
+        const formatted = formatCurrencyVND(amount);
+
+        return <div className="font-medium">{formatted}</div>;
+      },
+    },
+    {
       id: "actions",
       enableHiding: false,
       header: () => <div className="">Thao tác</div>,
       cell: ({ row }) => {
         return (
           <div className="flex gap-3">
-            <UpdateProduct productId={row.original._id} data={row.original} />
+            <OrderDetail productId={row.original._id} data={row.original} />
             <Button
               variant={"outline"}
               size="icon"

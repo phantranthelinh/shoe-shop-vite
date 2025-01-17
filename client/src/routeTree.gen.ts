@@ -38,6 +38,7 @@ const DashboardProductsIndexLazyImport = createFileRoute(
 const DashboardProductCategoriesIndexLazyImport = createFileRoute(
   '/dashboard/product-categories/',
 )()
+const DashboardOrdersIndexLazyImport = createFileRoute('/dashboard/orders/')()
 
 // Create/Update Routes
 
@@ -161,6 +162,14 @@ const DashboardProductCategoriesIndexLazyRoute =
     ),
   )
 
+const DashboardOrdersIndexLazyRoute = DashboardOrdersIndexLazyImport.update({
+  id: '/dashboard/orders/',
+  path: '/dashboard/orders/',
+  getParentRoute: () => rootRoute,
+} as any).lazy(() =>
+  import('./routes/dashboard/orders/index.lazy').then((d) => d.Route),
+)
+
 // Populate the FileRoutesByPath interface
 
 declare module '@tanstack/react-router' {
@@ -256,6 +265,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof WishlistIndexLazyImport
       parentRoute: typeof rootRoute
     }
+    '/dashboard/orders/': {
+      id: '/dashboard/orders/'
+      path: '/dashboard/orders'
+      fullPath: '/dashboard/orders'
+      preLoaderRoute: typeof DashboardOrdersIndexLazyImport
+      parentRoute: typeof rootRoute
+    }
     '/dashboard/product-categories/': {
       id: '/dashboard/product-categories/'
       path: '/dashboard/product-categories'
@@ -296,6 +312,7 @@ export interface FileRoutesByFullPath {
   '/products': typeof ProductsIndexLazyRoute
   '/register': typeof RegisterIndexLazyRoute
   '/wishlist': typeof WishlistIndexLazyRoute
+  '/dashboard/orders': typeof DashboardOrdersIndexLazyRoute
   '/dashboard/product-categories': typeof DashboardProductCategoriesIndexLazyRoute
   '/dashboard/products': typeof DashboardProductsIndexLazyRoute
   '/products/$productName': typeof ProductsProductNameIndexLazyRoute
@@ -315,6 +332,7 @@ export interface FileRoutesByTo {
   '/products': typeof ProductsIndexLazyRoute
   '/register': typeof RegisterIndexLazyRoute
   '/wishlist': typeof WishlistIndexLazyRoute
+  '/dashboard/orders': typeof DashboardOrdersIndexLazyRoute
   '/dashboard/product-categories': typeof DashboardProductCategoriesIndexLazyRoute
   '/dashboard/products': typeof DashboardProductsIndexLazyRoute
   '/products/$productName': typeof ProductsProductNameIndexLazyRoute
@@ -335,6 +353,7 @@ export interface FileRoutesById {
   '/products/': typeof ProductsIndexLazyRoute
   '/register/': typeof RegisterIndexLazyRoute
   '/wishlist/': typeof WishlistIndexLazyRoute
+  '/dashboard/orders/': typeof DashboardOrdersIndexLazyRoute
   '/dashboard/product-categories/': typeof DashboardProductCategoriesIndexLazyRoute
   '/dashboard/products/': typeof DashboardProductsIndexLazyRoute
   '/products/$productName/': typeof ProductsProductNameIndexLazyRoute
@@ -356,6 +375,7 @@ export interface FileRouteTypes {
     | '/products'
     | '/register'
     | '/wishlist'
+    | '/dashboard/orders'
     | '/dashboard/product-categories'
     | '/dashboard/products'
     | '/products/$productName'
@@ -374,6 +394,7 @@ export interface FileRouteTypes {
     | '/products'
     | '/register'
     | '/wishlist'
+    | '/dashboard/orders'
     | '/dashboard/product-categories'
     | '/dashboard/products'
     | '/products/$productName'
@@ -392,6 +413,7 @@ export interface FileRouteTypes {
     | '/products/'
     | '/register/'
     | '/wishlist/'
+    | '/dashboard/orders/'
     | '/dashboard/product-categories/'
     | '/dashboard/products/'
     | '/products/$productName/'
@@ -412,6 +434,7 @@ export interface RootRouteChildren {
   ProductsIndexLazyRoute: typeof ProductsIndexLazyRoute
   RegisterIndexLazyRoute: typeof RegisterIndexLazyRoute
   WishlistIndexLazyRoute: typeof WishlistIndexLazyRoute
+  DashboardOrdersIndexLazyRoute: typeof DashboardOrdersIndexLazyRoute
   DashboardProductCategoriesIndexLazyRoute: typeof DashboardProductCategoriesIndexLazyRoute
   DashboardProductsIndexLazyRoute: typeof DashboardProductsIndexLazyRoute
   ProductsProductNameIndexLazyRoute: typeof ProductsProductNameIndexLazyRoute
@@ -431,6 +454,7 @@ const rootRouteChildren: RootRouteChildren = {
   ProductsIndexLazyRoute: ProductsIndexLazyRoute,
   RegisterIndexLazyRoute: RegisterIndexLazyRoute,
   WishlistIndexLazyRoute: WishlistIndexLazyRoute,
+  DashboardOrdersIndexLazyRoute: DashboardOrdersIndexLazyRoute,
   DashboardProductCategoriesIndexLazyRoute:
     DashboardProductCategoriesIndexLazyRoute,
   DashboardProductsIndexLazyRoute: DashboardProductsIndexLazyRoute,
@@ -460,6 +484,7 @@ export const routeTree = rootRoute
         "/products/",
         "/register/",
         "/wishlist/",
+        "/dashboard/orders/",
         "/dashboard/product-categories/",
         "/dashboard/products/",
         "/products/$productName/"
@@ -503,6 +528,9 @@ export const routeTree = rootRoute
     },
     "/wishlist/": {
       "filePath": "wishlist/index.lazy.tsx"
+    },
+    "/dashboard/orders/": {
+      "filePath": "dashboard/orders/index.lazy.tsx"
     },
     "/dashboard/product-categories/": {
       "filePath": "dashboard/product-categories/index.lazy.tsx"

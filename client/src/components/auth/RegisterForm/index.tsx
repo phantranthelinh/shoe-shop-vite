@@ -36,7 +36,7 @@ const RegisterForm = () => {
       onSuccess: () => {
         toast.success("Đăng ký thành công!");
         router.navigate({
-          to: "/",
+          to: "/login",
         });
       },
       onError() {

@@ -18,6 +18,7 @@ export const useAuth = () => {
       return response.data;
     },
     retry: 5,
+    enabled: !!getFromLocal("token"),
   });
 
   const { mutate: login } = useMutation({

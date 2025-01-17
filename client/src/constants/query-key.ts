@@ -12,6 +12,7 @@ const QUERY_KEYS = {
   PROVINCES: "provinces",
   DISTRICTS: "districts",
   WARDS: "wards",
+  ORDERS: "orders",
 };
 
 export default QUERY_KEYS;
