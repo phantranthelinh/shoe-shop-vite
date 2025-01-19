@@ -1,18 +1,19 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-import CartItem from "@/components/client/CartItem";
+import CartList from "@/components/client/CartList";
 import MainLayout from "@/components/client/layout";
 import Wrapper from "@/components/common/Wrapper";
-import { useCart } from "@/store/cart.store";
+import { Button, buttonVariants } from "@/components/ui/button";
+import { resetCheckoutItems, useCart } from "@/store/cart.store";
 import { formatCurrencyVND } from "@/utils/format-currency";
-import { createLazyFileRoute, Link } from "@tanstack/react-router";
-import { useMemo } from "react";
+import { createLazyFileRoute, Link, useNavigate } from "@tanstack/react-router";
+import { ChevronLeft } from "lucide-react";
+import { useEffect, useMemo } from "react";
 
 export const Route = createLazyFileRoute("/cart/")({
   component: RouteComponent,
 });
 
 function RouteComponent() {
-  const { cartItems } = useCart();
+  const { cartItems, checkoutItems } = useCart();
   const subTotal = useMemo(() => {
     return cartItems.reduce(
       (total: number, value: { totalPrice: number }) =>
@@ -21,48 +22,68 @@ function RouteComponent() {
     );
   }, [cartItems]);
 
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    resetCheckoutItems();
+  }, []);
   return (
     <MainLayout>
       <Wrapper>
         {cartItems.length > 0 ? (
           <>
-            <div className="mx-auto mt-8 md:mt-0 max-w-[800px] text-center">
+            <div className="mx-auto mt-8 md:mt-0">
               <div className="mb-5 font-semibold text-[28px] md:text-[32px] leading-tight">
-                Giỏ hàng
+                Giỏ hàng của bạn
               </div>
             </div>
 
-            <div className="flex lg:flex-row flex-col gap-12 py-10">
+            <div className="flex flex-col gap-12 py-10">
               <section className="flex-[2]">
-                <h2 className="font-bold text-lg">
-                  Các mặt hàng trong giỏ hàng
-                </h2>
-                {cartItems.map((item: any) => (
-                  <CartItem key={item._id} data={item} />
-                ))}
+                <CartList cartItems={cartItems} />
               </section>
-
               <section className="flex-1">
-                <h2 className="font-bold text-lg">Tóm tắt</h2>
-                <div className="bg-black/[0.05] my-5 p-5 rounded-xl">
-                  <div className="flex justify-between">
-                    <div className="font-medium text-base text-black md:text-xl uppercase">
-                      Tổng cộng {formatCurrencyVND(subTotal)}
-                    </div>
-                    <div className="font-medium text-base text-black md:text-xl"></div>
-                  </div>
+                <div className="flex justify-between">
+                  <Link
+                    to="/"
+                    className={buttonVariants({
+                      variant: "secondary",
+                    })}
+                  >
+                    <ChevronLeft />
+                    Tiếp tục mua hàng
+                  </Link>
+                  <div className="rounded-xl">
+                    <table className="border-collapse border-gray-300 mb-4 border w-full">
+                      <tbody>
+                        <tr>
+                          <td className="border-gray-300 p-2 border text-base text-black md:text-lg">
+                            Tạm tính
+                          </td>
+                          <td className="border-gray-300 p-2 border text-base text-black md:text-lg">
+                            {formatCurrencyVND(subTotal)}
+                          </td>
+                        </tr>
+                        <tr>
+                          <td className="border-gray-300 p-2 border text-base text-black md:text-lg">
+                            Tổng tiền thanh toán
+                          </td>
+                          <td className="border-gray-300 p-2 border text-base text-black md:text-lg">
+                            {formatCurrencyVND(subTotal)}
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
 
-                  <div className="mt-5 py-5 border-t text-sm md:text-base">
-                    Đã bao gồm thuế và phí VAT
+                    <Button
+                      onClick={() => navigate({ to: "/checkout" })}
+                      disabled={checkoutItems.length === 0}
+                      className="flex justify-center items-center gap-5 bg-black hover:opacity-75 mb-3 py-4 w-full font-medium text-lg text-white transition-transform active:scale-95"
+                    >
+                      Tiến hàng thanh toán
+                    </Button>
                   </div>
                 </div>
-
-                <Link
-                  href="/checkout"
-                  className="flex justify-center items-center gap-5 bg-black hover:opacity-75 mb-3 py-4 rounded-full w-full font-medium text-lg text-white transition-transform active:scale-95"
-                >
-                  Đặt hàng
-                </Link>
               </section>
             </div>
           </>

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 export type Product = {
   _id?: string;
   id?: string;
@@ -12,4 +13,5 @@ export type Product = {
   createdAt?: string;
   updatedAt?: string;
   slug: string;
+  quantity?: number;
 };

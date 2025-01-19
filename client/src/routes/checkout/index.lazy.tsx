@@ -1,6 +1,5 @@
 import CheckoutForm from "@/components/client/checkout/CheckoutForm";
 import ReviewCheckout from "@/components/client/checkout/ReviewCheckout";
-import MainLayout from "@/components/client/layout";
 import { useAuth } from "@/hooks/api/useAuth";
 import { CheckoutSchema } from "@/lib/schemas/checkout";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -23,6 +22,7 @@ function CheckoutPage() {
       district: "",
       ward: "",
       address: "",
+      paymentMethod: "cod",
     },
   });
 
@@ -37,11 +37,11 @@ function CheckoutPage() {
   }, [data]);
 
   return (
-    <MainLayout classNames="justify-start">
-      <div className="place-content-center grid grid-cols-1 lg:grid-cols-2 w-full max-w-screen-xl">
+    <div className="flex justify-center items-center h-[100vh]">
+      <div className="flex w-full max-w-screen-xl">
         <CheckoutForm form={form} />
         <ReviewCheckout form={form} />
       </div>
-    </MainLayout>
+    </div>
   );
 }

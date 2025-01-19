@@ -13,6 +13,7 @@ const QUERY_KEYS = {
   DISTRICTS: "districts",
   WARDS: "wards",
   ORDERS: "orders",
+  OVERVIEW: "overview",
 };
 
 export default QUERY_KEYS;

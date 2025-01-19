@@ -1,12 +1,13 @@
 import { z } from "zod";
 
+const message = "Vui lòng nhập vào trường này";
 export const CheckoutSchema = z.object({
-  customerName: z.string().min(1),
-  email: z.string().email().min(1),
-  phoneNumber: z.string().min(1),
-  province: z.string().min(1),
-  district: z.string().min(1),
-  ward: z.string().min(1),
+  customerName: z.string().min(1, { message }),
+  email: z.string().email().min(1, { message }),
+  phoneNumber: z.string().min(1, { message }),
+  province: z.string().min(1, { message: "Vui lòng chọn tỉnh" }),
+  district: z.string().min(1, { message: "Vui lòng chọn huyện" }),
+  ward: z.string().min(1, { message: "Vui lòng chọn xã" }),
   address: z.string(),
 });
 

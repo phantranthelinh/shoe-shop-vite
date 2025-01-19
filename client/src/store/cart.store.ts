@@ -10,18 +10,19 @@ interface CartItem {
 
 interface CartState {
   cartItems: CartItem[];
-  selectedItems: CartItem[];
+  checkoutItems: CartItem[];
   addToCart: (item: Omit<CartItem, "quantity" | "totalPrice">) => void;
   updateCart: (id: string, key: keyof CartItem, val: number) => void;
   deleteFromCart: (id: string) => void;
-  addToSelectedItems: (item: any) => void;
+  addCheckoutItems: (item: any) => void;
   clearCart: () => void;
+  resetCheckoutItems: () => void;
 }
 
 // Create the Zustand store
 const useCartStore = create<CartState>((set, get) => ({
   cartItems: JSON.parse(localStorage.getItem("cartItems") || "[]"),
-
+  checkoutItems: [],
   addToCart: (item) => {
     const existingItem = get().cartItems.find((p) => p._id === item._id);
 
@@ -79,12 +80,31 @@ const useCartStore = create<CartState>((set, get) => ({
     localStorage.setItem("cartItems", JSON.stringify([]));
   },
 
-  addToSelectedItems: (item) => {
-    set((state) => ({
-      selectedItems: [...state.selectedItems, item],
-    }));
+  addCheckoutItems: (item) => {
+    set((state) => {
+      const existingItemIndex = state.checkoutItems.findIndex(
+        (existingItem) => existingItem._id === item._id
+      );
+      if (existingItemIndex !== -1) {
+        return {
+          checkoutItems: state.checkoutItems.map((existingItem, index) => {
+            if (index === existingItemIndex) {
+              return {
+                ...existingItem,
+                quantity: (existingItem.quantity || 1) + 1,
+              };
+            }
+            return existingItem;
+          }),
+        };
+      } else {
+        return {
+          checkoutItems: [...state.checkoutItems, { ...item, quantity: 1 }],
+        };
+      }
+    });
   },
-  selectedItems: [],
+  resetCheckoutItems: () => set({ checkoutItems: [] }),
 }));
 
 export const useCart = () => {
@@ -96,5 +116,6 @@ export const {
   updateCart,
   deleteFromCart,
   clearCart,
-  addToSelectedItems,
+  addCheckoutItems,
+  resetCheckoutItems,
 } = useCartStore.getState();
