@@ -13,6 +13,7 @@ const QUERY_KEYS = {
   DISTRICTS: "districts",
   WARDS: "wards",
   ORDERS: "orders",
+  ORDERS_USER: "orders-user",
   OVERVIEW: "overview",
 };
 

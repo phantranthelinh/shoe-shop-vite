@@ -8,6 +8,7 @@ const cors = require("cors");
 const { notFound, errorHandler } = require("./middleware/Error");
 const userRouter = require("./routes/userRoute");
 const provinceRouter = require("./routes/provinceRoute");
+const overviewRouter = require("./routes/overviewRoute");
 
 const { createAdminUser, saveProvinceToDb } = require("./infra");
 dotenv.config();
@@ -19,6 +20,7 @@ app.use(express.json());
 const bodyParser = require("body-parser");
 
 app.use(bodyParser.urlencoded({ extended: true }));
+
 // API
 
 app.use("/api/products", productRouter);
@@ -27,6 +29,7 @@ app.use("/api/categories", categoryRouter);
 app.use("/api/users", userRouter);
 app.use("/api/orders", orderRouter);
 app.use("/api/provinces", provinceRouter);
+app.use("/api/overviews", overviewRouter);
 
 // createAdminUser();
 // saveProvinceToDb();

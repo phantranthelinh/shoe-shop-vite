@@ -6,7 +6,7 @@ import {
 } from "@/store/cart.store";
 import { formatCurrencyVND } from "@/utils/format-currency";
 import { Link } from "@tanstack/react-router";
-import { Minus, Plus, X } from "lucide-react";
+import { Minus, Plus, Trash2 } from "lucide-react";
 import { Button } from "../ui/button";
 import { Checkbox } from "../ui/checkbox";
 
@@ -114,7 +114,7 @@ const CartItem = ({ data }: { data: any }) => {
           variant="outline"
           onClick={() => deleteFromCart(data?._id)}
         >
-          <X size={6} />
+          <Trash2 className="text-red-500 size-5" />
         </Button>
       </td>
     </tr>

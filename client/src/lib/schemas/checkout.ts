@@ -9,6 +9,7 @@ export const CheckoutSchema = z.object({
   district: z.string().min(1, { message: "Vui lòng chọn huyện" }),
   ward: z.string().min(1, { message: "Vui lòng chọn xã" }),
   address: z.string(),
+  paymentMethod: z.string(),
 });
 
 export type CheckoutSchemaType = z.infer<typeof CheckoutSchema>;

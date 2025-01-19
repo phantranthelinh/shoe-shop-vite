@@ -8,7 +8,13 @@ import { Link } from "@tanstack/react-router";
 import { ChevronLeft } from "lucide-react";
 import { useMemo } from "react";
 
-const ReviewCheckout = ({ form }: any) => {
+const ReviewCheckout = ({
+  handleCheckout,
+  form,
+}: {
+  handleCheckout: (data: any) => void;
+  form: any;
+}) => {
   const { checkoutItems } = useCart();
   const subTotal = useMemo(() => {
     return checkoutItems.reduce(
@@ -18,9 +24,6 @@ const ReviewCheckout = ({ form }: any) => {
     );
   }, [checkoutItems]);
 
-  const handleCheckout = () => {
-    console.log(form.getValues());
-  };
   return (
     <div className="bg-slate-50 px-6 py-4 w-[600px] h-full">
       <h6 className="mb-2 text-lg">{`Đơn hàng (${checkoutItems.length}) sản phẩm`}</h6>
@@ -66,7 +69,10 @@ const ReviewCheckout = ({ form }: any) => {
           <ChevronLeft className="size-4" />
           Quay về giỏ hàng
         </Link>
-        <Button onClick={handleCheckout} className="mt-4">
+        <Button
+          onClick={form.handleSubmit(handleCheckout(checkoutItems))}
+          className="mt-4"
+        >
           Đặt hàng
         </Button>
       </div>

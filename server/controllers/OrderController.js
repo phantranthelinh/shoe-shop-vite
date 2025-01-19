@@ -4,15 +4,7 @@ const asyncHandler = require("express-async-handler");
 const OrderController = {
   // CREATE ORDER
   create: asyncHandler(async (req, res) => {
-    const {
-      orderItems,
-      shippingAddress,
-      paymentMethod,
-      itemsPrice,
-      taxPrice,
-      shippingPrice,
-      totalPrice,
-    } = req.body;
+    const { orderItems, shippingInfo, paymentMethod, totalPrice } = req.body;
 
     if (orderItems && orderItems.length === 0) {
       res.status(400);
@@ -21,12 +13,8 @@ const OrderController = {
       const newOrder = new Order({
         orderItems,
         user: req.user._id,
-        shippingAddress,
+        shippingInfo,
         paymentMethod,
-        itemsPrice,
-        taxPrice,
-
-        shippingPrice,
         totalPrice,
       });
 
@@ -54,7 +42,6 @@ const OrderController = {
     if (order) {
       order.isPaid = true;
       order.paidAt = Date.now();
- 
 
       const updateOrder = await order.save();
       res.json(updateOrder);
@@ -71,9 +58,11 @@ const OrderController = {
     res.json(orders);
   }),
 
-  userOrders: asyncHandler(async (req, res) => {
-    const orders = await Order.find({ user: req.user._id }).sort({ _id: -1 });
-    res.json(orders);
+  getOrderByUser: asyncHandler(async (req, res) => {
+    console.log(req.user);
+
+    // const orders = await Order.find({ user: req.user._id }).sort({ _id: -1 });
+    // res.json(orders);
   }),
 
   deleteAllOrder: asyncHandler(async (req, res) => {
@@ -92,7 +81,7 @@ const OrderController = {
       res.status(404);
       throw new Error("Order not found");
     }
-  })
+  }),
 };
 
 module.exports = OrderController;

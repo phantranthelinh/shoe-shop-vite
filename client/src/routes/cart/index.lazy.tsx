@@ -2,17 +2,17 @@ import CartList from "@/components/client/CartList";
 import MainLayout from "@/components/client/layout";
 import Wrapper from "@/components/common/Wrapper";
 import { Button, buttonVariants } from "@/components/ui/button";
-import { resetCheckoutItems, useCart } from "@/store/cart.store";
+import { useCart } from "@/store/cart.store";
 import { formatCurrencyVND } from "@/utils/format-currency";
 import { createLazyFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { ChevronLeft } from "lucide-react";
-import { useEffect, useMemo } from "react";
+import { useMemo } from "react";
 
 export const Route = createLazyFileRoute("/cart/")({
-  component: RouteComponent,
+  component: CartPage,
 });
 
-function RouteComponent() {
+function CartPage() {
   const { cartItems, checkoutItems } = useCart();
   const subTotal = useMemo(() => {
     return cartItems.reduce(
@@ -24,9 +24,6 @@ function RouteComponent() {
 
   const navigate = useNavigate();
 
-  useEffect(() => {
-    resetCheckoutItems();
-  }, []);
   return (
     <MainLayout>
       <Wrapper>
@@ -37,7 +34,6 @@ function RouteComponent() {
                 Giỏ hàng của bạn
               </div>
             </div>
-
             <div className="flex flex-col gap-12 py-10">
               <section className="flex-[2]">
                 <CartList cartItems={cartItems} />

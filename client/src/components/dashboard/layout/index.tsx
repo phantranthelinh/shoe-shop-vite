@@ -5,16 +5,12 @@ import { useEffect } from "react";
 import { AppSidebar } from "./AppSidebar/AppSidebar";
 
 export default function Layout({ children }: { children: React.ReactNode }) {
-  const { isAuthenticated, isLogged, data } = useAuth();
+  const { isAuthenticated, isLogged } = useAuth();
   const navigate = useNavigate();
   useEffect(() => {
     if (!isLogged) {
       navigate({
         to: "/login",
-      });
-    } else if (!data?.isAdmin) {
-      navigate({
-        to: "/",
       });
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps

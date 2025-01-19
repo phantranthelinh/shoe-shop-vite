@@ -22,7 +22,7 @@ import { useGetCategories } from "@/hooks/api/categories/useGetCategories";
 import { useAuth } from "@/hooks/api/useAuth";
 import { useCart } from "@/store/cart.store";
 import { useWishlist } from "@/store/wishlist.store";
-import { LogOut, User, UserRound } from "lucide-react";
+import { LogOut, ShoppingBasket, User, UserRound } from "lucide-react";
 
 const Header = () => {
   const [mobileMenu, setMobileMenu] = useState(false);
@@ -151,6 +151,12 @@ const Header = () => {
                 <DropdownMenuItem className="flex items-center gap-2 focus:ring-0 focus:ring-offset-0 cursor-pointer">
                   <User />
                   Tài khoản
+                </DropdownMenuItem>
+                <DropdownMenuItem className="flex items-center gap-2 focus:ring-0 focus:ring-offset-0 cursor-pointer">
+                  <Link to="/orders" className="flex items-center gap-2">
+                    <ShoppingBasket className="stroke-1" />
+                    Xem đơn hàng
+                  </Link>
                 </DropdownMenuItem>
                 <DropdownMenuItem
                   className="flex items-center gap-2 focus:ring-0 focus:ring-offset-0 cursor-pointer"

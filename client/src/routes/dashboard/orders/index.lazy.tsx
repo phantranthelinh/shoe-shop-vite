@@ -9,7 +9,8 @@ export const Route = createLazyFileRoute("/dashboard/orders/")({
 });
 
 function OrderPage() {
-  const { isLoading, data } = useGetOrders();
+  const { isLoading, data } = useGetOrders({ isAdmin: true });
+  console.log(data);
   return (
     <Layout>
       <div className="flex justify-between items-center">

@@ -1,10 +1,9 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { ColumnDef } from "@tanstack/react-table";
-import { ChevronDown, Trash2 } from "lucide-react";
+import { ChevronDown, Eye, Trash2 } from "lucide-react";
 
 import DataTable from "@/components/common/DataTable";
 import DataTablePagination from "@/components/common/DataTable/DataTablePagination";
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import {
@@ -14,12 +13,13 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Input } from "@/components/ui/input";
-import { Category } from "@/entities/category";
+import { Order } from "@/entities/order";
 import { useMutationProduct } from "@/hooks/api/products/useMutationProduct";
 import useDataGrid from "@/hooks/useDataGrid";
 import { cn } from "@/lib/utils";
-import { formatCurrencyVND } from "@/utils/format-currency";
 import { toast } from "sonner";
+import { formatDate } from "@/utils/format-date";
+import { Badge } from "@/components/ui/badge";
 import OrderDetail from "../detail";
 
 export type Review = {
@@ -29,26 +29,13 @@ export type Review = {
   user: string;
 };
 
-export type Product = {
-  _id: string;
-  name: string;
-  image?: string;
-  description: string;
-  slug: string;
-  review: Review[];
-  rating: number;
-  numReviews: number;
-  price: number;
-  countInStock: number;
-  category: Category;
-};
 interface IProps {
-  data: Product[];
+  data: Order[];
 }
 export function OrderTable({ data }: IProps) {
   const { mutate } = useMutationProduct();
 
-  const handleDelete = async (product: Product) => {
+  const handleDelete = async (product: Order) => {
     const payload = {
       type: "delete",
       data: product,
@@ -62,7 +49,7 @@ export function OrderTable({ data }: IProps) {
       },
     });
   };
-  const columns: ColumnDef<Product>[] = [
+  const columns: ColumnDef<Order>[] = [
     {
       id: "select",
       header: ({ table }) => (
@@ -86,22 +73,20 @@ export function OrderTable({ data }: IProps) {
       enableHiding: false,
     },
     {
-      accessorKey: "name",
+      accessorKey: "_id",
       header: "Mã đơn hàng",
       cell: ({ row }) => (
-        <div className="capitalize">{row.getValue("name")}</div>
+        <div className="capitalize">
+          {"NIKE" + row.original._id.slice(0, 6)}
+        </div>
       ),
     },
     {
-      accessorKey: "image",
+      accessorKey: "shippingInfo",
       header: "Tên khách hàng",
       cell: ({ row }) => (
         <div className="lowercase">
-          <img
-            src={row.getValue("image")}
-            className="rounded size-20"
-            alt={row.original.name}
-          />
+          {row.original.shippingInfo.customerName}
         </div>
       ),
     },
@@ -109,15 +94,7 @@ export function OrderTable({ data }: IProps) {
       accessorKey: "totalPrice",
       header: "Tổng tiền",
       cell: ({ row }) => {
-        return (
-          <div className="font-medium">
-            {row.original.category ? (
-              <Badge variant="outline">{row.original.category?.name}</Badge>
-            ) : (
-              "Chưa có danh mục"
-            )}
-          </div>
-        );
+        return <div className="font-medium">{row.original.totalPrice}</div>;
       },
     },
 
@@ -125,11 +102,17 @@ export function OrderTable({ data }: IProps) {
       accessorKey: "isPaid",
       header: "Trạng thái",
       cell: ({ row }) => {
-        const amount = parseFloat(row.getValue("price"));
-
-        const formatted = formatCurrencyVND(amount);
-
-        return <div className="font-medium">{formatted}</div>;
+        return (
+          <Badge
+            variant="outline"
+            className={cn("font-medium", {
+              "border-green-500": row.original.isPaid,
+              "border-slate-500": !row.original.isPaid,
+            })}
+          >
+            {row.original.isPaid ? "Đã thanh toán" : "Chưa thanh toán"}
+          </Badge>
+        );
       },
     },
 
@@ -137,22 +120,22 @@ export function OrderTable({ data }: IProps) {
       accessorKey: "isDelivered",
       header: "Vận chuyển",
       cell: ({ row }) => {
-        const amount = parseFloat(row.getValue("price"));
-
-        const formatted = formatCurrencyVND(amount);
-
-        return <div className="font-medium">{formatted}</div>;
+        return (
+          <div className="font-medium">
+            {row.original.isDelivered ? "Đã giao hàng" : "Đang giao hàng"}
+          </div>
+        );
       },
     },
     {
       accessorKey: "createdAt",
       header: "Ngày đặt hàng",
       cell: ({ row }) => {
-        const amount = parseFloat(row.getValue("price"));
-
-        const formatted = formatCurrencyVND(amount);
-
-        return <div className="font-medium">{formatted}</div>;
+        return (
+          <div className="font-medium">
+            {formatDate(row.original.createdAt)}
+          </div>
+        );
       },
     },
     {
@@ -162,7 +145,7 @@ export function OrderTable({ data }: IProps) {
       cell: ({ row }) => {
         return (
           <div className="flex gap-3">
-            <OrderDetail productId={row.original._id} data={row.original} />
+            <OrderDetail data={row?.original} />
             <Button
               variant={"outline"}
               size="icon"

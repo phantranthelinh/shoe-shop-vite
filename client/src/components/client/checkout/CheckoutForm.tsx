@@ -44,6 +44,15 @@ const CheckoutForm = ({ form }: { form: any }) => {
 
   return (
     <div className="pr-6 w-full">
+      <Link href="/" className="flex mb-4">
+        <img
+          src="/logo.svg"
+          alt="nike-logo"
+          width={60}
+          height={60}
+          className="w-[40px] md:w-[60px]"
+        />
+      </Link>
       <div className="flex justify-between items-center max-w-[400px]">
         <h2 className="text-xl">Thông tin nhận hàng</h2>
         {!isLogged && (
@@ -55,8 +64,8 @@ const CheckoutForm = ({ form }: { form: any }) => {
       </div>
       <Form {...form}>
         <form className="mt-4 w-full">
-          <div className="gap-4 grid grid-cols-2">
-            <div>
+          <div className="flex gap-4">
+            <div className="flex-1">
               <FormField
                 control={control}
                 name="customerName"
@@ -208,7 +217,7 @@ const CheckoutForm = ({ form }: { form: any }) => {
                 )}
               />
             </div>
-            <div>
+            <div className="flex-none w-[300px]">
               <FormField
                 control={control}
                 name="paymentMethod"
@@ -231,7 +240,7 @@ const CheckoutForm = ({ form }: { form: any }) => {
                             <Label
                               htmlFor={method.value}
                               className={cn(
-                                "flex items-center gap-2 p-4 border rounded-lg w-full cursor-pointer",
+                                "flex items-center justify-between  gap-2 p-4 border rounded-lg w-full cursor-pointer",
                                 {
                                   "border-primary":
                                     method.value === field.value,
