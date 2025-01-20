@@ -11,6 +11,9 @@ import { useNavigate } from "@tanstack/react-router";
 
 export const useAuth = () => {
   const navigate = useNavigate();
+
+  const isLogged = getFromLocal("token") ? true : false;
+
   const { isSuccess: isAuthenticated, data } = useQuery({
     queryKey: [QUERY_KEYS.AUTH],
     queryFn: async () => {
@@ -18,7 +21,7 @@ export const useAuth = () => {
       return response.data;
     },
     retry: 5,
-    enabled: !!getFromLocal("token"),
+    enabled: isLogged,
   });
 
   const { mutate: login } = useMutation({
@@ -27,6 +30,7 @@ export const useAuth = () => {
       return response.data;
     },
     onSuccess: (data) => {
+      console.log(data);
       storeInLocal("token", data.token);
       if (data.isAdmin) {
         navigate({ to: "/dashboard" });
@@ -60,7 +64,6 @@ export const useAuth = () => {
       to: "/login",
     });
   };
-  const isLogged = getFromLocal("token") ? true : false;
   return {
     login,
     logout,

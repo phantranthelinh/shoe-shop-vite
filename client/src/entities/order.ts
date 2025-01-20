@@ -1,11 +1,17 @@
+type Province = {
+  name: string;
+  code: number;
+  _id: string;
+};
+
 export type Order = {
   shippingInfo: {
     address: string;
     customerName: string;
     phoneNumber: string;
-    province: string;
-    district: string;
-    ward: string;
+    province: Province;
+    district: Province;
+    ward: Province;
   };
   _id: string;
   user: {

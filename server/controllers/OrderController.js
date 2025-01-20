@@ -59,10 +59,12 @@ const OrderController = {
   }),
 
   getOrderByUser: asyncHandler(async (req, res) => {
-    console.log(req.user);
-
-    // const orders = await Order.find({ user: req.user._id }).sort({ _id: -1 });
-    // res.json(orders);
+    const orders = await Order.find({ user: req.user._id })
+      .populate("shippingInfo.province")
+      .populate("shippingInfo.ward")
+      .populate("shippingInfo.district")
+      .sort({ _id: -1 });
+    res.json(orders);
   }),
 
   deleteAllOrder: asyncHandler(async (req, res) => {

@@ -48,6 +48,7 @@ function CheckoutPage() {
       name: item.name,
       image: item.image,
       qty: item.quantity,
+      price: item.price,
     }));
     const dataSubmit = {
       orderItems,
