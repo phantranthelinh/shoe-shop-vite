@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { ColumnDef } from "@tanstack/react-table";
 import { ChevronDown, Trash2 } from "lucide-react";
 
@@ -114,11 +115,7 @@ export function CategoryTable({ data = [] }: IProps) {
     },
   ];
 
-  const { table } = useDataGrid(columns, data, {
-    pagination: {
-      pageSize: 10,
-    },
-  });
+  const { table } = useDataGrid(columns, data);
 
   return (
     <div className="w-full">

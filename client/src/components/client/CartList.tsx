@@ -6,13 +6,12 @@ import { Minus, Plus, Trash2 } from "lucide-react";
 import { Button } from "../ui/button";
 import { Checkbox } from "../ui/checkbox";
 
-const CartList = ({
-  cartItems,
-  addCheckoutItem,
-}: {
+interface CartListProps {
   cartItems: any;
-  addCheckoutItem: (item: any) => void;
-}) => {
+  addItem: (id: any) => void;
+  deleteItem: (id: string) => void;
+}
+const CartList = ({ cartItems, addItem, deleteItem }: CartListProps) => {
   return (
     <>
       <table className="w-full">
@@ -31,7 +30,8 @@ const CartList = ({
             <CartItem
               key={item?._id}
               data={item}
-              addCheckoutItem={addCheckoutItem}
+              addItem={addItem}
+              deleteItem={deleteItem}
             />
           ))}
         </tbody>
@@ -42,10 +42,12 @@ const CartList = ({
 
 const CartItem = ({
   data,
-  addCheckoutItem,
+  addItem,
+  deleteItem,
 }: {
   data: any;
-  addCheckoutItem: (item: any) => void;
+  addItem: (id: string) => void;
+  deleteItem: (id: string) => void;
 }) => {
   const updateCartItem = (e: any, key: any) => {
     const payload = {
@@ -61,7 +63,11 @@ const CartItem = ({
         <div className="flex justify-center items-center">
           <Checkbox
             onCheckedChange={(state) => {
-              if (state) addCheckoutItem(data._id);
+              if (state) {
+                addItem(data._id);
+              } else {
+                deleteItem(data._id);
+              }
             }}
           />
         </div>

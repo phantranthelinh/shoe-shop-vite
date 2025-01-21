@@ -26,8 +26,7 @@ export type DataGridState<TData> = {
 
 const useDataGrid = <TData>(
   columns: ColumnDef<TData>[],
-  data: TData[],
-  initialState?: { pagination: { pageSize: number } } // add an initialState option
+  data: TData[]
 ): DataGridState<TData> => {
   const [sorting, setSorting] = useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
@@ -51,7 +50,6 @@ const useDataGrid = <TData>(
       columnVisibility,
       rowSelection,
     },
-    initialState: initialState, // spread the options object
   });
 
   return {

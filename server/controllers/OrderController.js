@@ -63,8 +63,11 @@ const OrderController = {
 
   adminGetAllOrder: asyncHandler(async (req, res) => {
     const orders = await Order.find({})
-      .sort({ _id: -1 })
-      .populate("user", "id name email");
+      .populate("shippingInfo.province")
+      .populate("shippingInfo.ward")
+      .populate("shippingInfo.district")
+      .populate("user", "id name email")
+      .sort({ createdAt: -1 });
     res.json(orders);
   }),
 

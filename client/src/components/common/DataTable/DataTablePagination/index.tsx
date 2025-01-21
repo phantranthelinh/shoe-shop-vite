@@ -17,7 +17,7 @@ type DataTablePaginationProps<TData> = {
 const MAX_PAGE_BUTTONS = 4;
 export default function DataTablePagination<TData>({
   table,
-  pageSizes = [20, 50, 100],
+  pageSizes = [10, 20, 50, 100],
 }: DataTablePaginationProps<TData>) {
   const renderPageButtons = () => {
     const totalPages = table.getPageCount();
@@ -91,25 +91,25 @@ export default function DataTablePagination<TData>({
       <p className="text-sm leading-5">
         Tổng <b>{table.getRowCount().toLocaleString()}</b> sản phẩm
       </p>
-      <div className="flex items-center justify-center space-x-2">
+      <div className="flex justify-center items-center space-x-2">
         <Button
           variant="outline"
-          className="h-8 w-8 p-0"
+          className="p-0 w-8 h-8"
           onClick={() => table.previousPage()}
           disabled={!table.getCanPreviousPage()}
         >
           <span className="sr-only">Go to previous page</span>
-          <ChevronLeftIcon className="h-4 w-4" />
+          <ChevronLeftIcon className="w-4 h-4" />
         </Button>
         {renderPageButtons()}
         <Button
           variant="outline"
-          className="h-8 w-8 p-0"
+          className="p-0 w-8 h-8"
           onClick={() => table.nextPage()}
           disabled={!table.getCanNextPage()}
         >
           <span className="sr-only">Go to next page</span>
-          <ChevronRightIcon className="h-4 w-4" />
+          <ChevronRightIcon className="w-4 h-4" />
         </Button>
       </div>
 
@@ -119,7 +119,7 @@ export default function DataTablePagination<TData>({
           table.setPageSize(Number(value));
         }}
       >
-        <SelectTrigger className="w-[175px] focus:ring-0 focus:ring-offset-0">
+        <SelectTrigger className="focus:ring-0 focus:ring-offset-0 w-[200px]">
           <SelectValue
             placeholder={`Hàng trên mỗi trang: ${table.getState().pagination.pageSize}`}
           />

@@ -4,6 +4,7 @@ import { Loading } from "@/components/common/Loading";
 import { useGetOrder } from "@/hooks/api/orders/useGetOrder";
 import { formatCurrencyVND } from "@/utils/format-currency";
 import { formatDate } from "@/utils/format-date";
+import { getOrderCode } from "@/utils/helper";
 import { createLazyFileRoute } from "@tanstack/react-router";
 
 export const Route = createLazyFileRoute("/orders/$orderId/")({
@@ -21,7 +22,7 @@ function OrderDetail() {
       ) : (
         <div className="flex flex-col gap-2">
           <div className="font-bold text-2xl">Chi tiết đơn hàng</div>
-          <div>Mã đơn: {"NIKE" + data?._id?.slice(0, 6)}</div>
+          <div>Mã đơn: {getOrderCode(data?._id)}</div>
           <div>Ngày đặt hàng: {formatDate(data?.createdAt ?? "")}</div>
           <hr className="my-4" />
           {data?.orderItems?.map((item: any) => (
@@ -34,15 +35,11 @@ function OrderDetail() {
                   />
                   <div>
                     <h2 className="text-black/[.8] text-lg">{item.name}</h2>
-                    <h2 className="text-black/[.8] text-lg">
-                      Số lượng: {item.qty}
-                    </h2>
+                    <h2 className="text-black/[.8] text-lg">x{item.qty}</h2>
                   </div>
                 </div>
-                <div>
-                  <h2 className="text-black/[.8] text-lg l">
-                    Đơn giá: {item.price}
-                  </h2>
+                <div className="flex items-end font-bold">
+                  {formatCurrencyVND(item.price)}
                 </div>
               </div>
             </div>
@@ -50,18 +47,23 @@ function OrderDetail() {
           <hr className="my-4" />
           <div className="grid grid-cols-2">
             <div className="flex flex-col gap-2">
-              <span>Thanh toán</span>
-              <span>Tổng cộng: {formatCurrencyVND(data?.totalPrice)}</span>
+              <div className="font-bold text-lg">Thanh toán</div>
+              <div>
+                Tổng cộng:{" "}
+                <span className="font-bold">
+                  {formatCurrencyVND(data?.totalPrice)}
+                </span>
+              </div>
               <span>
-                Phương thức thanh toán:{" "}
-                {data?.paymentMethod?.toLocaleUpperCase()}
+                Phương thức thanh toán:
+                <span> {data?.paymentMethod?.toLocaleUpperCase()}</span>
               </span>
               <span>
                 Trạng thái: {data?.isPaid ? "Đã thanh toán" : "Chưa thanh toán"}
               </span>
             </div>
             <div className="flex flex-col gap-2">
-              <span>Thông tin vận chuyển</span>
+              <div className="font-bold text-lg">Thông tin vận chuyển</div>
               <span>Họ tên: {data?.shippingInfo?.customerName}</span>
               <span>Số điện thoại: {data?.shippingInfo?.phoneNumber}</span>
               <p>

@@ -19,7 +19,6 @@ interface CartState {
   resetCheckoutItems: () => void;
 }
 
-// Create the Zustand store
 const useCartStore = create<CartState>((set, get) => ({
   cartItems: JSON.parse(localStorage.getItem("cartItems") || "[]"),
   checkoutItems: [],

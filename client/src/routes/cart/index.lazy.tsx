@@ -17,44 +17,51 @@ export const Route = createLazyFileRoute("/cart/")({
 
 function CartPage() {
   const { cartItems } = useCart();
-  const subTotal = useMemo(() => {
-    return cartItems.reduce(
-      (total: number, value: { totalPrice: number }) =>
-        total + value.totalPrice,
-      0
-    );
-  }, [cartItems]);
 
   const navigate = useNavigate();
+  const [selectedItems, setSelectedItems] = useState<any[]>([]);
 
-  const [checkoutItems, setCheckoutItem] = useState<any[]>([]);
   const handleAddCheckoutItem = (itemId: any) => {
     const item = cartItems.find((item) => item._id === itemId);
     if (item) {
-      const existingItemIndex = checkoutItems.findIndex(
+      const existingItemIndex = selectedItems.findIndex(
         (existingItem) => existingItem?._id === item._id
       );
 
       if (existingItemIndex !== -1) {
-        setCheckoutItem((prevCheckoutItems) =>
-          prevCheckoutItems.map((existingItem, index) =>
+        setSelectedItems((prevSelectedItems) =>
+          prevSelectedItems.map((existingItem, index) =>
             index === existingItemIndex
               ? { ...existingItem, quantity: (existingItem.quantity ?? 0) + 1 }
               : existingItem
           )
         );
       } else {
-        setCheckoutItem((prevCheckoutItems) => [
-          ...prevCheckoutItems,
+        setSelectedItems((prevSelectedItems) => [
+          ...prevSelectedItems,
           { ...item, quantity: item.quantity },
         ]);
       }
     }
   };
 
+  const handleRemoveSelectedItem = (itemId: any) => {
+    setSelectedItems((prevSelectedItems) =>
+      prevSelectedItems.filter((item) => item._id !== itemId)
+    );
+  };
+
+  const subTotal = useMemo(() => {
+    return selectedItems.reduce(
+      (total: number, value: { totalPrice: number }) =>
+        total + value.totalPrice,
+      0
+    );
+  }, [selectedItems]);
+
   useEffect(() => {
-    const syncCheckoutItemsWithCart = () => {
-      const updatedCheckoutItems = checkoutItems.map((checkoutItem) => {
+    setSelectedItems((prevSelectedItems) => {
+      return prevSelectedItems.map((checkoutItem) => {
         const cartItem = cartItems.find(
           (item) => item._id === checkoutItem._id
         );
@@ -62,16 +69,13 @@ function CartPage() {
           ? { ...checkoutItem, quantity: cartItem.quantity }
           : checkoutItem;
       });
-      setCheckoutItem(updatedCheckoutItems);
-    };
-    syncCheckoutItemsWithCart();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    });
   }, [cartItems]);
 
   const { mutate: createOrder } = useCreateOrder();
 
   const handleCheckout = () => {
-    const orderItems = checkoutItems.map((item: any) => ({
+    const orderItems = selectedItems.map((item: any) => ({
       product: item._id,
       name: item.name,
       image: item.image,
@@ -90,10 +94,10 @@ function CartPage() {
 
     createOrder(dataSubmit, {
       onSuccess: (data) => {
-        navigate({ to: `/checkout/${data._id}` });
-        orderItems.forEach((item: any) => {
+        selectedItems.forEach((item: any) => {
           deleteFromCart(item._id);
         });
+        navigate({ to: `/checkout/${data._id}` });
       },
       onError: () => {
         toast.error("Đặt hàng thất bại!");
@@ -115,7 +119,8 @@ function CartPage() {
               <section className="flex-[2]">
                 <CartList
                   cartItems={cartItems}
-                  addCheckoutItem={handleAddCheckoutItem}
+                  addItem={handleAddCheckoutItem}
+                  deleteItem={handleRemoveSelectedItem}
                 />
               </section>
               <section className="flex-1">
@@ -153,7 +158,7 @@ function CartPage() {
 
                     <Button
                       onClick={handleCheckout}
-                      disabled={checkoutItems.length === 0}
+                      disabled={selectedItems.length === 0}
                       className="flex justify-center items-center gap-5 bg-black hover:opacity-75 mb-3 py-4 w-full font-medium text-lg text-white transition-transform active:scale-95"
                     >
                       Tiến hàng thanh toán

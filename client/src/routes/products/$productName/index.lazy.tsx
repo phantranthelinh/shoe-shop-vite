@@ -26,7 +26,6 @@ function ProductDetailPage() {
     addToCart(product);
   };
 
-  console.log(relatedProducts);
   return (
     <main className="w-full">
       <MainLayout>

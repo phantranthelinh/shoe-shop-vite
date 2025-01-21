@@ -13,7 +13,7 @@ function CategoryPage() {
   const { data, isLoading } = useGetProductByCategory(categoryName);
 
   return (
-    <MainLayout>
+    <MainLayout classNames="min-h-[60vh]">
       {isLoading ? (
         <Loading />
       ) : (

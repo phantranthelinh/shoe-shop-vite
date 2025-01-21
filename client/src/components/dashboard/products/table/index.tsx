@@ -154,11 +154,7 @@ export function ProductTable({ data }: IProps) {
     },
   ];
 
-  const { table } = useDataGrid(columns, data, {
-    pagination: {
-      pageSize: 10,
-    },
-  });
+  const { table } = useDataGrid(columns, data);
 
   return (
     <div className="w-full">

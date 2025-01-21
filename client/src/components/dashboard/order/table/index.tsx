@@ -1,9 +1,10 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { ColumnDef } from "@tanstack/react-table";
-import { ChevronDown, Eye, Trash2 } from "lucide-react";
+import { ChevronDown, Trash2 } from "lucide-react";
 
 import DataTable from "@/components/common/DataTable";
 import DataTablePagination from "@/components/common/DataTable/DataTablePagination";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import {
@@ -17,9 +18,9 @@ import { Order } from "@/entities/order";
 import { useMutationProduct } from "@/hooks/api/products/useMutationProduct";
 import useDataGrid from "@/hooks/useDataGrid";
 import { cn } from "@/lib/utils";
-import { toast } from "sonner";
 import { formatDate } from "@/utils/format-date";
-import { Badge } from "@/components/ui/badge";
+import { getOrderCode } from "@/utils/helper";
+import { toast } from "sonner";
 import OrderDetail from "../detail";
 
 export type Review = {
@@ -49,6 +50,7 @@ export function OrderTable({ data }: IProps) {
       },
     });
   };
+
   const columns: ColumnDef<Order>[] = [
     {
       id: "select",
@@ -73,59 +75,20 @@ export function OrderTable({ data }: IProps) {
       enableHiding: false,
     },
     {
-      accessorKey: "_id",
       header: "Mã đơn hàng",
       cell: ({ row }) => (
-        <div className="capitalize">
-          {"NIKE" + row.original._id.slice(0, 6)}
-        </div>
+        <div className="capitalize">{getOrderCode(row.original?._id)}</div>
       ),
     },
     {
-      accessorKey: "shippingInfo",
+      accessorFn: (row) => row.shippingInfo?.customerName,
+      id: "customerName",
       header: "Tên khách hàng",
       cell: ({ row }) => (
         <div className="lowercase">
-          {row.original.shippingInfo.customerName}
+          {row.original?.shippingInfo?.customerName}
         </div>
       ),
-    },
-    {
-      accessorKey: "totalPrice",
-      header: "Tổng tiền",
-      cell: ({ row }) => {
-        return <div className="font-medium">{row.original.totalPrice}</div>;
-      },
-    },
-
-    {
-      accessorKey: "isPaid",
-      header: "Trạng thái",
-      cell: ({ row }) => {
-        return (
-          <Badge
-            variant="outline"
-            className={cn("font-medium", {
-              "border-green-500": row.original.isPaid,
-              "border-slate-500": !row.original.isPaid,
-            })}
-          >
-            {row.original.isPaid ? "Đã thanh toán" : "Chưa thanh toán"}
-          </Badge>
-        );
-      },
-    },
-
-    {
-      accessorKey: "isDelivered",
-      header: "Vận chuyển",
-      cell: ({ row }) => {
-        return (
-          <div className="font-medium">
-            {row.original.isDelivered ? "Đã giao hàng" : "Đang giao hàng"}
-          </div>
-        );
-      },
     },
     {
       accessorKey: "createdAt",
@@ -133,11 +96,59 @@ export function OrderTable({ data }: IProps) {
       cell: ({ row }) => {
         return (
           <div className="font-medium">
-            {formatDate(row.original.createdAt)}
+            {formatDate(row.original?.createdAt)}
           </div>
         );
       },
     },
+    {
+      accessorKey: "totalPrice",
+      header: "Tổng tiền",
+      cell: ({ row }) => {
+        return <div className="font-medium">{row.original?.totalPrice}</div>;
+      },
+    },
+    {
+      accessorKey: "isPaid",
+      header: "Thanh toán",
+      cell: ({ row }) => {
+        return (
+          <Badge
+            variant="outline"
+            className={cn("font-medium", {
+              "border-green-500": row.original?.isPaid,
+              "border-slate-500": !row.original?.isPaid,
+            })}
+          >
+            {row.original.isPaid ? "Đã thanh toán" : "Chưa thanh toán"}
+          </Badge>
+        );
+      },
+    },
+    {
+      accessorKey: "isPaid",
+      header: "Sản phẩm",
+      cell: ({ row }) => {
+        return (
+          <div className="">
+            {row.original.orderItems.reduce((sum, item) => sum + item.qty, 0)}{" "}
+            sản phẩm
+          </div>
+        );
+      },
+    },
+    {
+      accessorKey: "isDelivered",
+      header: "Vận chuyển",
+      cell: ({ row }) => {
+        return (
+          <div className="font-medium">
+            {row.original?.isDelivered ? "Đã giao hàng" : "Đang giao hàng"}
+          </div>
+        );
+      },
+    },
+
     {
       id: "actions",
       enableHiding: false,
@@ -159,20 +170,18 @@ export function OrderTable({ data }: IProps) {
     },
   ];
 
-  const { table } = useDataGrid(columns, data, {
-    pagination: {
-      pageSize: 10,
-    },
-  });
+  const { table } = useDataGrid(columns, data);
 
   return (
     <div className="w-full">
       <div className="flex items-center py-4">
         <Input
-          placeholder="Tìm kiếm theo tên"
-          value={(table.getColumn("name")?.getFilterValue() as string) ?? ""}
+          placeholder="Tìm kiếm theo tên khách hàng"
+          value={
+            (table.getColumn("customerName")?.getFilterValue() as string) ?? ""
+          }
           onChange={(event) =>
-            table.getColumn("name")?.setFilterValue(event.target.value)
+            table.getColumn("customerName")?.setFilterValue(event.target.value)
           }
           className="max-w-sm"
         />
