@@ -4,8 +4,7 @@ const asyncHandler = require("express-async-handler");
 const OrderController = {
   // CREATE ORDER
   create: asyncHandler(async (req, res) => {
-    const { orderItems, shippingInfo, paymentMethod, totalPrice } = req.body;
-
+    const { orderItems, totalPrice } = req.body;
     if (orderItems && orderItems.length === 0) {
       res.status(400);
       throw new Error("No order items");
@@ -13,21 +12,32 @@ const OrderController = {
       const newOrder = new Order({
         orderItems,
         user: req.user._id,
-        shippingInfo,
-        paymentMethod,
         totalPrice,
       });
-
       const savedOrder = await newOrder.save();
       res.status(201).json(savedOrder);
     }
   }),
+  update: asyncHandler(async (req, res) => {
+    const { shippingInfo, paymentMethod } = req.body;
+    const orderId = req.params.id;
+    const order = await Order.findByIdAndUpdate(orderId, {
+      shippingInfo,
+      paymentMethod,
+    });
+    if (!order) {
+      return res.status(404).send({ message: "Order not found" });
+    }
+    res.send({ message: "Order updated successfully" });
+  }),
   //ORDER DETAILS
   detail: asyncHandler(async (req, res) => {
-    const order = await Order.findById(req.params.id).populate(
-      "user",
-      "name email"
-    );
+    const order = await Order.findById(req.params.id)
+      .populate("user", "name email ")
+      .populate("shippingInfo.province")
+      .populate("shippingInfo.ward")
+      .populate("shippingInfo.district");
+
     if (order) {
       res.status(200).json(order);
     } else {

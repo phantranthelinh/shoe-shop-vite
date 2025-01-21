@@ -1,19 +1,22 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import CartList from "@/components/client/CartList";
 import MainLayout from "@/components/client/layout";
 import Wrapper from "@/components/common/Wrapper";
 import { Button, buttonVariants } from "@/components/ui/button";
-import { useCart } from "@/store/cart.store";
+import { useCreateOrder } from "@/hooks/api/orders/useCreateOrder";
+import { deleteFromCart, useCart } from "@/store/cart.store";
 import { formatCurrencyVND } from "@/utils/format-currency";
 import { createLazyFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { ChevronLeft } from "lucide-react";
-import { useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
+import { toast } from "sonner";
 
 export const Route = createLazyFileRoute("/cart/")({
   component: CartPage,
 });
 
 function CartPage() {
-  const { cartItems, checkoutItems } = useCart();
+  const { cartItems } = useCart();
   const subTotal = useMemo(() => {
     return cartItems.reduce(
       (total: number, value: { totalPrice: number }) =>
@@ -23,6 +26,80 @@ function CartPage() {
   }, [cartItems]);
 
   const navigate = useNavigate();
+
+  const [checkoutItems, setCheckoutItem] = useState<any[]>([]);
+  const handleAddCheckoutItem = (itemId: any) => {
+    const item = cartItems.find((item) => item._id === itemId);
+    if (item) {
+      const existingItemIndex = checkoutItems.findIndex(
+        (existingItem) => existingItem?._id === item._id
+      );
+
+      if (existingItemIndex !== -1) {
+        setCheckoutItem((prevCheckoutItems) =>
+          prevCheckoutItems.map((existingItem, index) =>
+            index === existingItemIndex
+              ? { ...existingItem, quantity: (existingItem.quantity ?? 0) + 1 }
+              : existingItem
+          )
+        );
+      } else {
+        setCheckoutItem((prevCheckoutItems) => [
+          ...prevCheckoutItems,
+          { ...item, quantity: item.quantity },
+        ]);
+      }
+    }
+  };
+
+  useEffect(() => {
+    const syncCheckoutItemsWithCart = () => {
+      const updatedCheckoutItems = checkoutItems.map((checkoutItem) => {
+        const cartItem = cartItems.find(
+          (item) => item._id === checkoutItem._id
+        );
+        return cartItem
+          ? { ...checkoutItem, quantity: cartItem.quantity }
+          : checkoutItem;
+      });
+      setCheckoutItem(updatedCheckoutItems);
+    };
+    syncCheckoutItemsWithCart();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [cartItems]);
+
+  const { mutate: createOrder } = useCreateOrder();
+
+  const handleCheckout = () => {
+    const orderItems = checkoutItems.map((item: any) => ({
+      product: item._id,
+      name: item.name,
+      image: item.image,
+      qty: item.quantity,
+      price: item.price,
+    }));
+    const totalPrice = orderItems.reduce(
+      (total: number, item: any) => total + item.price * item.qty,
+      0
+    );
+
+    const dataSubmit = {
+      orderItems,
+      totalPrice,
+    };
+
+    createOrder(dataSubmit, {
+      onSuccess: (data) => {
+        navigate({ to: `/checkout/${data._id}` });
+        orderItems.forEach((item: any) => {
+          deleteFromCart(item._id);
+        });
+      },
+      onError: () => {
+        toast.error("Đặt hàng thất bại!");
+      },
+    });
+  };
 
   return (
     <MainLayout>
@@ -36,7 +113,10 @@ function CartPage() {
             </div>
             <div className="flex flex-col gap-12 py-10">
               <section className="flex-[2]">
-                <CartList cartItems={cartItems} />
+                <CartList
+                  cartItems={cartItems}
+                  addCheckoutItem={handleAddCheckoutItem}
+                />
               </section>
               <section className="flex-1">
                 <div className="flex justify-between">
@@ -72,7 +152,7 @@ function CartPage() {
                     </table>
 
                     <Button
-                      onClick={() => navigate({ to: "/checkout" })}
+                      onClick={handleCheckout}
                       disabled={checkoutItems.length === 0}
                       className="flex justify-center items-center gap-5 bg-black hover:opacity-75 mb-3 py-4 w-full font-medium text-lg text-white transition-transform active:scale-95"
                     >

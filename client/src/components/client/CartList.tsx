@@ -1,16 +1,18 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import {
-  addCheckoutItems,
-  deleteFromCart,
-  updateCart,
-} from "@/store/cart.store";
+import { deleteFromCart, updateCart } from "@/store/cart.store";
 import { formatCurrencyVND } from "@/utils/format-currency";
 import { Link } from "@tanstack/react-router";
 import { Minus, Plus, Trash2 } from "lucide-react";
 import { Button } from "../ui/button";
 import { Checkbox } from "../ui/checkbox";
 
-const CartList = ({ cartItems }: { cartItems: any }) => {
+const CartList = ({
+  cartItems,
+  addCheckoutItem,
+}: {
+  cartItems: any;
+  addCheckoutItem: (item: any) => void;
+}) => {
   return (
     <>
       <table className="w-full">
@@ -26,7 +28,11 @@ const CartList = ({ cartItems }: { cartItems: any }) => {
         </thead>
         <tbody>
           {cartItems.map((item: any) => (
-            <CartItem key={item?._id} data={item} />
+            <CartItem
+              key={item?._id}
+              data={item}
+              addCheckoutItem={addCheckoutItem}
+            />
           ))}
         </tbody>
       </table>
@@ -34,7 +40,13 @@ const CartList = ({ cartItems }: { cartItems: any }) => {
   );
 };
 
-const CartItem = ({ data }: { data: any }) => {
+const CartItem = ({
+  data,
+  addCheckoutItem,
+}: {
+  data: any;
+  addCheckoutItem: (item: any) => void;
+}) => {
   const updateCartItem = (e: any, key: any) => {
     const payload = {
       key,
@@ -49,7 +61,7 @@ const CartItem = ({ data }: { data: any }) => {
         <div className="flex justify-center items-center">
           <Checkbox
             onCheckedChange={(state) => {
-              if (state) addCheckoutItems(data);
+              if (state) addCheckoutItem(data._id);
             }}
           />
         </div>

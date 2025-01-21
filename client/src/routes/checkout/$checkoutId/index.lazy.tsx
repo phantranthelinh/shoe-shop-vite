@@ -1,7 +1,6 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import CheckoutForm from "@/components/client/checkout/CheckoutForm";
 import ReviewCheckout from "@/components/client/checkout/ReviewCheckout";
-import { useCreateOrder } from "@/hooks/api/orders/useCreateOrder";
+import { useUpdateOrder } from "@/hooks/api/orders/useCreateOrder";
 import { useAuth } from "@/hooks/api/useAuth";
 import { CheckoutSchema, CheckoutSchemaType } from "@/lib/schemas/checkout";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -9,7 +8,8 @@ import { createLazyFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
-export const Route = createLazyFileRoute("/checkout/")({
+
+export const Route = createLazyFileRoute("/checkout/$checkoutId/")({
   component: CheckoutPage,
 });
 
@@ -38,20 +38,14 @@ function CheckoutPage() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [data]);
 
-  const { mutate: createOrder } = useCreateOrder();
+  const { checkoutId } = Route.useParams();
+
+  const { mutate: updateOrder } = useUpdateOrder(checkoutId);
 
   const navigate = useNavigate();
 
-  const handleCheckout = (checkoutItems: any) => (data: CheckoutSchemaType) => {
-    const orderItems = checkoutItems.map((item: any) => ({
-      product: item._id,
-      name: item.name,
-      image: item.image,
-      qty: item.quantity,
-      price: item.price,
-    }));
+  const handleOrder = async (data: CheckoutSchemaType) => {
     const dataSubmit = {
-      orderItems,
       shippingInfo: {
         customerName: data.customerName,
         email: data.email,
@@ -64,8 +58,9 @@ function CheckoutPage() {
       paymentMethod: data.paymentMethod,
     };
 
-    createOrder(dataSubmit, {
+    updateOrder(dataSubmit, {
       onSuccess: () => {
+        console.log("thanh cong");
         form.reset();
         toast.success("Đặt hàng thành công");
         navigate({
@@ -85,7 +80,7 @@ function CheckoutPage() {
     <div className="flex justify-center items-center h-[100vh]">
       <div className="flex w-full max-w-screen-xl">
         <CheckoutForm form={form} />
-        <ReviewCheckout form={form} handleCheckout={handleCheckout} />
+        <ReviewCheckout form={form} handleOrder={handleOrder} />
       </div>
     </div>
   );

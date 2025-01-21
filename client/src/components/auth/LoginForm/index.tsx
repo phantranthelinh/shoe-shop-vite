@@ -28,7 +28,7 @@ const LoginForm = () => {
   });
   const { control } = form;
   const { login } = useAuth();
-  const onSubmit = (data: z.infer<typeof schema>) => {
+  const onSubmit = async (data: z.infer<typeof schema>) => {
     login(data, {
       onSuccess: () => {
         toast.success("Đăng nhập thành công!");

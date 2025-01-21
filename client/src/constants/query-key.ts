@@ -14,6 +14,7 @@ const QUERY_KEYS = {
   WARDS: "wards",
   ORDERS: "orders",
   ORDERS_USER: "orders-user",
+  ORDER: "order",
   OVERVIEW: "overview",
 };
 

@@ -1,3 +1,4 @@
+import MainLayout from "@/components/client/layout";
 import Wrapper from "@/components/common/Wrapper";
 import { createLazyFileRoute, Link } from "@tanstack/react-router";
 
@@ -7,11 +8,11 @@ export const Route = createLazyFileRoute("/payment-failed/")({
 
 function RouteComponent() {
   return (
-    <main className="min-h-[650px] flex items-center">
+    <MainLayout classNames="min-h-[60vh]">
       <Wrapper>
-        <section className="max-w-[600px] rounded-lg p-5 border border-black mx-auto flex flex-col">
-          <h1 className="text-2xl font-bold">Thanh Toán Thất Bại!</h1>
-          <div className="text-base mt-5">
+        <section className="flex flex-col mx-auto p-5 border border-black rounded-lg max-w-[600px]">
+          <h1 className="font-bold text-2xl">Thanh Toán Thất Bại!</h1>
+          <div className="mt-5 text-base">
             Đối với bất kỳ câu hỏi liên quan đến sản phẩm, vui lòng gửi email
             đến
           </div>
@@ -21,11 +22,11 @@ function RouteComponent() {
             </div>
           </Link>
 
-          <Link href="/" className="font-bold mt-5 cursor-pointer">
+          <Link href="/" className="mt-5 font-bold cursor-pointer">
             Tiếp tục mua sắm
           </Link>
         </section>
       </Wrapper>
-    </main>
+    </MainLayout>
   );
 }

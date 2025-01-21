@@ -15,7 +15,7 @@ function OrderPage() {
   return (
     <MainLayout classNames="justify-start mt-10 min-h-[60vh]">
       <Wrapper className="max-w-screen-lg">
-        <div className="font-bold text-xl">Đơn hàng của bạn</div>
+        <div className="font-bold text-2xl">Đơn hàng của bạn</div>
         {isLoading ? (
           <Loading />
         ) : data?.length > 0 ? (

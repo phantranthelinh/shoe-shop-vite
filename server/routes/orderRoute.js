@@ -6,6 +6,7 @@ const { protect, admin } = require("../middleware/AuthMiddleware");
 router.post("/", protect, orderController.create);
 router.get("/all", protect, admin, orderController.adminGetAllOrder);
 router.get("/:id", protect, orderController.detail);
+router.put("/:id", protect, orderController.update);
 router.put("/:id/pay", protect, orderController.isPaid);
 router.put("/:id/delivered", protect, orderController.isDelivered);
 

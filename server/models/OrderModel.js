@@ -21,31 +21,26 @@ const orderSchema = mongoose.Schema(
       },
     ],
     shippingInfo: {
-      address: { type: String, required: true },
-      customerName: { type: String, required: true },
-      phoneNumber: { type: String, required: true },
+      address: { type: String },
+      customerName: { type: String },
+      phoneNumber: { type: String },
       province: {
         type: mongoose.Schema.Types.ObjectId,
-        required: true,
         ref: "Province",
       },
       district: {
         type: mongoose.Schema.Types.ObjectId,
-        required: true,
         ref: "District",
       },
       ward: {
         type: mongoose.Schema.Types.ObjectId,
-        required: true,
         ref: "Ward",
       },
     },
     paymentMethod: {
       type: String,
-      required: true,
       default: "cod",
     },
-
     totalPrice: {
       type: Number,
       required: true,

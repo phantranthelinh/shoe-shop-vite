@@ -24,13 +24,12 @@ export const useAuth = () => {
     enabled: isLogged,
   });
 
-  const { mutate: login } = useMutation({
+  const { mutateAsync: login } = useMutation({
     mutationFn: async (data: TUser) => {
       const response = await API.post("/api/users/login", data);
       return response.data;
     },
     onSuccess: (data) => {
-      console.log(data);
       storeInLocal("token", data.token);
       if (data.isAdmin) {
         navigate({ to: "/dashboard" });
