@@ -6,14 +6,39 @@ import Message from "@/components/common/Error/Message";
 import { Loading } from "@/components/common/Loading";
 import Rating from "@/components/common/Rating";
 import Wrapper from "@/components/common/Wrapper";
+import { Button } from "@/components/ui/button";
+import {
+  Form,
+  FormControl,
+  FormDescription,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Textarea } from "@/components/ui/textarea";
+import { ratingOptions } from "@/data";
 
 import { useGetProductBySlug } from "@/hooks/api/products/useGetProductBySlug";
 import { useGetRelatedProducts } from "@/hooks/api/products/useGetRelatedProducts";
+import { useReviewProduct } from "@/hooks/api/products/useReviewProduct";
+import { useAuth } from "@/hooks/api/useAuth";
+import { feedBackSchema, FeedbackType } from "@/lib/schemas/feedback";
 import { addToCart } from "@/store/cart.store";
 import { formatCurrencyVND } from "@/utils/format-currency";
 import { parseHtml } from "@/utils/parse-html";
-import { createLazyFileRoute } from "@tanstack/react-router";
-
+import { zodResolver } from "@hookform/resolvers/zod";
+import { createLazyFileRoute, Link } from "@tanstack/react-router";
+import moment from "moment";
+import { SubmitHandler, useForm } from "react-hook-form";
+import { toast } from "sonner";
 export const Route = createLazyFileRoute("/products/$productName/")({
   component: ProductDetailPage,
 });
@@ -24,6 +49,33 @@ function ProductDetailPage() {
   const { data: relatedProducts } = useGetRelatedProducts(productName);
   const handleAddingToCart = () => {
     addToCart(product);
+  };
+
+  const { isAuthenticated } = useAuth();
+  const form = useForm({
+    resolver: zodResolver(feedBackSchema),
+    defaultValues: {
+      rating: "",
+      comment: "",
+    },
+  });
+
+  const {
+    control,
+    formState: { isDirty, isValid },
+  } = form;
+
+  const { mutate: addReview } = useReviewProduct(productName);
+  const handleReview: SubmitHandler<FeedbackType> = (data: FeedbackType) => {
+    addReview(data, {
+      onSuccess: () => {
+        form.reset();
+        toast.success("Đánh giá thành công");
+      },
+      onError: () => {
+        toast.error("Đánh giá thất bại");
+      },
+    });
   };
 
   return (
@@ -52,9 +104,12 @@ function ProductDetailPage() {
                               key={review._id}
                               className="bg-light shadow-sm mb-5 mb-md-3 p-3 rounded"
                             >
-                              <strong>{review.name}</strong>
-                              <Rating value={review.rating} />
-                              {/* <span>{moment(review.createdAt).calendar()}</span> */}
+                              <div className="my-2 font-bold text-base">
+                                {review.user.name} - {review.user.email}
+                              </div>
+
+                              <Rating rating={review.rating} />
+                              <span>{moment(review.createdAt).calendar()}</span>
                               <div className="mt-3 alert alert-info">
                                 {review.comment}
                               </div>
@@ -62,45 +117,70 @@ function ProductDetailPage() {
                           );
                         })}
                       </div>
-                      {/* <div className="col-md-6">
+                      <div className="mt-8">
                         <h5>THÊM ĐÁNH GIÁ</h5>
-                        <div className="my-4"></div>
-
                         {isAuthenticated ? (
-                          <form onSubmit={submitHandler}>
-                            <div className="my-4">
-                              <strong>Đánh giá</strong>
-                              <select
-                                value={rating}
-                                onChange={(e) => setRating(e.target.value)}
-                                className="border-0 bg-light mt-2 p-3 rounded col-12"
-                              >
-                                <option value="">Select...</option>
-                                <option value="1">1 - Rất tệ</option>
-                                <option value="2">2 - Tệ</option>
-                                <option value="3">3 - Bình thường</option>
-                                <option value="4">4 - Tốt</option>
-                                <option value="5">5 - Rất tốt</option>
-                              </select>
-                            </div>
-                            <div className="my-4">
-                              <strong>Bình luận</strong>
-                              <textarea
-                                row="3"
-                                value={comment}
-                                onChange={(e) => setComment(e.target.value)}
-                                className="border-0 bg-light mt-2 p-3 rounded col-12"
-                              ></textarea>
-                            </div>
-                            <div className="my-3">
-                              <button
-                                disabled={loadingCreateReview}
-                                className="border-0 bg-black p-3 rounded text-white col-12"
-                              >
-                                Đăng
-                              </button>
-                            </div>
-                          </form>
+                          <Form {...form}>
+                            <form
+                              className="space-y-2"
+                              onSubmit={form.handleSubmit(handleReview)}
+                            >
+                              <FormField
+                                control={control}
+                                name="rating"
+                                render={({ field }) => (
+                                  <FormItem>
+                                    <FormLabel>Đánh giá</FormLabel>
+                                    <FormControl>
+                                      <Select
+                                        onValueChange={(value) => {
+                                          field.onChange(value);
+                                        }}
+                                        value={field.value}
+                                      >
+                                        <SelectTrigger className="w-full">
+                                          <SelectValue placeholder="Chọn đánh giá" />
+                                        </SelectTrigger>
+                                        <SelectContent>
+                                          {ratingOptions.map((option) => {
+                                            return (
+                                              <SelectItem
+                                                key={option.value}
+                                                value={option.value}
+                                              >
+                                                {option.label}
+                                              </SelectItem>
+                                            );
+                                          })}
+                                        </SelectContent>
+                                      </Select>
+                                    </FormControl>
+                                    <FormMessage />
+                                  </FormItem>
+                                )}
+                              />
+                              <FormField
+                                control={control}
+                                name="comment"
+                                render={({ field }) => (
+                                  <FormItem>
+                                    <FormLabel>Bình luận</FormLabel>
+                                    <FormControl>
+                                      <Textarea {...field} />
+                                    </FormControl>
+                                    <FormDescription />
+                                    <FormMessage />
+                                  </FormItem>
+                                )}
+                              />
+
+                              <div className="my-3">
+                                <Button disabled={!isDirty && !isValid}>
+                                  Đăng
+                                </Button>
+                              </div>
+                            </form>
+                          </Form>
                         ) : (
                           <div className="my-3">
                             <Message variant={"alert-warning"}>
@@ -112,7 +192,7 @@ function ProductDetailPage() {
                             </Message>
                           </div>
                         )}
-                      </div> */}
+                      </div>
                     </div>
                   </div>
                 </div>

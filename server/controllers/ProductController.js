@@ -50,7 +50,9 @@ const ProductController = {
     try {
       const product = await Product.findOne({
         slug: req.params.slug,
-      }).populate("category reviews");
+      })
+        .populate("category reviews")
+        .populate("reviews.user");
 
       res.json(product);
     } catch (err) {
@@ -186,7 +188,9 @@ const ProductController = {
 
   addReview: asyncHandler(async (req, res) => {
     const { rating, comment } = req.body;
-    const product = await Product.findById(req.params.id);
+    const product = await Product.findOne({
+      slug: req.params.slug,
+    });
     if (product) {
       const review = {
         name: req.user.name,

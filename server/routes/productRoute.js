@@ -13,7 +13,7 @@ router.get("/:id", ProductController.getAProduct);
 
 router.delete("/:id", protect, admin, ProductController.deleteProduct);
 router.put("/:id", protect, admin, ProductController.editProduct);
-router.post("/:id/review", protect, ProductController.addReview);
+router.post("/:slug/review", protect, ProductController.addReview);
 router.post("/", protect, admin, ProductController.addProduct);
 
 router.get("/", ProductController.getAllProducts);

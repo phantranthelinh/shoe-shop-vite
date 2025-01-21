@@ -1,53 +1,32 @@
-const Rating = ({ value, text }: { value: number; text?: string }) => {
-  return (
-    <div className="rating">
-      <i
-        className={
-          value >= 1
-            ? "fas fa-star"
-            : value >= 0.5
-              ? "fas fa-star-half-alt"
-              : "far fa-star"
-        }
-      ></i>
-      <i
-        className={
-          value >= 2
-            ? "fas fa-star"
-            : value >= 1.5
-              ? "fas fa-star-half-alt"
-              : "far fa-star"
-        }
-      ></i>
-      <i
-        className={
-          value >= 3
-            ? "fas fa-star"
-            : value >= 2.5
-              ? "fas fa-star-half-alt"
-              : "far fa-star"
-        }
-      ></i>
-      <i
-        className={
-          value >= 4
-            ? "fas fa-star"
-            : value >= 3.5
-              ? "fas fa-star-half-alt"
-              : "far fa-star"
-        }
-      ></i>
-      <i
-        className={
-          value >= 5
-            ? "fas fa-star"
-            : value >= 4.5
-              ? "fas fa-star-half-alt"
-              : "far fa-star"
-        }
-      ></i>
+import { Star } from "lucide-react";
 
-      <span>{text && text}</span>
+interface RatingProps {
+  onRatingChange?: (rating: number) => void;
+  rating: number;
+}
+
+const Rating: React.FC<RatingProps> = ({ onRatingChange, rating }) => {
+  const handleClick = (star: number) => {
+    if (onRatingChange) {
+      onRatingChange(star);
+    }
+  };
+  return (
+    <div className="flex items-center space-x-1">
+      {[...Array(5)].map((_, index) => {
+        const star = index + 1;
+        return (
+          <button
+            key={star}
+            className={`w-6 h-6 ${star <= rating ? "text-yellow-400 " : "text-gray-300"} transition-colors duration-200`}
+            onClick={() => handleClick(star)}
+          >
+            <Star
+              style={{ fill: star <= rating ? "#FFD700" : "transparent" }}
+            />
+          </button>
+        );
+      })}
     </div>
   );
 };

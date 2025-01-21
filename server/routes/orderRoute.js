@@ -9,7 +9,6 @@ router.get("/:id", protect, orderController.detail);
 router.put("/:id", protect, orderController.update);
 router.put("/:id/pay", protect, orderController.isPaid);
 router.put("/:id/delivered", protect, orderController.isDelivered);
-
 router.get("/", protect, orderController.getOrderByUser);
 
 router.delete("/", protect, admin, orderController.deleteAllOrder);

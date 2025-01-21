@@ -19,3 +19,11 @@ export const paymentMethods = [
     icon: "/icons/payment-card.png",
   },
 ];
+
+export const ratingOptions = [
+  { value: "1", label: "⭐ Chưa tốt" },
+  { value: "2", label: "⭐⭐ Cần cải thiện" },
+  { value: "3", label: "⭐⭐⭐ Bình thường" },
+  { value: "4", label: "⭐⭐⭐⭐ Hài lòng" },
+  { value: "5", label: "⭐⭐⭐⭐⭐ Rất hài lòng" },
+];
