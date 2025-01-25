@@ -9,6 +9,7 @@ const { notFound, errorHandler } = require("./middleware/Error");
 const userRouter = require("./routes/userRoute");
 const provinceRouter = require("./routes/provinceRoute");
 const overviewRouter = require("./routes/overviewRoute");
+const reviewRouter = require("./routes/reviewRoute");
 
 const { createAdminUser, saveProvinceToDb } = require("./infra");
 dotenv.config();
@@ -30,6 +31,7 @@ app.use("/api/users", userRouter);
 app.use("/api/orders", orderRouter);
 app.use("/api/provinces", provinceRouter);
 app.use("/api/overviews", overviewRouter);
+app.use("/api/reviews", reviewRouter);
 
 // createAdminUser();
 // saveProvinceToDb();

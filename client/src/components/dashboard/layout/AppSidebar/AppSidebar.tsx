@@ -21,6 +21,11 @@ const items = [
     icon: Home,
   },
   {
+    title: "Đơn hàng",
+    url: "/dashboard/orders",
+    icon: ShoppingCart,
+  },
+  {
     title: "Sản Phẩm",
     url: "/dashboard/products",
     icon: Box,
@@ -31,8 +36,8 @@ const items = [
     icon: Table2,
   },
   {
-    title: "Đơn hàng",
-    url: "/dashboard/orders",
+    title: "Khánh hàng",
+    url: "/dashboard/customers",
     icon: ShoppingCart,
   },
 ];

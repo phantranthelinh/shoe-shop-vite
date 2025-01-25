@@ -16,6 +16,7 @@ const QUERY_KEYS = {
   ORDERS_USER: "orders-user",
   ORDER: "order",
   OVERVIEW: "overview",
+  REVIEWS: "reviews",
 };
 
 export default QUERY_KEYS;
