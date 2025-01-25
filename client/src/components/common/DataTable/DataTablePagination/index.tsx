@@ -89,7 +89,7 @@ export default function DataTablePagination<TData>({
   return (
     <>
       <p className="text-sm leading-5">
-        Tổng <b>{table.getRowCount().toLocaleString()}</b> sản phẩm
+        Tổng <b>{table.getRowCount().toLocaleString()}</b> bản ghi
       </p>
       <div className="flex justify-center items-center space-x-2">
         <Button
