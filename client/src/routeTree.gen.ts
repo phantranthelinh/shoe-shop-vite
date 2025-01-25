@@ -20,6 +20,7 @@ import { Route as CategoryCategoryNameImport } from './routes/category/$category
 const IndexLazyImport = createFileRoute('/')()
 const WishlistIndexLazyImport = createFileRoute('/wishlist/')()
 const RegisterIndexLazyImport = createFileRoute('/register/')()
+const ProfileIndexLazyImport = createFileRoute('/profile/')()
 const ProductsIndexLazyImport = createFileRoute('/products/')()
 const PaymentSuccessIndexLazyImport = createFileRoute('/payment-success/')()
 const PaymentFailedIndexLazyImport = createFileRoute('/payment-failed/')()
@@ -70,6 +71,12 @@ const RegisterIndexLazyRoute = RegisterIndexLazyImport.update({
 } as any).lazy(() =>
   import('./routes/register/index.lazy').then((d) => d.Route),
 )
+
+const ProfileIndexLazyRoute = ProfileIndexLazyImport.update({
+  id: '/profile/',
+  path: '/profile/',
+  getParentRoute: () => rootRoute,
+} as any).lazy(() => import('./routes/profile/index.lazy').then((d) => d.Route))
 
 const ProductsIndexLazyRoute = ProductsIndexLazyImport.update({
   id: '/products/',
@@ -284,6 +291,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ProductsIndexLazyImport
       parentRoute: typeof rootRoute
     }
+    '/profile/': {
+      id: '/profile/'
+      path: '/profile'
+      fullPath: '/profile'
+      preLoaderRoute: typeof ProfileIndexLazyImport
+      parentRoute: typeof rootRoute
+    }
     '/register/': {
       id: '/register/'
       path: '/register'
@@ -364,6 +378,7 @@ export interface FileRoutesByFullPath {
   '/payment-failed': typeof PaymentFailedIndexLazyRoute
   '/payment-success': typeof PaymentSuccessIndexLazyRoute
   '/products': typeof ProductsIndexLazyRoute
+  '/profile': typeof ProfileIndexLazyRoute
   '/register': typeof RegisterIndexLazyRoute
   '/wishlist': typeof WishlistIndexLazyRoute
   '/checkout/$checkoutId': typeof CheckoutCheckoutIdIndexLazyRoute
@@ -387,6 +402,7 @@ export interface FileRoutesByTo {
   '/payment-failed': typeof PaymentFailedIndexLazyRoute
   '/payment-success': typeof PaymentSuccessIndexLazyRoute
   '/products': typeof ProductsIndexLazyRoute
+  '/profile': typeof ProfileIndexLazyRoute
   '/register': typeof RegisterIndexLazyRoute
   '/wishlist': typeof WishlistIndexLazyRoute
   '/checkout/$checkoutId': typeof CheckoutCheckoutIdIndexLazyRoute
@@ -411,6 +427,7 @@ export interface FileRoutesById {
   '/payment-failed/': typeof PaymentFailedIndexLazyRoute
   '/payment-success/': typeof PaymentSuccessIndexLazyRoute
   '/products/': typeof ProductsIndexLazyRoute
+  '/profile/': typeof ProfileIndexLazyRoute
   '/register/': typeof RegisterIndexLazyRoute
   '/wishlist/': typeof WishlistIndexLazyRoute
   '/checkout/$checkoutId/': typeof CheckoutCheckoutIdIndexLazyRoute
@@ -436,6 +453,7 @@ export interface FileRouteTypes {
     | '/payment-failed'
     | '/payment-success'
     | '/products'
+    | '/profile'
     | '/register'
     | '/wishlist'
     | '/checkout/$checkoutId'
@@ -458,6 +476,7 @@ export interface FileRouteTypes {
     | '/payment-failed'
     | '/payment-success'
     | '/products'
+    | '/profile'
     | '/register'
     | '/wishlist'
     | '/checkout/$checkoutId'
@@ -480,6 +499,7 @@ export interface FileRouteTypes {
     | '/payment-failed/'
     | '/payment-success/'
     | '/products/'
+    | '/profile/'
     | '/register/'
     | '/wishlist/'
     | '/checkout/$checkoutId/'
@@ -504,6 +524,7 @@ export interface RootRouteChildren {
   PaymentFailedIndexLazyRoute: typeof PaymentFailedIndexLazyRoute
   PaymentSuccessIndexLazyRoute: typeof PaymentSuccessIndexLazyRoute
   ProductsIndexLazyRoute: typeof ProductsIndexLazyRoute
+  ProfileIndexLazyRoute: typeof ProfileIndexLazyRoute
   RegisterIndexLazyRoute: typeof RegisterIndexLazyRoute
   WishlistIndexLazyRoute: typeof WishlistIndexLazyRoute
   CheckoutCheckoutIdIndexLazyRoute: typeof CheckoutCheckoutIdIndexLazyRoute
@@ -527,6 +548,7 @@ const rootRouteChildren: RootRouteChildren = {
   PaymentFailedIndexLazyRoute: PaymentFailedIndexLazyRoute,
   PaymentSuccessIndexLazyRoute: PaymentSuccessIndexLazyRoute,
   ProductsIndexLazyRoute: ProductsIndexLazyRoute,
+  ProfileIndexLazyRoute: ProfileIndexLazyRoute,
   RegisterIndexLazyRoute: RegisterIndexLazyRoute,
   WishlistIndexLazyRoute: WishlistIndexLazyRoute,
   CheckoutCheckoutIdIndexLazyRoute: CheckoutCheckoutIdIndexLazyRoute,
@@ -560,6 +582,7 @@ export const routeTree = rootRoute
         "/payment-failed/",
         "/payment-success/",
         "/products/",
+        "/profile/",
         "/register/",
         "/wishlist/",
         "/checkout/$checkoutId/",
@@ -603,6 +626,9 @@ export const routeTree = rootRoute
     },
     "/products/": {
       "filePath": "products/index.lazy.tsx"
+    },
+    "/profile/": {
+      "filePath": "profile/index.lazy.tsx"
     },
     "/register/": {
       "filePath": "register/index.lazy.tsx"

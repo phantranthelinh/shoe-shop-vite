@@ -1,6 +1,7 @@
 const User = require("../models/UserModel");
 const asyncHandler = require("express-async-handler");
 const generateToken = require("../utils/generateToken");
+const Address = require("../models/AddressModel");
 const UserController = {
   login: asyncHandler(async (req, res) => {
     const { email, password } = req.body;
@@ -54,6 +55,8 @@ const UserController = {
         email: user.email,
         isAdmin: user.isAdmin,
         createAt: user.createdAt,
+        addresses: user?.addresses || [],
+        phoneNumber: user.phoneNumber,
       });
     } else {
       res.status(404);
@@ -62,22 +65,26 @@ const UserController = {
   }),
 
   //UPDATE PROFILE
-  profile: asyncHandler(async (req, res) => {
+  updateProfile: asyncHandler(async (req, res) => {
     const user = await User.findById(req.user._id);
     if (user) {
+      const address = req.body.address;
+      const newAddress = await Address.create({
+        ...address,
+        userId: req.params.id,
+      });
       user.name = req.body.name || user.name;
       user.email = req.body.email || user.email;
       if (req.body.password) {
         user.password = req.body.password;
       }
+      user.addresses.push(newAddress._id);
       const updatedUser = await user.save();
       res.json({
         _id: updatedUser._id,
         name: updatedUser.name,
         email: updatedUser.email,
-        isAdmin: updatedUser.isAdmin,
-        createAt: updatedUser.createdAt,
-        token: generateToken(updatedUser._id),
+        addresses: updatedUser.addresses,
       });
     } else {
       res.status(404);

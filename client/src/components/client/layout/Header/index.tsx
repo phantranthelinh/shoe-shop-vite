@@ -149,8 +149,10 @@ const Header = () => {
               </DropdownMenuTrigger>
               <DropdownMenuContent className="space-y-4">
                 <DropdownMenuItem className="flex items-center gap-2 focus:ring-0 focus:ring-offset-0 cursor-pointer">
-                  <User />
-                  Tài khoản
+                  <Link to="/profile" className="flex items-center gap-2">
+                    <User />
+                    Tài khoản
+                  </Link>
                 </DropdownMenuItem>
                 <DropdownMenuItem className="flex items-center gap-2 focus:ring-0 focus:ring-offset-0 cursor-pointer">
                   <Link to="/orders" className="flex items-center gap-2">

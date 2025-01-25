@@ -17,7 +17,9 @@ import { District, Province, Ward } from "@/entities/provinces";
 import useGetDistrict from "@/hooks/api/provinces/useGetDistricts";
 import useGetProvinces from "@/hooks/api/provinces/useGetProvinces";
 import useGetWards from "@/hooks/api/provinces/useGetWards";
+import { useAuth } from "@/hooks/api/useAuth";
 import { cn } from "@/lib/utils";
+import { Link } from "@tanstack/react-router";
 import { UserRound } from "lucide-react";
 import {
   Select,
@@ -27,8 +29,6 @@ import {
   SelectValue,
 } from "../../ui/select";
 import { Textarea } from "../../ui/textarea";
-import { Link } from "@tanstack/react-router";
-import { useAuth } from "@/hooks/api/useAuth";
 
 const CheckoutForm = ({ form }: { form: any }) => {
   const { control, watch } = form;
@@ -149,6 +149,7 @@ const CheckoutForm = ({ form }: { form: any }) => {
                     <FormLabel>Quận/Huyện</FormLabel>
                     <FormControl>
                       <Select
+                        disabled={!provinceId}
                         onValueChange={(value) => {
                           field.onChange(value);
                           form.resetField("ward");
@@ -184,6 +185,7 @@ const CheckoutForm = ({ form }: { form: any }) => {
                           field.onChange(value);
                         }}
                         value={field.value}
+                        disabled={!districtId}
                       >
                         <SelectTrigger className="w-full">
                           <SelectValue placeholder="Phường/Xã" />
