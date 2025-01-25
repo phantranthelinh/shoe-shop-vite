@@ -1,5 +1,6 @@
 const Order = require("../models/OrderModel");
 const Product = require("../models/ProductModel");
+const User = require("../models/UserModel");
 
 const asyncHandler = require("express-async-handler");
 
@@ -8,7 +9,7 @@ const OverviewController = {
     try {
       const totalOrders = await Order.count({});
       const totalProducts = await Product.count({});
-      const totalUsers = await Product.count({
+      const totalUsers = await User.count({
         isAdmin: false,
       });
       const data = {
