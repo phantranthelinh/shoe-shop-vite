@@ -1,3 +1,4 @@
+import { ApiError } from "@/app/api";
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -9,10 +10,11 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { useAuth } from "@/hooks/api/useAuth";
+import { useToast } from "@/hooks/use-toast";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Link } from "@tanstack/react-router";
+import { useState } from "react";
 import { useForm } from "react-hook-form";
-import { toast } from "sonner";
 import { z } from "zod";
 const schema = z.object({
   email: z.string().email().min(1).max(255),
@@ -26,15 +28,21 @@ const LoginForm = () => {
       password: "",
     },
   });
+
+  const [errorMessage, setErrorMessage] = useState("");
   const { control } = form;
   const { login } = useAuth();
+  const { toast } = useToast();
   const onSubmit = async (data: z.infer<typeof schema>) => {
     login(data, {
       onSuccess: () => {
-        toast.success("Đăng nhập thành công!");
+        toast({
+          title: "Thành công",
+          description: "Đăng nhập thành công!",
+        });
       },
-      onError() {
-        toast.error("Đăng nhập thất bại, Tài khoản hoặc mật khẩu không đúng");
+      onError(error) {
+        setErrorMessage((error as unknown as ApiError).response.data.message);
       },
     });
   };
@@ -44,6 +52,7 @@ const LoginForm = () => {
         <h1 className="font-bold text-gray-900 text-xl md:text-2xl dark:text-white leading-tight tracking-tight">
           Đăng nhập
         </h1>
+        <span className="mt-0 p-0 text-base text-red-500">{errorMessage}</span>
         <Form {...form}>
           <form
             className="space-y-4 md:space-y-6"

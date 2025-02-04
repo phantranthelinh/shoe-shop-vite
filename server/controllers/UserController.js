@@ -17,7 +17,7 @@ const UserController = {
       });
     } else {
       res.status(400);
-      throw new Error("Invalid Email or Password");
+      throw new Error("Sai tài khoản hoặc mật khẩu");
     }
   }),
   register: asyncHandler(async (req, res) => {
