@@ -1,0 +1,28 @@
+@startuml
+
+actor User
+
+participant "Cart System" as Cart
+participant "Order System" as Order
+participant "Payment System" as Payment
+
+== Place Order ==
+User -> Cart: Add items to cart
+Cart -> Cart: Update cart items
+User -> Order: Place order
+Order -> Cart: Verify cart items
+Cart -> Order: Send cart details
+Order -> User: Show order summary
+User -> Order: Confirm order
+Order -> Order: Process order
+
+== Checkout ==
+User -> Cart: Proceed to checkout
+Cart -> Cart: Calculate total amount
+Cart -> User: Show payment options
+User -> Payment: Enter payment details
+Payment -> Payment: Process payment
+Payment -> Order: Notify payment success
+Order -> User: Confirm order completion
+
+@enduml

@@ -13,12 +13,12 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Input } from "@/components/ui/input";
-import { Category } from "@/entities/category";
 import { useMutationCategory } from "@/hooks/api/categories/useMutationCategory";
 import useDataGrid from "@/hooks/useDataGrid";
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
 import UpdateCategory from "../UpdateCategory";
+import { Category } from "@/models/category";
 
 interface IProps {
   data?: Category[];

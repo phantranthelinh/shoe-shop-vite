@@ -1,3 +1,4 @@
+export type UseDTo = Pick<User, "email" | "password">;
 export type User = {
   name: string;
   email: string;

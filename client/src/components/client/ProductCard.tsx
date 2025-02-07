@@ -1,10 +1,10 @@
 import { IMAGE_PLACEHOLDER } from "@/constants";
-import { Product } from "@/entities/product";
 import { Link } from "@tanstack/react-router";
 import { Heart } from "lucide-react";
 import { Card } from "../ui/card";
 import { useWishlist } from "@/store/wishlist.store";
 import { formatCurrencyVND } from "@/utils/format-currency";
+import { Product } from "@/models/product";
 
 const ProductCard = ({ data }: { data: Product }) => {
   const imageUrl = data.image || IMAGE_PLACEHOLDER;

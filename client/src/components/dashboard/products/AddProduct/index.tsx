@@ -26,50 +26,50 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Category } from "@/entities/category";
+import { defaultSizes } from "@/data";
 import { useGetCategories } from "@/hooks/api/categories/useGetCategories";
 import { useMutationProduct } from "@/hooks/api/products/useMutationProduct";
 import useCloudinaryUpload from "@/hooks/useCloudinaryUpload";
 import useVisibility from "@/hooks/useVisibility";
-import { methodType } from "@/types/method.type";
+import { Category } from "@/models/category";
+import { methodType } from "@/models/common";
+import { ProductDto, ProductSchema } from "@/models/product";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { AxiosError } from "axios";
-import { Pencil, Plus, UploadIcon, X } from "lucide-react";
-import { SubmitHandler, useForm } from "react-hook-form";
+import { Pencil, Plus, PlusIcon, Trash2, UploadIcon, X } from "lucide-react";
+import { SubmitHandler, useFieldArray, useForm } from "react-hook-form";
 import { toast } from "sonner";
-import { z } from "zod";
-
-const schema = z.object({
-  name: z.string(),
-  image: z.string(),
-  price: z.number(),
-  description: z.string(),
-  countInStock: z.number(),
-  category: z.string(),
-});
 
 const AddProduct = ({ productId }: { productId?: string }) => {
   const { isVisible, toggleVisibility } = useVisibility(false);
 
   const form = useForm({
-    resolver: zodResolver(schema),
+    resolver: zodResolver(ProductSchema),
     defaultValues: {
       name: "",
       image: "",
+      images: [],
       price: 0,
       description: "",
       countInStock: 0,
       category: "",
+      sizes: defaultSizes,
     },
   });
 
   const { control } = form;
   const { mutate, isPending, error } = useMutationProduct();
 
-  const onSubmit: SubmitHandler<z.infer<typeof schema>> = (data) => {
+  const onSubmit: SubmitHandler<ProductDto> = (data) => {
     const payload = {
       type: "create" as methodType,
-      data,
+      data: {
+        ...data,
+        sizes: data.sizes.map((item) => ({
+          size: item.size,
+          quantity: item.quantity,
+        })),
+      },
     };
     mutate(payload, {
       onSuccess: () => {
@@ -94,6 +94,19 @@ const AddProduct = ({ productId }: { productId?: string }) => {
   const handleOpenChange = () => {
     toggleVisibility();
     form.reset();
+  };
+
+  const { fields, replace, append } = useFieldArray({
+    name: "sizes",
+    control: control,
+  });
+
+  const addNewSize = () => {
+    append({ id: fields.length + 1, size: "", quantity: 1 });
+  };
+  const deleteSize = (id: number) => {
+    const newSizes = fields.filter((item) => item.id !== id);
+    replace(newSizes);
   };
 
   return (
@@ -147,6 +160,35 @@ const AddProduct = ({ productId }: { productId?: string }) => {
                 />
                 <FormField
                   control={control}
+                  name="category"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="block mb-2 font-medium text-gray-900 text-sm dark:text-white">
+                        Danh mục
+                      </FormLabel>
+                      <FormControl>
+                        <Select
+                          onValueChange={(value) => field.onChange(value)}
+                          value={field.value}
+                        >
+                          <SelectTrigger className="w-full">
+                            <SelectValue placeholder="Chọn danh mục sản phẩm" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {categories.map((item: Category) => (
+                              <SelectItem value={item._id} key={item._id}>
+                                {item.name}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={control}
                   name="description"
                   render={({ field }) => (
                     <FormItem>
@@ -183,6 +225,66 @@ const AddProduct = ({ productId }: { productId?: string }) => {
                   )}
                 />
 
+                <div>
+                  <div className="flex justify-between items-center">
+                    <span>Thêm kích cỡ & số lượng</span>
+                    <Button
+                      size="icon"
+                      variant={"outline"}
+                      type="button"
+                      onClick={addNewSize}
+                    >
+                      <PlusIcon />
+                    </Button>
+                  </div>
+                  <div className="ml-8">
+                    {fields.map((item, index) => {
+                      return (
+                        <div key={item.id}>
+                          <div className="flex flex-row items-end gap-3">
+                            <FormField
+                              control={form.control}
+                              key={item.id}
+                              name={`sizes.${index}.size`}
+                              render={({ field }) => (
+                                <FormItem>
+                                  <FormLabel>Kích cỡ</FormLabel>
+                                  <FormControl>
+                                    <Input {...field} />
+                                  </FormControl>
+                                  <FormMessage className="text-red-500 capitalize" />
+                                </FormItem>
+                              )}
+                            />
+                            <FormField
+                              control={form.control}
+                              key={item.id + 1}
+                              name={`sizes.${index}.quantity`}
+                              render={({ field }) => (
+                                <FormItem>
+                                  <FormLabel>Số lượng</FormLabel>
+                                  <FormControl>
+                                    <Input type="number" {...field} />
+                                  </FormControl>
+                                  <FormMessage className="text-red-500 capitalize" />
+                                </FormItem>
+                              )}
+                            />
+                            <Button
+                              size="icon"
+                              type="button"
+                              variant={"outline"}
+                              onClick={() => deleteSize(item.id)}
+                            >
+                              <Trash2 className="text-red-500" />
+                            </Button>
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+
                 <FormField
                   control={control}
                   name="countInStock"
@@ -193,6 +295,7 @@ const AddProduct = ({ productId }: { productId?: string }) => {
                       </FormLabel>
                       <FormControl>
                         <Input
+                          disabled
                           placeholder="Số lượng tồn"
                           {...field}
                           onChange={(e) => {
@@ -274,35 +377,7 @@ const AddProduct = ({ productId }: { productId?: string }) => {
                     </FormItem>
                   )}
                 />
-                <FormField
-                  control={control}
-                  name="category"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel className="block mb-2 font-medium text-gray-900 text-sm dark:text-white">
-                        Danh mục
-                      </FormLabel>
-                      <FormControl>
-                        <Select
-                          onValueChange={(value) => field.onChange(value)}
-                          value={field.value}
-                        >
-                          <SelectTrigger className="w-full">
-                            <SelectValue placeholder="Chọn danh mục sản phẩm" />
-                          </SelectTrigger>
-                          <SelectContent>
-                            {categories.map((item: Category) => (
-                              <SelectItem value={item._id} key={item._id}>
-                                {item.name}
-                              </SelectItem>
-                            ))}
-                          </SelectContent>
-                        </Select>
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
+
                 <Button type="submit">{isPending ? <Loading /> : "Lưu"}</Button>
               </form>
             </Form>

@@ -18,9 +18,24 @@ const ProductCategoryController = {
   }),
   deleteCategory: asyncHandler(async (req, res) => {
     const category = await ProductCategory.findById(req.params.id);
+
+    const existingProduct = await Product.findOne({
+      "category.id": req.params.id,
+    });
+
+    if (existingProduct) {
+      res.status(400).json({
+        message: "Cannot delete category with products",
+      });
+    }
+    if (existingProduct) {
+      res.status(400);
+      throw new Error("Cannot delete category with products");
+    }
+
     if (category) {
       await category.remove();
-      res.json({ message: "Category deleted" });
+      res.json({ message: "Deleted successfully" });
     } else {
       res.status(404);
       throw new Error("Category not found");

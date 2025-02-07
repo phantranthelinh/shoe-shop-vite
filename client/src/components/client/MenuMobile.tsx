@@ -1,5 +1,6 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { navList } from "@/data";
-import { Category } from "@/entities/category";
+import { Category } from "@/models/category";
 import { Link } from "@tanstack/react-router";
 import React from "react";
 import { BsChevronDown } from "react-icons/bs";
@@ -20,7 +21,7 @@ const MenuMobile = ({
       {navList.map((item) => {
         return (
           <React.Fragment key={item.id}>
-            {!!item?.subMenu ? (
+            {item?.subMenu ? (
               <li
                 className="relative flex flex-col px-5 py-4 border-b cursor-pointer"
                 onClick={() => setShowCatMenu(!showCatMenu)}
@@ -44,11 +45,6 @@ const MenuMobile = ({
                         >
                           <li className="flex justify-between px-8 py-4 border-t">
                             {category.name}
-                            <span className="opacity-50 text-sm">
-                              &#40;
-                              {category?.products?.length}
-                              &#41;
-                            </span>
                           </li>
                         </Link>
                       );

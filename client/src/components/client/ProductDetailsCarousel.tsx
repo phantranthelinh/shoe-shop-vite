@@ -1,4 +1,4 @@
-import { Product } from "@/entities/product";
+import { Product } from "@/models/product";
 
 const ProductDetailsCarousel = ({ product }: { product: Product }) => {
   return (

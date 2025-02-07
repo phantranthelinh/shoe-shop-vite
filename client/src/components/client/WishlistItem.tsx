@@ -1,5 +1,4 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { Product } from "@/entities/product";
 import { useCart } from "@/store/cart.store";
 import { useWishlist } from "@/store/wishlist.store";
 import { Link } from "@tanstack/react-router";
@@ -7,6 +6,7 @@ import { HeartOff } from "lucide-react";
 import { Button } from "../ui/button";
 import { Card } from "../ui/card";
 import { formatCurrencyVND } from "@/utils/format-currency";
+import { Product } from "@/models/product";
 
 const WishlistItem = ({ data }: { data: Product }) => {
   const { deleteFromWishlist } = useWishlist();

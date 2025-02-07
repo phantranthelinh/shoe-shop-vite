@@ -1,18 +1,18 @@
 import { API } from "@/app/api";
 import QUERY_KEYS from "@/constants/query-key";
-import { methodType } from "@/types/method.type";
-import { TProduct } from "@/types/product.type";
+import { methodType } from "@/models/common";
+import { ProductDto } from "@/models/product";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 export const useMutationProduct = () => {
   const queryClient = useQueryClient();
   const apiMethods = {
-    create: (data: TProduct) => API.post("/api/products", data),
-    update: (data: TProduct) => {
+    create: (data: ProductDto) => API.post("/api/products", data),
+    update: (data: ProductDto) => {
       const { id, ...productUpdate } = data;
       return API.put(`/api/products/${id}`, productUpdate);
     },
-    delete: (data: TProduct) => API.delete(`/api/products/${data._id}`),
+    delete: (data: ProductDto) => API.delete(`/api/products/${data._id}`),
   };
 
   const mutationFn = async ({
@@ -20,13 +20,13 @@ export const useMutationProduct = () => {
     data,
   }: {
     type: methodType;
-    data: { [key: string]: string | number };
+    data: ProductDto;
   }) => {
     const method = apiMethods[type];
     if (!method) {
       throw new Error(`Invalid type: ${type}`);
     }
-    return method(data as TProduct);
+    return method(data as ProductDto);
   };
 
   return useMutation({

@@ -13,7 +13,6 @@ import { Input } from "../../ui/input";
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { paymentMethods } from "@/data";
-import { District, Province, Ward } from "@/entities/provinces";
 import useGetDistrict from "@/hooks/api/provinces/useGetDistricts";
 import useGetProvinces from "@/hooks/api/provinces/useGetProvinces";
 import useGetWards from "@/hooks/api/provinces/useGetWards";
@@ -29,6 +28,7 @@ import {
   SelectValue,
 } from "../../ui/select";
 import { Textarea } from "../../ui/textarea";
+import { District, Province, Ward } from "@/models/province";
 
 const CheckoutForm = ({ form }: { form: any }) => {
   const { control, watch } = form;

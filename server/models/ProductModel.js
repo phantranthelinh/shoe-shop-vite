@@ -6,12 +6,19 @@ const productSchema = mongoose.Schema(
   {
     name: { type: String, required: true },
     image: { type: String },
-    description: { type: String, required: true },
+    description: { type: String },
     slug: { type: String, slug: "name" },
     rating: { type: Number, required: true, default: 0 },
     numReviews: { type: Number, required: true, default: 0 },
+    sizes: [
+      {
+        size: { type: String, required: true },
+        quantity: { type: Number, required: true },
+      },
+    ],
     price: { type: Number, required: true, default: 0 },
     countInStock: { type: Number, required: true, default: 0 },
+    images: [{ type: String }],
     category: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "ProductCategory",

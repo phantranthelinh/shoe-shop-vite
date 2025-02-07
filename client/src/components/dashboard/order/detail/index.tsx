@@ -7,7 +7,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { Order } from "@/entities/order";
+import { Order } from "@/models/order";
 import { Eye } from "lucide-react";
 
 interface Props {

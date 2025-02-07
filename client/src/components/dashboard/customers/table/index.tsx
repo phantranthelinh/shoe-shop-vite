@@ -12,10 +12,10 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Input } from "@/components/ui/input";
-import { User } from "@/entities/user";
 import useDataGrid from "@/hooks/useDataGrid";
 import { cn } from "@/lib/utils";
 import { formatDate } from "@/utils/format-date";
+import { User } from "@/models/user";
 
 interface IProps {
   data: User[];

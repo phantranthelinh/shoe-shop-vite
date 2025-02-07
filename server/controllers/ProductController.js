@@ -4,8 +4,16 @@ const asyncHandler = require("express-async-handler");
 
 const ProductController = {
   addProduct: asyncHandler(async (req, res) => {
-    const { name, price, description, image, countInStock, category } =
-      req.body;
+    const {
+      name,
+      price,
+      description,
+      image,
+      sizes,
+      countInStock,
+      category,
+      images,
+    } = req.body;
     const productExits = await Product.findOne({ name });
 
     if (productExits) {
@@ -18,21 +26,17 @@ const ProductController = {
         description,
         image,
         countInStock,
+        sizes,
         category,
         user: req.user._id,
+        images,
       });
-      if (product) {
-        const createdProduct = await product.save();
-        const categoryToUpdate = await ProductCategory.findById(category);
-        if (categoryToUpdate) {
-          categoryToUpdate.products.push(createdProduct._id);
-          await categoryToUpdate.save();
-          res.status(200).json(createdProduct);
-        } else {
-          res.status(400);
-          throw new Error("Invalid product data");
-        }
+      if (!product) {
+        res.status(400);
+        throw new Error("Invalid product data");
       }
+      const createdProduct = await product.save();
+      res.status(200).json(createdProduct);
     }
   }),
   getAProduct: asyncHandler(async (req, res) => {
@@ -62,12 +66,11 @@ const ProductController = {
   getProductByCategorySlug: asyncHandler(async (req, res) => {
     try {
       const { slug } = req.params;
-      const category = await ProductCategory.findOne({ slug }).populate(
-        "products"
-      );
+      const category = await ProductCategory.findOne({ slug });
+      const products = await Product.find({ category: category._id });
 
       res.status(200).json({
-        data: category,
+        data: products,
       });
     } catch (err) {
       res.status(404);
@@ -107,38 +110,28 @@ const ProductController = {
     res.json(products);
   }),
   editProduct: asyncHandler(async (req, res) => {
-    const { name, price, description, image, countInStock, category } =
-      req.body;
+    const {
+      name,
+      price,
+      description,
+      sizes,
+      image,
+      countInStock,
+      category,
+      images,
+    } = req.body;
     const product = await Product.findById(req.params.id);
 
     if (product) {
       product.name = name || product.name;
       product.price = price || product.price;
       product.description = description || product.description;
-      product.image = image || product.description;
+      product.sizes = sizes || product.sizes;
+      product.image = image || product.image;
+      product.images = images || product.images;
       product.countInStock = countInStock || product.countInStock;
       product.category = category || product.category;
 
-      const oldCategory = product.category;
-      const newCategory = category || product.category;
-      if (oldCategory !== newCategory) {
-        if (oldCategory) {
-          const oldCategoryDoc = await ProductCategory.findById(oldCategory);
-          if (oldCategoryDoc) {
-            oldCategoryDoc.products = oldCategoryDoc.products.filter(
-              (prodId) => prodId.toString() !== product._id.toString()
-            );
-            await oldCategoryDoc.save();
-          }
-        }
-        const newCategoryDoc = await ProductCategory.findById(newCategory);
-        if (newCategoryDoc) {
-          if (!newCategoryDoc.products.includes(product._id)) {
-            newCategoryDoc.products.push(product._id);
-            await newCategoryDoc.save();
-          }
-        }
-      }
       const updatedProduct = await product.save();
       res.status(200).json(updatedProduct);
     } else {

@@ -27,3 +27,23 @@ export const ratingOptions = [
   { value: "4", label: "⭐⭐⭐⭐ Hài lòng" },
   { value: "5", label: "⭐⭐⭐⭐⭐ Rất hài lòng" },
 ];
+
+export const defaultSizes = [
+  {
+    id: 1,
+    size: "37",
+    quantity: 2,
+  },
+
+  {
+    id: 2,
+    size: "39",
+    quantity: 2,
+  },
+
+  {
+    id: 4,
+    size: "41",
+    quantity: 2,
+  },
+];

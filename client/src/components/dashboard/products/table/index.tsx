@@ -20,28 +20,8 @@ import { cn } from "@/lib/utils";
 import { formatCurrencyVND } from "@/utils/format-currency";
 import { toast } from "sonner";
 import UpdateProduct from "../UpdateProduct";
-import { Category } from "@/entities/category";
+import { Product } from "@/models/product";
 
-export type Review = {
-  name: string;
-  rating: number;
-  comment: string;
-  user: string;
-};
-
-export type Product = {
-  _id: string;
-  name: string;
-  image?: string;
-  description: string;
-  slug: string;
-  review: Review[];
-  rating: number;
-  numReviews: number;
-  price: number;
-  countInStock: number;
-  category: Category;
-};
 interface IProps {
   data: Product[];
 }
@@ -140,7 +120,10 @@ export function ProductTable({ data }: IProps) {
       cell: ({ row }) => {
         return (
           <div className="flex gap-3">
-            <UpdateProduct productId={row.original._id} data={row.original} />
+            <UpdateProduct
+              productId={row.original._id as string}
+              data={row.original}
+            />
             <Button
               variant={"outline"}
               size="icon"

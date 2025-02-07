@@ -14,7 +14,6 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Input } from "@/components/ui/input";
-import { Order } from "@/entities/order";
 import { useMutationProduct } from "@/hooks/api/products/useMutationProduct";
 import useDataGrid from "@/hooks/useDataGrid";
 import { cn } from "@/lib/utils";
@@ -22,6 +21,7 @@ import { formatDate } from "@/utils/format-date";
 import { getOrderCode } from "@/utils/helper";
 import { toast } from "sonner";
 import OrderDetail from "../detail";
+import { Order } from "@/models/order";
 
 export type Review = {
   name: string;

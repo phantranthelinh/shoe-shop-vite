@@ -1,4 +1,6 @@
 const Order = require("../models/OrderModel");
+const Products = require("../models/ProductModel");
+
 const asyncHandler = require("express-async-handler");
 
 const OrderController = {
@@ -14,6 +16,15 @@ const OrderController = {
         user: req.user._id,
         totalPrice,
       });
+      orderItems.forEach(async (item) => {
+        await Products.updateOne(
+          { _id: item.product._id, "sizes.size": 42 },
+          {
+            $inc: { "sizes.$.quantity": -1, countInStock: -1 },
+          }
+        );
+      });
+
       const savedOrder = await newOrder.save();
       res.status(201).json(savedOrder);
     }

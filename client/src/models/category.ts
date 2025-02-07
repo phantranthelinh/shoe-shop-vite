@@ -1,9 +1,7 @@
 export type Category = {
   _id: string;
+  id: string;
   name: string;
   description: string;
-  products: unknown[];
-  createdAt: string;
-  updatedAt: string;
   slug: string;
 };

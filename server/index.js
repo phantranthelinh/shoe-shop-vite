@@ -10,6 +10,7 @@ const userRouter = require("./routes/userRoute");
 const provinceRouter = require("./routes/provinceRoute");
 const overviewRouter = require("./routes/overviewRoute");
 const reviewRouter = require("./routes/reviewRoute");
+const imageRouter = require("./routes/imageRoute");
 
 const { createAdminUser, saveProvinceToDb } = require("./infra");
 dotenv.config();
@@ -32,6 +33,7 @@ app.use("/api/orders", orderRouter);
 app.use("/api/provinces", provinceRouter);
 app.use("/api/overviews", overviewRouter);
 app.use("/api/reviews", reviewRouter);
+app.use("/api/images", imageRouter);
 
 // createAdminUser();
 // saveProvinceToDb();

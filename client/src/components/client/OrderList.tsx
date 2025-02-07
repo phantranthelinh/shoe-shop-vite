@@ -1,4 +1,4 @@
-import { Order } from "@/entities/order";
+import { Order } from "@/models/order";
 import { formatCurrencyVND } from "@/utils/format-currency";
 import { formatDate } from "@/utils/format-date";
 import { getOrderCode } from "@/utils/helper";

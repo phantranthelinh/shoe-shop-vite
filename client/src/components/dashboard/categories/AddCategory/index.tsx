@@ -20,13 +20,13 @@ import {
 import { Textarea } from "@/components/ui/textarea";
 import { useMutationCategory } from "@/hooks/api/categories/useMutationCategory";
 import useVisibility from "@/hooks/useVisibility";
-import { methodType } from "@/types/method.type";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { AxiosError } from "axios";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { z } from "zod";
 import { Plus } from "lucide-react";
+import { methodType } from "@/models/common";
 
 type FormFields = {
   name: string;

@@ -1,7 +1,7 @@
 /* eslint-disable no-extra-boolean-cast */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { navList } from "@/data";
-import { Category } from "@/entities/category";
+import { Category } from "@/models/category";
 import { Link } from "@tanstack/react-router";
 import React from "react";
 import { BsChevronDown } from "react-icons/bs";
@@ -40,11 +40,6 @@ const Menu = ({
                         >
                           <li className="flex justify-between items-center hover:bg-black/[0.03] px-3 rounded-md h-12">
                             {category?.name}
-                            <span className="opacity-50 text-sm">
-                              &#40;
-                              {category.products.length}
-                              &#41;
-                            </span>
                           </li>
                         </Link>
                       );

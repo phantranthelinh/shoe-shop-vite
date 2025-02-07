@@ -7,12 +7,6 @@ const ProductCatergorySchema = new mongoose.Schema(
     slug: { type: String, slug: "name" },
     image: { type: String },
     description: { type: String },
-    products: [
-      {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "Product",
-      },
-    ],
   },
   {
     timestamps: true,

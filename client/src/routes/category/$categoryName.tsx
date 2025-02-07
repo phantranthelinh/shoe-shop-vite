@@ -20,7 +20,7 @@ function CategoryPage() {
         <>
           <h2 className="font-bold text-3xl">{data?.data?.name}</h2>
           <div className="flex justify-center max-w-screen-lg">
-            <ProductList data={data?.data?.products} />
+            <ProductList data={data?.data} />
           </div>
         </>
       )}
