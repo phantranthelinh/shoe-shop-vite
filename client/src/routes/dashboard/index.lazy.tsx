@@ -3,6 +3,7 @@ import Layout from "@/components/dashboard/layout";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Card } from "@/components/ui/card";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { useGetPendingOrder } from "@/hooks/api/orders/useGetOrder";
 import { useGetOverviews } from "@/hooks/api/overview/useGetOverview";
 import { formatCurrencyVND } from "@/utils/format-currency";
 import { formatDate } from "@/utils/format-date";
@@ -20,6 +21,7 @@ export const Route = createLazyFileRoute("/dashboard/")({
 
 function DashboardPage() {
   const { isLoading, data } = useGetOverviews();
+  const { data: pendingOrders } = useGetPendingOrder();
 
   return (
     <Layout>
@@ -69,12 +71,13 @@ function DashboardPage() {
           <div className="gap-4 grid grid-cols-1 sm:grid-cols-2 mt-4">
             <Card className="py-4">
               <h6 className="mb-4 ml-2 text-2xl">Đơn hàng chờ xử lý</h6>
-              <ScrollArea className="h-[400px]">
+              <ScrollArea className="max-h-[400px]">
                 <div className="flex flex-col gap-4">
-                  {Array.from({ length: 20 }).map((_, index) => {
+                  {pendingOrders?.map((item) => {
                     return (
-                      <div
-                        key={index}
+                      <Link
+                        to={`/dashboard/orders/${item._id}`}
+                        key={item._id}
                         className="flex gap-4 hover:bg-gray-100 px-2 hover:cursor-pointer"
                       >
                         <Avatar>
@@ -85,13 +88,15 @@ function DashboardPage() {
                           <AvatarFallback>CN</AvatarFallback>
                         </Avatar>
                         <div>
-                          <div>{formatDate("2023-01-01")}</div>
-                          <p>Nguyen Van A, one item</p>
+                          <div>{formatDate(item.createdAt)}</div>
+                          <p>
+                            {item.user.name}, {item.orderItems.length}
+                          </p>
                         </div>
                         <div className="ml-auto">
-                          {formatCurrencyVND(100000)}
+                          {formatCurrencyVND(item.totalPrice)}
                         </div>
-                      </div>
+                      </Link>
                     );
                   })}
                 </div>

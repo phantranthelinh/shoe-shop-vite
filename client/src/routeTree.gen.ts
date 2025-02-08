@@ -47,6 +47,9 @@ const DashboardCustomersIndexLazyImport = createFileRoute(
 const CheckoutCheckoutIdIndexLazyImport = createFileRoute(
   '/checkout/$checkoutId/',
 )()
+const DashboardOrdersOrderIdIndexLazyImport = createFileRoute(
+  '/dashboard/orders/$orderId/',
+)()
 
 // Create/Update Routes
 
@@ -210,6 +213,17 @@ const CheckoutCheckoutIdIndexLazyRoute =
     import('./routes/checkout/$checkoutId/index.lazy').then((d) => d.Route),
   )
 
+const DashboardOrdersOrderIdIndexLazyRoute =
+  DashboardOrdersOrderIdIndexLazyImport.update({
+    id: '/dashboard/orders/$orderId/',
+    path: '/dashboard/orders/$orderId/',
+    getParentRoute: () => rootRoute,
+  } as any).lazy(() =>
+    import('./routes/dashboard/orders/$orderId/index.lazy').then(
+      (d) => d.Route,
+    ),
+  )
+
 // Populate the FileRoutesByPath interface
 
 declare module '@tanstack/react-router' {
@@ -361,6 +375,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ProductsProductNameIndexLazyImport
       parentRoute: typeof rootRoute
     }
+    '/dashboard/orders/$orderId/': {
+      id: '/dashboard/orders/$orderId/'
+      path: '/dashboard/orders/$orderId'
+      fullPath: '/dashboard/orders/$orderId'
+      preLoaderRoute: typeof DashboardOrdersOrderIdIndexLazyImport
+      parentRoute: typeof rootRoute
+    }
   }
 }
 
@@ -388,6 +409,7 @@ export interface FileRoutesByFullPath {
   '/dashboard/products': typeof DashboardProductsIndexLazyRoute
   '/orders/$orderId': typeof OrdersOrderIdIndexLazyRoute
   '/products/$productName': typeof ProductsProductNameIndexLazyRoute
+  '/dashboard/orders/$orderId': typeof DashboardOrdersOrderIdIndexLazyRoute
 }
 
 export interface FileRoutesByTo {
@@ -412,6 +434,7 @@ export interface FileRoutesByTo {
   '/dashboard/products': typeof DashboardProductsIndexLazyRoute
   '/orders/$orderId': typeof OrdersOrderIdIndexLazyRoute
   '/products/$productName': typeof ProductsProductNameIndexLazyRoute
+  '/dashboard/orders/$orderId': typeof DashboardOrdersOrderIdIndexLazyRoute
 }
 
 export interface FileRoutesById {
@@ -437,6 +460,7 @@ export interface FileRoutesById {
   '/dashboard/products/': typeof DashboardProductsIndexLazyRoute
   '/orders/$orderId/': typeof OrdersOrderIdIndexLazyRoute
   '/products/$productName/': typeof ProductsProductNameIndexLazyRoute
+  '/dashboard/orders/$orderId/': typeof DashboardOrdersOrderIdIndexLazyRoute
 }
 
 export interface FileRouteTypes {
@@ -463,6 +487,7 @@ export interface FileRouteTypes {
     | '/dashboard/products'
     | '/orders/$orderId'
     | '/products/$productName'
+    | '/dashboard/orders/$orderId'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -486,6 +511,7 @@ export interface FileRouteTypes {
     | '/dashboard/products'
     | '/orders/$orderId'
     | '/products/$productName'
+    | '/dashboard/orders/$orderId'
   id:
     | '__root__'
     | '/'
@@ -509,6 +535,7 @@ export interface FileRouteTypes {
     | '/dashboard/products/'
     | '/orders/$orderId/'
     | '/products/$productName/'
+    | '/dashboard/orders/$orderId/'
   fileRoutesById: FileRoutesById
 }
 
@@ -534,6 +561,7 @@ export interface RootRouteChildren {
   DashboardProductsIndexLazyRoute: typeof DashboardProductsIndexLazyRoute
   OrdersOrderIdIndexLazyRoute: typeof OrdersOrderIdIndexLazyRoute
   ProductsProductNameIndexLazyRoute: typeof ProductsProductNameIndexLazyRoute
+  DashboardOrdersOrderIdIndexLazyRoute: typeof DashboardOrdersOrderIdIndexLazyRoute
 }
 
 const rootRouteChildren: RootRouteChildren = {
@@ -559,6 +587,7 @@ const rootRouteChildren: RootRouteChildren = {
   DashboardProductsIndexLazyRoute: DashboardProductsIndexLazyRoute,
   OrdersOrderIdIndexLazyRoute: OrdersOrderIdIndexLazyRoute,
   ProductsProductNameIndexLazyRoute: ProductsProductNameIndexLazyRoute,
+  DashboardOrdersOrderIdIndexLazyRoute: DashboardOrdersOrderIdIndexLazyRoute,
 }
 
 export const routeTree = rootRoute
@@ -591,7 +620,8 @@ export const routeTree = rootRoute
         "/dashboard/product-categories/",
         "/dashboard/products/",
         "/orders/$orderId/",
-        "/products/$productName/"
+        "/products/$productName/",
+        "/dashboard/orders/$orderId/"
       ]
     },
     "/": {
@@ -656,6 +686,9 @@ export const routeTree = rootRoute
     },
     "/products/$productName/": {
       "filePath": "products/$productName/index.lazy.tsx"
+    },
+    "/dashboard/orders/$orderId/": {
+      "filePath": "dashboard/orders/$orderId/index.lazy.tsx"
     }
   }
 }

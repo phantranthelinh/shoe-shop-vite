@@ -47,3 +47,11 @@ export const defaultSizes = [
     quantity: 2,
   },
 ];
+
+export const orderStatusMapping: { [key: string]: string } = {
+  pending: "Chưa hoàn tất đặt hàng",
+  isOrdered: "Đã đặt hàng",
+  isDelivering: "Đang giao hàng",
+  isDelivered: "Đã giao hang",
+  isCancel: "Đã huỷ",
+};

@@ -1,11 +1,11 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { ColumnDef } from "@tanstack/react-table";
-import { ChevronDown, Trash2 } from "lucide-react";
+import { ChevronDown, Eye, Trash2 } from "lucide-react";
 
 import DataTable from "@/components/common/DataTable";
 import DataTablePagination from "@/components/common/DataTable/DataTablePagination";
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
+import { Button, buttonVariants } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import {
   DropdownMenu,
@@ -14,14 +14,16 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Input } from "@/components/ui/input";
-import { useMutationProduct } from "@/hooks/api/products/useMutationProduct";
+import { orderStatusMapping } from "@/data";
+import { useDeleteOrder } from "@/hooks/api/orders/useDeleteOrder";
 import useDataGrid from "@/hooks/useDataGrid";
 import { cn } from "@/lib/utils";
+import { Order } from "@/models/order";
+import { formatCurrencyVND } from "@/utils/format-currency";
 import { formatDate } from "@/utils/format-date";
 import { getOrderCode } from "@/utils/helper";
+import { Link } from "@tanstack/react-router";
 import { toast } from "sonner";
-import OrderDetail from "../detail";
-import { Order } from "@/models/order";
 
 export type Review = {
   name: string;
@@ -34,19 +36,15 @@ interface IProps {
   data: Order[];
 }
 export function OrderTable({ data }: IProps) {
-  const { mutate } = useMutationProduct();
+  const { mutate } = useDeleteOrder();
 
-  const handleDelete = async (product: Order) => {
-    const payload = {
-      type: "delete",
-      data: product,
-    };
-    mutate(payload as any, {
+  const handleDeleteOrder = (id: string) => {
+    mutate(id, {
       onSuccess: () => {
-        toast("Xóa sản phẩm thành công!");
+        toast.success("Xóa đơn hàng thành công");
       },
       onError: () => {
-        toast("Xóa sản phẩm thất bại!");
+        toast.error("Xóa đơn hàng thất bại");
       },
     });
   };
@@ -77,7 +75,12 @@ export function OrderTable({ data }: IProps) {
     {
       header: "Mã đơn hàng",
       cell: ({ row }) => (
-        <div className="capitalize">{getOrderCode(row.original?._id)}</div>
+        <Link
+          to={`/dashboard/orders/${row.original?._id}`}
+          className="text-blue-500 underline"
+        >
+          <div className="capitalize"> {getOrderCode(row.original?._id)}</div>
+        </Link>
       ),
     },
     {
@@ -105,12 +108,16 @@ export function OrderTable({ data }: IProps) {
       accessorKey: "totalPrice",
       header: "Tổng tiền",
       cell: ({ row }) => {
-        return <div className="font-medium">{row.original?.totalPrice}</div>;
+        return (
+          <b className="font-medium">
+            {formatCurrencyVND(row.original?.totalPrice)}
+          </b>
+        );
       },
     },
     {
-      accessorKey: "isPaid",
-      header: "Thanh toán",
+      accessorKey: "orderStatus",
+      header: "Trạng thái",
       cell: ({ row }) => {
         return (
           <Badge
@@ -120,31 +127,9 @@ export function OrderTable({ data }: IProps) {
               "border-slate-500": !row.original?.isPaid,
             })}
           >
-            {row.original.isPaid ? "Đã thanh toán" : "Chưa thanh toán"}
+            {orderStatusMapping[row.original.orderStatus as string] ||
+              row.original.orderStatus}
           </Badge>
-        );
-      },
-    },
-    {
-      accessorKey: "isPaid",
-      header: "Sản phẩm",
-      cell: ({ row }) => {
-        return (
-          <div className="">
-            {row.original.orderItems.reduce((sum, item) => sum + item.qty, 0)}{" "}
-            sản phẩm
-          </div>
-        );
-      },
-    },
-    {
-      accessorKey: "isDelivered",
-      header: "Vận chuyển",
-      cell: ({ row }) => {
-        return (
-          <div className="font-medium">
-            {row.original?.isDelivered ? "Đã giao hàng" : "Đang giao hàng"}
-          </div>
         );
       },
     },
@@ -156,11 +141,17 @@ export function OrderTable({ data }: IProps) {
       cell: ({ row }) => {
         return (
           <div className="flex gap-3">
-            <OrderDetail data={row?.original} />
+            <Link
+              to={`/dashboard/orders/${row.original._id}`}
+              className={buttonVariants({ size: "icon", variant: "outline" })}
+            >
+              <Eye />
+            </Link>
+
             <Button
               variant={"outline"}
               size="icon"
-              onClick={() => handleDelete(row.original)}
+              onClick={() => handleDeleteOrder(row.original._id)}
             >
               <Trash2 className="text-red-500 size-4" />
             </Button>

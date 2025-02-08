@@ -1,3 +1,5 @@
+import { Product } from "./product";
+
 type Province = {
   name: string;
   code: number;
@@ -22,8 +24,10 @@ export type Order = {
   orderItems: Array<{
     name: string;
     qty: number;
+    size: string;
+    price: number;
     image: string;
-    product: string;
+    product: Product;
     _id: string;
   }>;
   paymentMethod: string;
@@ -33,4 +37,5 @@ export type Order = {
   createdAt: string;
   updatedAt: string;
   status: boolean;
+  orderStatus: string;
 };

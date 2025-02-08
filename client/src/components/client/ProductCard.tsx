@@ -5,20 +5,33 @@ import { Card } from "../ui/card";
 import { useWishlist } from "@/store/wishlist.store";
 import { formatCurrencyVND } from "@/utils/format-currency";
 import { Product } from "@/models/product";
+import { useState } from "react";
+import { cn } from "@/lib/utils";
 
 const ProductCard = ({ data }: { data: Product }) => {
   const imageUrl = data.image || IMAGE_PLACEHOLDER;
 
   const { addToWishlist } = useWishlist();
 
+  const [isWishlist, setIsWishlist] = useState(false);
+
+  const handleAddWishlist = () => {
+    addToWishlist(data);
+    setIsWishlist(!isWishlist);
+  };
+
   return (
     <Card className="flex flex-col p-4 border w-full min-h-[300px] transform duration-200 cursor-pointer">
       <div className="relative flex justify-center bg-gray-100 rounded-lg">
         <div
-          onClick={() => addToWishlist(data)}
+          onClick={handleAddWishlist}
           className="top-2 right-2 z-10 absolute flex justify-center items-center hover:bg-black/[0.05] p-1 border rounded-full cursor-pointer size-8"
         >
-          <Heart className="size-5" />
+          <Heart
+            className={cn("size-5", {
+              "fill-current text-red-500": isWishlist,
+            })}
+          />
         </div>
         <Link
           className="bg-gray-100 rounded-lg w-full transform duration-200 cursor-pointer"

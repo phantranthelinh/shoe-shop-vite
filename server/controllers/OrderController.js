@@ -35,7 +35,7 @@ const OrderController = {
     const order = await Order.findByIdAndUpdate(orderId, {
       shippingInfo,
       paymentMethod,
-      status: true,
+      orderStatus: "isOrdered",
     });
     if (!order) {
       return res.status(404).send({ message: "Order not found" });
@@ -48,8 +48,8 @@ const OrderController = {
       .populate("user", "name email ")
       .populate("shippingInfo.province")
       .populate("shippingInfo.ward")
-      .populate("shippingInfo.district");
-
+      .populate("shippingInfo.district")
+      .populate("orderItems.product", "id name image slug");
     if (order) {
       res.status(200).json(order);
     } else {
@@ -58,15 +58,13 @@ const OrderController = {
     }
   }),
 
-  // ORDER IS PAID
-  isPaid: asyncHandler(async (req, res) => {
-    const order = await Order.findById(req.params.id);
-    if (order) {
-      order.isPaid = true;
-      order.paidAt = Date.now();
-
-      const updateOrder = await order.save();
-      res.json(updateOrder);
+  updateOrderStatus: asyncHandler(async (req, res) => {
+    const { orderStatus } = req.body;
+    const updatedOrder = await Order.findByIdAndUpdate(req.params.id, {
+      orderStatus,
+    });
+    if (updatedOrder) {
+      res.status(200).json(updatedOrder);
     } else {
       res.status(404);
       throw new Error("Order not found");
@@ -79,6 +77,17 @@ const OrderController = {
       .populate("shippingInfo.ward")
       .populate("shippingInfo.district")
       .populate("user", "id name email")
+      .sort({ createdAt: -1 });
+    res.json(orders);
+  }),
+
+  getPendingOrder: asyncHandler(async (req, res) => {
+    const orders = await Order.find({ orderStatus: "pending" })
+      .populate("shippingInfo.province")
+      .populate("shippingInfo.ward")
+      .populate("shippingInfo.district")
+      .populate("user", "id name email")
+
       .sort({ createdAt: -1 });
     res.json(orders);
   }),
@@ -98,27 +107,12 @@ const OrderController = {
   }),
 
   deleteOrder: asyncHandler(async (req, res) => {
-    const order = await Order.findAndById(req.params.id);
+    const order = await Order.findByIdAndDelete(req.params.id);
     if (!order) {
       res.status(404);
       throw new Error("Order not found");
     }
-    await order.remove();
     res.json({ message: "Order deleted" });
-  }),
-
-  isDelivered: asyncHandler(async (req, res) => {
-    const order = await Order.findById(req.params.id);
-    if (order) {
-      order.isDelivered = true;
-      order.deliveredAt = Date.now();
-
-      const updateOrder = await order.save();
-      res.json(updateOrder);
-    } else {
-      res.status(404);
-      throw new Error("Order not found");
-    }
   }),
 };
 

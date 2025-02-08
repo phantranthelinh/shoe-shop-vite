@@ -1,12 +1,12 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+import { Product } from "@/models/product";
 import { useCart } from "@/store/cart.store";
 import { useWishlist } from "@/store/wishlist.store";
+import { formatCurrencyVND } from "@/utils/format-currency";
 import { Link } from "@tanstack/react-router";
-import { HeartOff } from "lucide-react";
+import { Heart } from "lucide-react";
 import { Button } from "../ui/button";
 import { Card } from "../ui/card";
-import { formatCurrencyVND } from "@/utils/format-currency";
-import { Product } from "@/models/product";
 
 const WishlistItem = ({ data }: { data: Product }) => {
   const { deleteFromWishlist } = useWishlist();
@@ -18,7 +18,7 @@ const WishlistItem = ({ data }: { data: Product }) => {
           onClick={() => deleteFromWishlist(data._id as string)}
           className="top-2 right-2 z-10 absolute flex justify-center items-center hover:bg-black/[0.05] p-1 border rounded-full cursor-pointer size-8"
         >
-          <HeartOff className="size-5" />
+          <Heart className="text-red-500 fill-current" />
         </div>
         <Link
           className="bg-gray-100 rounded-lg w-full transform duration-200 cursor-pointer"
