@@ -1,36 +1,28 @@
 import Autoplay from "embla-carousel-autoplay";
-import { useState } from "react";
-import {
-  Carousel,
-  CarouselApi,
-  CarouselContent,
-  CarouselItem,
-} from "../ui/carousel";
+import { Carousel, CarouselContent, CarouselItem } from "../ui/carousel";
 
 const DELAY_AUTOPLAY_SLIDE = 3000;
+const images = ["/slide-1.png", "/slide-2.png", "/slide-3.png"];
 const Hero = () => {
-  const [_, setApi] = useState<CarouselApi>();
-
   return (
-    <section className="relative text-white text-[20px] w-full max-w-[1360px] mx-auto">
+    <section className="relative w-full text-[20px] text-white">
       <Carousel
-        setApi={setApi}
         plugins={[
           Autoplay({
             delay: DELAY_AUTOPLAY_SLIDE,
           }),
         ]}
       >
-        <CarouselContent>
-          {Array.from({ length: 3 }).map((_, index) => {
+        <CarouselContent className="ml-0 w-full">
+          {images.map((image, index) => {
             return (
-              <CarouselItem key={index} className="relative ">
+              <CarouselItem key={index} className="relative ml-0 pl-0 w-full">
                 <img
-                  src={`/slide-${index + 1}.png`}
+                  src={image}
                   alt={`carousel-image-${index + 1}`}
-                  className="aspect-[16/10] md:aspect-auto object-cover"
+                  className="w-full"
                 />
-                <div className="px-[15px] md:px-[40px] py-[10px] md:py-[25px] font-oswald bg-white absolute bottom-[25px] md:bottom-[75px] left-0 text-black/[.9] text-[15px] md:text-[30px] uppercase font-medium cursor-pointer hover:opacity-90">
+                <div className="bottom-[25px] md:bottom-[75px] left-0 absolute bg-white hover:opacity-90 px-[15px] md:px-[40px] py-[10px] md:py-[25px] font-medium font-oswald text-[15px] text-black/[.9] md:text-[30px] uppercase cursor-pointer">
                   Mua ngay
                 </div>
               </CarouselItem>
