@@ -1,4 +1,4 @@
-import { Product } from "@/entities/product";
+import { Product } from "@/models/product";
 import ProductCard from "../../ProductCard";
 
 const ProductList = ({ data }: { data?: Product[] }) => {

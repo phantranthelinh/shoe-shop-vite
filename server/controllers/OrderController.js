@@ -96,6 +96,17 @@ const OrderController = {
     await Order.deleteMany({});
     res.status(200).json("Deleted successfully!");
   }),
+
+  deleteOrder: asyncHandler(async (req, res) => {
+    const order = await Order.findAndById(req.params.id);
+    if (!order) {
+      res.status(404);
+      throw new Error("Order not found");
+    }
+    await order.remove();
+    res.json({ message: "Order deleted" });
+  }),
+
   isDelivered: asyncHandler(async (req, res) => {
     const order = await Order.findById(req.params.id);
     if (order) {
