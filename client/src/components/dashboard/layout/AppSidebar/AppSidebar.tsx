@@ -36,7 +36,7 @@ const items = [
     icon: Table2,
   },
   {
-    title: "Khánh hàng",
+    title: "Khách hàng",
     url: "/dashboard/customers",
     icon: ShoppingCart,
   },

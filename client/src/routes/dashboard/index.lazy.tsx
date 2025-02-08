@@ -5,6 +5,7 @@ import { Card } from "@/components/ui/card";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { useGetPendingOrder } from "@/hooks/api/orders/useGetOrder";
 import { useGetOverviews } from "@/hooks/api/overview/useGetOverview";
+import { Order } from "@/models/order";
 import { formatCurrencyVND } from "@/utils/format-currency";
 import { formatDate } from "@/utils/format-date";
 import { createLazyFileRoute, Link } from "@tanstack/react-router";
@@ -68,41 +69,43 @@ function DashboardPage() {
               </Link>
             </Card>
           </div>
-          <div className="gap-4 grid grid-cols-1 sm:grid-cols-2 mt-4">
-            <Card className="py-4">
-              <h6 className="mb-4 ml-2 text-2xl">Đơn hàng chờ xử lý</h6>
-              <ScrollArea className="max-h-[400px]">
-                <div className="flex flex-col gap-4">
-                  {pendingOrders?.map((item) => {
-                    return (
-                      <Link
-                        to={`/dashboard/orders/${item._id}`}
-                        key={item._id}
-                        className="flex gap-4 hover:bg-gray-100 px-2 hover:cursor-pointer"
-                      >
-                        <Avatar>
-                          <AvatarImage
-                            src="https://github.com/shadcn.png"
-                            alt="@shadcn"
-                          />
-                          <AvatarFallback>CN</AvatarFallback>
-                        </Avatar>
-                        <div>
-                          <div>{formatDate(item.createdAt)}</div>
-                          <p>
-                            {item.user.name}, {item.orderItems.length}
-                          </p>
-                        </div>
-                        <div className="ml-auto">
-                          {formatCurrencyVND(item.totalPrice)}
-                        </div>
-                      </Link>
-                    );
-                  })}
-                </div>
-              </ScrollArea>
-            </Card>
-          </div>
+          {pendingOrders?.length > 0 && (
+            <div className="gap-4 grid grid-cols-1 sm:grid-cols-2 mt-4">
+              <Card className="py-4">
+                <h6 className="mb-4 ml-2 text-2xl">Đơn hàng chờ xử lý</h6>
+                <ScrollArea className="max-h-[400px]">
+                  <div className="flex flex-col gap-4">
+                    {pendingOrders?.map((item: Order) => {
+                      return (
+                        <Link
+                          to={`/dashboard/orders/${item._id}`}
+                          key={item._id}
+                          className="flex gap-4 hover:bg-gray-100 px-2 hover:cursor-pointer"
+                        >
+                          <Avatar>
+                            <AvatarImage
+                              src="https://github.com/shadcn.png"
+                              alt="@shadcn"
+                            />
+                            <AvatarFallback>CN</AvatarFallback>
+                          </Avatar>
+                          <div>
+                            <div>{formatDate(item.createdAt)}</div>
+                            <p>
+                              {item.user.name}, {item.orderItems.length}
+                            </p>
+                          </div>
+                          <div className="ml-auto">
+                            {formatCurrencyVND(item.totalPrice)}
+                          </div>
+                        </Link>
+                      );
+                    })}
+                  </div>
+                </ScrollArea>
+              </Card>
+            </div>
+          )}
         </div>
       )}
     </Layout>

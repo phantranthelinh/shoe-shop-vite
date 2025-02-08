@@ -247,7 +247,7 @@ const UpdateProduct: React.FC<IProps> = ({ productId, data }) => {
 
                 <div>
                   <div className="flex justify-between items-center">
-                    <span>Thêm kích cỡ & số lượng</span>
+                    <span>Thêm Size & số lượng</span>
                     <Button
                       size="icon"
                       variant={"outline"}
@@ -400,7 +400,6 @@ const UpdateProduct: React.FC<IProps> = ({ productId, data }) => {
                     </FormItem>
                   )}
                 />
-
                 <Button type="submit">{isPending ? <Loading /> : "Lưu"}</Button>
               </form>
             </Form>

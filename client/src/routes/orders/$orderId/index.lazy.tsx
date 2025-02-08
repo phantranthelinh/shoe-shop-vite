@@ -1,7 +1,8 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import MainLayout from "@/components/client/layout";
 import { Loading } from "@/components/common/Loading";
+import { orderStatusMapping } from "@/data";
 import { useGetOrder } from "@/hooks/api/orders/useGetOrder";
+import { Order } from "@/models/order";
 import { formatCurrencyVND } from "@/utils/format-currency";
 import { formatDate } from "@/utils/format-date";
 import { getOrderCode } from "@/utils/helper";
@@ -20,12 +21,15 @@ function OrderDetail() {
       {isLoading ? (
         <Loading />
       ) : (
-        <div className="flex flex-col gap-2 w-full max-w-2xl">
+        <div className="flex flex-col gap-2 py-4 w-full max-w-2xl">
           <div className="font-bold text-2xl">Chi tiết đơn hàng</div>
           <div>Mã đơn: {getOrderCode(data?._id)}</div>
           <div>Ngày đặt hàng: {formatDate(data?.createdAt ?? "")}</div>
+          <div>
+            Trạng thái: {orderStatusMapping[data?.orderStatus as string]}
+          </div>
           <hr className="my-4" />
-          {data?.orderItems?.map((item: any) => (
+          {data?.orderItems?.map((item: Order["orderItems"][0]) => (
             <div key={item._id}>
               <div className="flex justify-between">
                 <div className="flex gap-4">
@@ -33,9 +37,17 @@ function OrderDetail() {
                     src={item.image}
                     className="w-[50px] h-[50px] object-cover"
                   />
-                  <div>
-                    <h2 className="text-black/[.8] text-lg">{item.name}</h2>
-                    <h2 className="text-black/[.8] text-lg">x{item.qty}</h2>
+                  <div className="flex flex-col gap-2">
+                    <span className="text-base text-black/[.8]">
+                      {item.name}
+                    </span>
+                    <span className="text-base text-black/[.8]">
+                      size: {item.size}
+                    </span>
+
+                    <span className="text-base text-black/[.8]">
+                      x{item.qty}
+                    </span>
                   </div>
                 </div>
                 <div className="flex items-end font-bold">
@@ -58,9 +70,6 @@ function OrderDetail() {
                 Phương thức thanh toán:
                 <span> {data?.paymentMethod?.toLocaleUpperCase()}</span>
               </span>
-              <span>
-                Trạng thái: {data?.isPaid ? "Đã thanh toán" : "Chưa thanh toán"}
-              </span>
             </div>
             <div className="flex flex-col gap-2">
               <div className="font-bold text-lg">Thông tin vận chuyển</div>
@@ -72,10 +81,6 @@ function OrderDetail() {
                 {data?.shippingInfo?.district?.name},{" "}
                 {data?.shippingInfo?.ward?.name}
               </p>
-              <span>
-                Trạng thái:{" "}
-                {data?.isDelivered ? "Đã giao hàng" : "Đang giao hàng"}
-              </span>
             </div>
           </div>
         </div>

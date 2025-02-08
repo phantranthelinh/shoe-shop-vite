@@ -26,6 +26,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { Textarea } from "@/components/ui/textarea";
 import { defaultSizes } from "@/data";
 import { useGetCategories } from "@/hooks/api/categories/useGetCategories";
 import { useMutationProduct } from "@/hooks/api/products/useMutationProduct";
@@ -49,6 +50,7 @@ const AddProduct = ({ productId }: { productId?: string }) => {
       name: "",
       image: "",
       images: [],
+      shortDescription: "",
       price: 0,
       description: "",
       countInStock: 0,
@@ -160,6 +162,21 @@ const AddProduct = ({ productId }: { productId?: string }) => {
                 />
                 <FormField
                   control={control}
+                  name="shortDescription"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="block mb-2 font-medium text-gray-900 text-sm dark:text-white">
+                        Mô tả ngắn
+                      </FormLabel>
+                      <FormControl>
+                        <Textarea {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={control}
                   name="category"
                   render={({ field }) => (
                     <FormItem>
@@ -227,7 +244,7 @@ const AddProduct = ({ productId }: { productId?: string }) => {
 
                 <div>
                   <div className="flex justify-between items-center">
-                    <span>Thêm kích cỡ & số lượng</span>
+                    <span>Thêm size & số lượng</span>
                     <Button
                       size="icon"
                       variant={"outline"}
@@ -264,7 +281,13 @@ const AddProduct = ({ productId }: { productId?: string }) => {
                                 <FormItem>
                                   <FormLabel>Số lượng</FormLabel>
                                   <FormControl>
-                                    <Input type="number" {...field} />
+                                    <Input
+                                      type="number"
+                                      {...field}
+                                      onChange={(e) => {
+                                        field.onChange(Number(e.target.value));
+                                      }}
+                                    />
                                   </FormControl>
                                   <FormMessage className="text-red-500 capitalize" />
                                 </FormItem>

@@ -20,7 +20,7 @@ export const useGetPendingOrder = () => {
     queryKey: [QUERY_KEYS.PENDING_ORDERS],
     queryFn: async () => {
       const response = await API.get(url);
-      return response.data as Order[];
+      return response.data ?? ([] as Order[]);
     },
   });
 };
