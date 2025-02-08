@@ -40,6 +40,7 @@ const ReviewCheckout = ({
                   </div>
                   <div className="flex flex-col justify-between w-full">
                     <div className="font-bold text-base">{item?.name}</div>
+                    <div className="text-md">Size: {item?.size}</div>
                   </div>
                   <div className="flex flex-col justify-end">
                     <div className="text-md">

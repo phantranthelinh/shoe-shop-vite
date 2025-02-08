@@ -11,6 +11,7 @@ const ProductController = {
       image,
       sizes,
       countInStock,
+      shortDescription,
       category,
       images,
     } = req.body;
@@ -26,6 +27,7 @@ const ProductController = {
         description,
         image,
         countInStock,
+        shortDescription,
         sizes,
         category,
         user: req.user._id,
@@ -118,6 +120,7 @@ const ProductController = {
       image,
       countInStock,
       category,
+      shortDescription,
       images,
     } = req.body;
     const product = await Product.findById(req.params.id);
@@ -129,6 +132,8 @@ const ProductController = {
       product.sizes = sizes || product.sizes;
       product.image = image || product.image;
       product.images = images || product.images;
+      product.shortDescription = shortDescription || product.shortDescription;
+
       product.countInStock = countInStock || product.countInStock;
       product.category = category || product.category;
 

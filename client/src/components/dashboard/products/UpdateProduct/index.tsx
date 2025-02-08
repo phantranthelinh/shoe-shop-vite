@@ -27,6 +27,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { Textarea } from "@/components/ui/textarea";
 import { useGetCategories } from "@/hooks/api/categories/useGetCategories";
 import { useMutationProduct } from "@/hooks/api/products/useMutationProduct";
 import useCloudinaryUpload from "@/hooks/useCloudinaryUpload";
@@ -50,6 +51,7 @@ const UpdateProduct: React.FC<IProps> = ({ productId, data }) => {
     defaultValues: {
       name: data.name,
       image: data.image,
+      shortDescription: data.shortDescription,
       price: data.price,
       description: data.description,
       countInStock: data.countInStock,
@@ -64,7 +66,7 @@ const UpdateProduct: React.FC<IProps> = ({ productId, data }) => {
 
   const { isVisible, toggleVisibility } = useVisibility(false);
 
-  const { control } = form;
+  const { control, watch, setValue } = form;
 
   const { isPending, mutate: updateProduct } = useMutationProduct();
 
@@ -111,6 +113,12 @@ const UpdateProduct: React.FC<IProps> = ({ productId, data }) => {
     const newSizes = fields.filter((item) => item.id !== id);
     replace(newSizes);
   };
+  const sizes = watch("sizes");
+
+  const totalQuantity = sizes.reduce((total, item) => total + item.quantity, 0);
+
+  setValue("countInStock", totalQuantity);
+
   return (
     <Dialog open={isVisible} onOpenChange={handleOpenChange}>
       <DialogTrigger asChild>
@@ -150,6 +158,21 @@ const UpdateProduct: React.FC<IProps> = ({ productId, data }) => {
                       </FormLabel>
                       <FormControl>
                         <Input placeholder="Tên sản phẩm" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={control}
+                  name="shortDescription"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="block mb-2 font-medium text-gray-900 text-sm dark:text-white">
+                        Mô tả ngắn
+                      </FormLabel>
+                      <FormControl>
+                        <Textarea {...field} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -245,7 +268,7 @@ const UpdateProduct: React.FC<IProps> = ({ productId, data }) => {
                               name={`sizes.${index}.size`}
                               render={({ field }) => (
                                 <FormItem>
-                                  <FormLabel>Kích cỡ</FormLabel>
+                                  <FormLabel>Size</FormLabel>
                                   <FormControl>
                                     <Input {...field} />
                                   </FormControl>
@@ -261,7 +284,13 @@ const UpdateProduct: React.FC<IProps> = ({ productId, data }) => {
                                 <FormItem>
                                   <FormLabel>Số lượng</FormLabel>
                                   <FormControl>
-                                    <Input {...field} type="number" />
+                                    <Input
+                                      {...field}
+                                      onChange={(e) => {
+                                        field.onChange(Number(e.target.value));
+                                      }}
+                                      type="number"
+                                    />
                                   </FormControl>
                                   <FormMessage className="text-red-500 capitalize" />
                                 </FormItem>
@@ -288,15 +317,13 @@ const UpdateProduct: React.FC<IProps> = ({ productId, data }) => {
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel className="block mb-2 font-medium text-gray-900 text-sm dark:text-white">
-                        Số lượng tồn
+                        Tổng số lượng
                       </FormLabel>
                       <FormControl>
                         <Input
-                          placeholder="Số lượng tồn"
+                          disabled
+                          placeholder="Tổng số lượng"
                           {...field}
-                          onChange={(e) => {
-                            field.onChange(Number(e.target.value));
-                          }}
                         />
                       </FormControl>
                       <FormMessage />

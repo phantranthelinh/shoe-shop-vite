@@ -18,7 +18,7 @@ const OrderController = {
       });
       orderItems.forEach(async (item) => {
         await Products.updateOne(
-          { _id: item.product._id, "sizes.size": 42 },
+          { _id: item.product._id, "sizes.size": item.size },
           {
             $inc: { "sizes.$.quantity": -1, countInStock: -1 },
           }
@@ -35,6 +35,7 @@ const OrderController = {
     const order = await Order.findByIdAndUpdate(orderId, {
       shippingInfo,
       paymentMethod,
+      status: true,
     });
     if (!order) {
       return res.status(404).send({ message: "Order not found" });

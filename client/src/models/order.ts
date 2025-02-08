@@ -32,5 +32,5 @@ export type Order = {
   isDelivered: boolean;
   createdAt: string;
   updatedAt: string;
-  __v: number;
+  status: boolean;
 };

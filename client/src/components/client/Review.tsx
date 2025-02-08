@@ -79,12 +79,12 @@ const Review = () => {
                 className="bg-light shadow-sm mb-5 mb-md-3 p-3 rounded"
               >
                 <div className="my-2 font-bold text-base">
-                  {review.user.name} - {review.user.email}
+                  {review?.user?.name} - {review?.user?.email}
                 </div>
 
                 <Rating rating={review.rating} />
                 <span>{moment(review.createdAt).calendar()}</span>
-                <div className="mt-3 alert alert-info">{review.comment}</div>
+                <div className="mt-3 alert alert-info">{review?.comment}</div>
               </div>
             );
           })}

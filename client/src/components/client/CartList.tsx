@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { deleteFromCart, updateCart } from "@/store/cart.store";
+import { deleteFromCart, TCartItem, updateCart } from "@/store/cart.store";
 import { formatCurrencyVND } from "@/utils/format-currency";
 import { Link } from "@tanstack/react-router";
 import { Minus, Plus, Trash2 } from "lucide-react";
@@ -7,7 +7,7 @@ import { Button } from "../ui/button";
 import { Checkbox } from "../ui/checkbox";
 
 interface CartListProps {
-  cartItems: any;
+  cartItems: TCartItem[];
   addItem: (id: any) => void;
   deleteItem: (id: string) => void;
 }
@@ -20,6 +20,7 @@ const CartList = ({ cartItems, addItem, deleteItem }: CartListProps) => {
             <th className="border-2 border-gray-300 p-2 w-[50px]">Chọn</th>
             <th className="border-2 border-gray-300 p-2">Ảnh sản phẩm</th>
             <th className="border-2 border-gray-300 p-2">Tên sản phẩm</th>
+            <th className="border-2 border-gray-300 p-2">Size</th>
             <th className="border-2 border-gray-300 p-2">Số lượng</th>
             <th className="border-2 border-gray-300 p-2">Đơn giá</th>
             <th className="border-2 border-gray-300 p-2 w-[50px]">Xoá</th>
@@ -28,7 +29,7 @@ const CartList = ({ cartItems, addItem, deleteItem }: CartListProps) => {
         <tbody>
           {cartItems.map((item: any) => (
             <CartItem
-              key={item?._id}
+              key={item.cartItemId}
               data={item}
               addItem={addItem}
               deleteItem={deleteItem}
@@ -45,7 +46,7 @@ const CartItem = ({
   addItem,
   deleteItem,
 }: {
-  data: any;
+  data: TCartItem;
   addItem: (id: string) => void;
   deleteItem: (id: string) => void;
 }) => {
@@ -53,9 +54,9 @@ const CartItem = ({
     const payload = {
       key,
       val: key === "quantity" ? parseInt(e.target.value) : e.target.value,
-      id: data._id,
+      cartItemId: data.cartItemId,
     };
-    updateCart(payload.id, payload.key, payload.val);
+    updateCart(payload.cartItemId, payload.key, payload.val);
   };
   return (
     <tr>
@@ -64,9 +65,9 @@ const CartItem = ({
           <Checkbox
             onCheckedChange={(state) => {
               if (state) {
-                addItem(data._id);
+                addItem(data.cartItemId);
               } else {
-                deleteItem(data._id);
+                deleteItem(data.cartItemId);
               }
             }}
           />
@@ -89,6 +90,7 @@ const CartItem = ({
       <td className="border-2 border-gray-300 p-2 text-center">
         <h2 className="text-black/[.8] text-lg md:text-xl">{data?.name}</h2>
       </td>
+      <td className="border-2 border-gray-300 p-2 text-center">{data.size}</td>
       <td className="border-2 border-gray-300 p-2 text-center">
         <div className="flex items-center gap-2 md:gap-6 text-gray-600 text-sm md:text-md">
           <div className="flex justify-center items-center gap-3 w-full">
@@ -130,7 +132,7 @@ const CartItem = ({
         <Button
           size="icon"
           variant="outline"
-          onClick={() => deleteFromCart(data?._id)}
+          onClick={() => deleteFromCart(data.cartItemId)}
         >
           <Trash2 className="text-red-500 size-5" />
         </Button>

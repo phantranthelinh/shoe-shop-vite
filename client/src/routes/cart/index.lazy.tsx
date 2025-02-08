@@ -4,7 +4,7 @@ import MainLayout from "@/components/client/layout";
 import Wrapper from "@/components/common/Wrapper";
 import { Button, buttonVariants } from "@/components/ui/button";
 import { useCreateOrder } from "@/hooks/api/orders/useCreateOrder";
-import { deleteFromCart, useCart } from "@/store/cart.store";
+import { deleteFromCart, TCartItem, useCart } from "@/store/cart.store";
 import { formatCurrencyVND } from "@/utils/format-currency";
 import { createLazyFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { ChevronLeft } from "lucide-react";
@@ -21,11 +21,11 @@ function CartPage() {
   const navigate = useNavigate();
   const [selectedItems, setSelectedItems] = useState<any[]>([]);
 
-  const handleAddCheckoutItem = (itemId: any) => {
-    const item = cartItems.find((item) => item._id === itemId);
+  const handleAddCheckoutItem = (cartItemId: string) => {
+    const item = cartItems.find((item) => item.cartItemId === cartItemId);
     if (item) {
       const existingItemIndex = selectedItems.findIndex(
-        (existingItem) => existingItem?._id === item._id
+        (existingItem) => existingItem?.cartItemId === item.cartItemId
       );
 
       if (existingItemIndex !== -1) {
@@ -45,9 +45,9 @@ function CartPage() {
     }
   };
 
-  const handleRemoveSelectedItem = (itemId: any) => {
+  const handleRemoveSelectedItem = (cartItemId: string) => {
     setSelectedItems((prevSelectedItems) =>
-      prevSelectedItems.filter((item) => item._id !== itemId)
+      prevSelectedItems.filter((item) => item.cartItemId !== cartItemId)
     );
   };
 
@@ -75,12 +75,13 @@ function CartPage() {
   const { mutate: createOrder } = useCreateOrder();
 
   const handleCheckout = () => {
-    const orderItems = selectedItems.map((item: any) => ({
+    const orderItems = selectedItems.map((item: TCartItem) => ({
       product: item._id,
       name: item.name,
       image: item.image,
       qty: item.quantity,
       price: item.price,
+      size: item.size,
     }));
     const totalPrice = orderItems.reduce(
       (total: number, item: any) => total + item.price * item.qty,
@@ -94,8 +95,8 @@ function CartPage() {
 
     createOrder(dataSubmit, {
       onSuccess: (data) => {
-        selectedItems.forEach((item: any) => {
-          deleteFromCart(item._id);
+        selectedItems.forEach((item: TCartItem) => {
+          deleteFromCart(item.cartItemId);
         });
         navigate({ to: `/checkout/${data._id}` });
       },

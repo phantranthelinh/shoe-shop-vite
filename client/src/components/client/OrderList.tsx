@@ -1,3 +1,4 @@
+import { cn } from "@/lib/utils";
 import { Order } from "@/models/order";
 import { formatCurrencyVND } from "@/utils/format-currency";
 import { formatDate } from "@/utils/format-date";
@@ -17,15 +18,28 @@ const OrderList = ({ data }: OrderListProps) => {
             <th className="px-4 py-2 text-left">Sản phẩm</th>
             <th className="px-4 py-2 text-left">Tổng tiền</th>
             <th className="px-4 py-2 text-left">Ngày đặt hàng</th>
+            <th className="px-4 py-2 text-left">Trạng thái</th>
             <th className="px-4 py-2 text-left">Thanh toán</th>
             <th className="px-4 py-2 text-left">Vận chuyển</th>
           </tr>
         </thead>
         <tbody>
           {data.map((item: Order) => (
-            <tr key={item?._id} className="border-gray-200 border-b">
+            <tr
+              key={item?._id}
+              className={cn("border-gray-200 border-b", {
+                "opacity-1": item.status,
+                "opacity-70": !item.status,
+              })}
+            >
               <td className="px-4 py-2">
-                <Link to={`/orders/${item?._id}`}>
+                <Link
+                  to={
+                    item.status
+                      ? `/orders/${item?._id}`
+                      : `/checkout/${item?._id}`
+                  }
+                >
                   {getOrderCode(item?._id)}
                 </Link>
               </td>
@@ -36,6 +50,10 @@ const OrderList = ({ data }: OrderListProps) => {
                 {formatCurrencyVND(item.totalPrice)}
               </td>
               <td className="px-4 py-2">{formatDate(item.createdAt)}</td>
+              <td className="px-4 py-2">
+                {item.status ? "Đặt hàng thành công" : "Chưa hoàn tất đặt hàng"}
+              </td>
+
               <td className="px-4 py-2">
                 {item.isPaid ? "Đã thanh toán" : "Chưa thanh toán"}
               </td>

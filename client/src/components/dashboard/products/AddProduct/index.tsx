@@ -248,7 +248,7 @@ const AddProduct = ({ productId }: { productId?: string }) => {
                               name={`sizes.${index}.size`}
                               render={({ field }) => (
                                 <FormItem>
-                                  <FormLabel>Kích cỡ</FormLabel>
+                                  <FormLabel>Size</FormLabel>
                                   <FormControl>
                                     <Input {...field} />
                                   </FormControl>

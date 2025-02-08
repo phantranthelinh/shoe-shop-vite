@@ -5,6 +5,7 @@ import { Review } from "./review";
 export const ProductSchema = z.object({
   name: z.string().min(1, { message: "Vui lòng nhập thông tin" }),
   image: z.string(),
+  shortDescription: z.optional(z.string()),
   images: z.optional(z.array(z.string())),
   price: z.number().min(1, { message: "Vui lòng nhập thông tin" }),
   sizes: z.array(z.object({ size: z.string(), quantity: z.number() })),
@@ -15,6 +16,7 @@ export const ProductSchema = z.object({
 export type ProductDto = z.infer<typeof ProductSchema> & {
   _id?: string;
   id?: string;
+  slug?: string;
 };
 export type Product = {
   _id?: string;
@@ -24,6 +26,5 @@ export type Product = {
   reviews: Review[];
   createdAt?: string;
   updatedAt?: string;
-  slug: string;
   category: Category;
 } & ProductDto;

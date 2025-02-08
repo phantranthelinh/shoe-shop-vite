@@ -6,11 +6,11 @@ const orderSchema = mongoose.Schema(
       required: true,
       ref: "User",
     },
-
     orderItems: [
       {
         name: { type: String, required: true },
         price: { type: Number, required: true },
+        size: { type: String, required: true },
         qty: { type: Number, required: true },
         image: { type: String, required: true },
         product: {
@@ -55,6 +55,11 @@ const orderSchema = mongoose.Schema(
       type: Date,
     },
     isDelivered: {
+      type: Boolean,
+      required: true,
+      default: false,
+    },
+    status: {
       type: Boolean,
       required: true,
       default: false,

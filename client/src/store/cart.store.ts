@@ -1,18 +1,19 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+import { ProductDto } from "@/models/product";
 import { create } from "zustand";
 
-interface CartItem {
-  _id: string;
+export type TCartItem = {
+  cartItemId: string;
   quantity: number;
-  totalPrice: number;
-  price: number;
-}
+  size: string;
+  totalPrice?: number;
+} & ProductDto;
 
 interface CartState {
-  cartItems: CartItem[];
-  checkoutItems: CartItem[];
-  addToCart: (item: Omit<CartItem, "quantity" | "totalPrice">) => void;
-  updateCart: (id: string, key: keyof CartItem, val: number) => void;
+  cartItems: TCartItem[];
+  checkoutItems: TCartItem[];
+  addToCart: (item: Omit<TCartItem, "totalPrice">) => void;
+  updateCart: (id: string, key: keyof TCartItem, val: number) => void;
   deleteFromCart: (id: string) => void;
   addCheckoutItems: (item: any) => void;
   clearCart: () => void;
@@ -23,38 +24,40 @@ const useCartStore = create<CartState>((set, get) => ({
   cartItems: JSON.parse(localStorage.getItem("cartItems") || "[]"),
   checkoutItems: [],
   addToCart: (item) => {
-    const existingItem = get().cartItems.find((p) => p._id === item._id);
+    set((state) => {
+      const existingItem = state.cartItems.find(
+        (p) => p._id === item._id && p.size === item.size
+      );
 
-    if (existingItem) {
-      const updatedItem = {
-        ...existingItem,
-        quantity: existingItem.quantity + 1,
-        totalPrice: existingItem.price * (existingItem.quantity + 1),
-      };
+      let updatedCartItems;
 
-      set((state) => ({
-        cartItems: state.cartItems.map((i) =>
-          i._id === item._id ? updatedItem : i
-        ),
-      }));
-    } else {
-      const newItem = {
-        ...item,
-        quantity: 1,
-        totalPrice: item.price,
-      };
+      if (existingItem) {
+        const updatedItem = {
+          ...existingItem,
+          quantity: existingItem.quantity + 1,
+          totalPrice: existingItem.price * (existingItem.quantity + 1),
+        };
 
-      set((state) => ({
-        cartItems: [...state.cartItems, newItem],
-      }));
-    }
+        updatedCartItems = state.cartItems.map((i) =>
+          i._id === item._id && i.size === item.size ? updatedItem : i
+        );
+      } else {
+        updatedCartItems = [
+          ...state.cartItems,
+          { ...item, quantity: 1, totalPrice: item.price },
+        ];
+      }
 
-    localStorage.setItem("cartItems", JSON.stringify(get().cartItems));
+      // Store updated cart in localStorage
+      localStorage.setItem("cartItems", JSON.stringify(updatedCartItems));
+
+      return { cartItems: updatedCartItems };
+    });
   },
 
-  updateCart: (id, key, val) => {
+  updateCart: (cartItemId, key, val) => {
     const updatedCartItems = get().cartItems.map((item) => {
-      if (item._id === id) {
+      if (item.cartItemId === cartItemId) {
         const updatedItem = { ...item, [key]: val };
         if (key === "quantity") {
           updatedItem.totalPrice = updatedItem.price * val;
@@ -69,7 +72,9 @@ const useCartStore = create<CartState>((set, get) => ({
   },
 
   deleteFromCart: (id) => {
-    const updatedCartItems = get().cartItems.filter((item) => item._id !== id);
+    const updatedCartItems = get().cartItems.filter(
+      (item) => item.cartItemId !== id
+    );
     set({ cartItems: updatedCartItems });
     localStorage.setItem("cartItems", JSON.stringify(updatedCartItems));
   },
