@@ -1,12 +1,15 @@
 import MainLayout from "@/components/client/layout";
 import { Loading } from "@/components/common/Loading";
-import { orderStatusMapping } from "@/data";
+import OrderStatusText from "@/components/common/OrderStatus";
+import { Button } from "@/components/ui/button";
 import { useGetOrder } from "@/hooks/api/orders/useGetOrder";
+import { useCancelOrder } from "@/hooks/api/orders/useUpdateStatusOrder";
 import { Order } from "@/models/order";
 import { formatCurrencyVND } from "@/utils/format-currency";
 import { formatDate } from "@/utils/format-date";
-import { getOrderCode } from "@/utils/helper";
+import { getOrderCode, isShowCancelOrderButton } from "@/utils/helper";
 import { createLazyFileRoute } from "@tanstack/react-router";
+import { toast } from "sonner";
 
 export const Route = createLazyFileRoute("/orders/$orderId/")({
   component: OrderDetail,
@@ -16,6 +19,15 @@ function OrderDetail() {
   const { orderId } = Route.useParams();
   const { isLoading, data } = useGetOrder(orderId);
 
+  const { mutate: cancelOrder } = useCancelOrder();
+
+  const handleCancelOrder = async () => {
+    cancelOrder(orderId, {
+      onError: () => {
+        toast.error("Huỷ đơn hàng thất bại!, vui lòng liên hệ với chúng tôi");
+      },
+    });
+  };
   return (
     <MainLayout classNames="min-h-[60vh]">
       {isLoading ? (
@@ -26,7 +38,7 @@ function OrderDetail() {
           <div>Mã đơn: {getOrderCode(data?._id)}</div>
           <div>Ngày đặt hàng: {formatDate(data?.createdAt ?? "")}</div>
           <div>
-            Trạng thái: {orderStatusMapping[data?.orderStatus as string]}
+            Trạng thái: <OrderStatusText status={data?.orderStatus} />
           </div>
           <hr className="my-4" />
           {data?.orderItems?.map((item: Order["orderItems"][0]) => (
@@ -83,6 +95,15 @@ function OrderDetail() {
               </p>
             </div>
           </div>
+          {isShowCancelOrderButton(data?.orderStatus) && (
+            <Button
+              onClick={handleCancelOrder}
+              className="max-w-[100px]"
+              variant={"destructive"}
+            >
+              Huỷ đơn
+            </Button>
+          )}
         </div>
       )}
     </MainLayout>

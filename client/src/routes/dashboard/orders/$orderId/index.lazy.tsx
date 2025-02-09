@@ -70,11 +70,15 @@ function OrderDetail() {
                       <SelectValue placeholder="Đã đặt hàng" />
                     </SelectTrigger>
                     <SelectContent>
+                      <SelectItem value="pending">
+                        Chưa hàng tất đặt hàng
+                      </SelectItem>
                       <SelectItem value="isOrdered">Đã đặt hàng</SelectItem>
                       <SelectItem value="isDelivering">
                         Đang giao hàng
                       </SelectItem>
                       <SelectItem value="isDelivered">Đã giao hàng</SelectItem>
+                      <SelectItem value="isCancelled">Đã huỷ</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>

@@ -41,6 +41,7 @@ const DashboardProductCategoriesIndexLazyImport = createFileRoute(
   '/dashboard/product-categories/',
 )()
 const DashboardOrdersIndexLazyImport = createFileRoute('/dashboard/orders/')()
+const DashboardIncomesIndexLazyImport = createFileRoute('/dashboard/incomes/')()
 const DashboardCustomersIndexLazyImport = createFileRoute(
   '/dashboard/customers/',
 )()
@@ -195,6 +196,14 @@ const DashboardOrdersIndexLazyRoute = DashboardOrdersIndexLazyImport.update({
   import('./routes/dashboard/orders/index.lazy').then((d) => d.Route),
 )
 
+const DashboardIncomesIndexLazyRoute = DashboardIncomesIndexLazyImport.update({
+  id: '/dashboard/incomes/',
+  path: '/dashboard/incomes/',
+  getParentRoute: () => rootRoute,
+} as any).lazy(() =>
+  import('./routes/dashboard/incomes/index.lazy').then((d) => d.Route),
+)
+
 const DashboardCustomersIndexLazyRoute =
   DashboardCustomersIndexLazyImport.update({
     id: '/dashboard/customers/',
@@ -340,6 +349,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DashboardCustomersIndexLazyImport
       parentRoute: typeof rootRoute
     }
+    '/dashboard/incomes/': {
+      id: '/dashboard/incomes/'
+      path: '/dashboard/incomes'
+      fullPath: '/dashboard/incomes'
+      preLoaderRoute: typeof DashboardIncomesIndexLazyImport
+      parentRoute: typeof rootRoute
+    }
     '/dashboard/orders/': {
       id: '/dashboard/orders/'
       path: '/dashboard/orders'
@@ -404,6 +420,7 @@ export interface FileRoutesByFullPath {
   '/wishlist': typeof WishlistIndexLazyRoute
   '/checkout/$checkoutId': typeof CheckoutCheckoutIdIndexLazyRoute
   '/dashboard/customers': typeof DashboardCustomersIndexLazyRoute
+  '/dashboard/incomes': typeof DashboardIncomesIndexLazyRoute
   '/dashboard/orders': typeof DashboardOrdersIndexLazyRoute
   '/dashboard/product-categories': typeof DashboardProductCategoriesIndexLazyRoute
   '/dashboard/products': typeof DashboardProductsIndexLazyRoute
@@ -429,6 +446,7 @@ export interface FileRoutesByTo {
   '/wishlist': typeof WishlistIndexLazyRoute
   '/checkout/$checkoutId': typeof CheckoutCheckoutIdIndexLazyRoute
   '/dashboard/customers': typeof DashboardCustomersIndexLazyRoute
+  '/dashboard/incomes': typeof DashboardIncomesIndexLazyRoute
   '/dashboard/orders': typeof DashboardOrdersIndexLazyRoute
   '/dashboard/product-categories': typeof DashboardProductCategoriesIndexLazyRoute
   '/dashboard/products': typeof DashboardProductsIndexLazyRoute
@@ -455,6 +473,7 @@ export interface FileRoutesById {
   '/wishlist/': typeof WishlistIndexLazyRoute
   '/checkout/$checkoutId/': typeof CheckoutCheckoutIdIndexLazyRoute
   '/dashboard/customers/': typeof DashboardCustomersIndexLazyRoute
+  '/dashboard/incomes/': typeof DashboardIncomesIndexLazyRoute
   '/dashboard/orders/': typeof DashboardOrdersIndexLazyRoute
   '/dashboard/product-categories/': typeof DashboardProductCategoriesIndexLazyRoute
   '/dashboard/products/': typeof DashboardProductsIndexLazyRoute
@@ -482,6 +501,7 @@ export interface FileRouteTypes {
     | '/wishlist'
     | '/checkout/$checkoutId'
     | '/dashboard/customers'
+    | '/dashboard/incomes'
     | '/dashboard/orders'
     | '/dashboard/product-categories'
     | '/dashboard/products'
@@ -506,6 +526,7 @@ export interface FileRouteTypes {
     | '/wishlist'
     | '/checkout/$checkoutId'
     | '/dashboard/customers'
+    | '/dashboard/incomes'
     | '/dashboard/orders'
     | '/dashboard/product-categories'
     | '/dashboard/products'
@@ -530,6 +551,7 @@ export interface FileRouteTypes {
     | '/wishlist/'
     | '/checkout/$checkoutId/'
     | '/dashboard/customers/'
+    | '/dashboard/incomes/'
     | '/dashboard/orders/'
     | '/dashboard/product-categories/'
     | '/dashboard/products/'
@@ -556,6 +578,7 @@ export interface RootRouteChildren {
   WishlistIndexLazyRoute: typeof WishlistIndexLazyRoute
   CheckoutCheckoutIdIndexLazyRoute: typeof CheckoutCheckoutIdIndexLazyRoute
   DashboardCustomersIndexLazyRoute: typeof DashboardCustomersIndexLazyRoute
+  DashboardIncomesIndexLazyRoute: typeof DashboardIncomesIndexLazyRoute
   DashboardOrdersIndexLazyRoute: typeof DashboardOrdersIndexLazyRoute
   DashboardProductCategoriesIndexLazyRoute: typeof DashboardProductCategoriesIndexLazyRoute
   DashboardProductsIndexLazyRoute: typeof DashboardProductsIndexLazyRoute
@@ -581,6 +604,7 @@ const rootRouteChildren: RootRouteChildren = {
   WishlistIndexLazyRoute: WishlistIndexLazyRoute,
   CheckoutCheckoutIdIndexLazyRoute: CheckoutCheckoutIdIndexLazyRoute,
   DashboardCustomersIndexLazyRoute: DashboardCustomersIndexLazyRoute,
+  DashboardIncomesIndexLazyRoute: DashboardIncomesIndexLazyRoute,
   DashboardOrdersIndexLazyRoute: DashboardOrdersIndexLazyRoute,
   DashboardProductCategoriesIndexLazyRoute:
     DashboardProductCategoriesIndexLazyRoute,
@@ -616,6 +640,7 @@ export const routeTree = rootRoute
         "/wishlist/",
         "/checkout/$checkoutId/",
         "/dashboard/customers/",
+        "/dashboard/incomes/",
         "/dashboard/orders/",
         "/dashboard/product-categories/",
         "/dashboard/products/",
@@ -671,6 +696,9 @@ export const routeTree = rootRoute
     },
     "/dashboard/customers/": {
       "filePath": "dashboard/customers/index.lazy.tsx"
+    },
+    "/dashboard/incomes/": {
+      "filePath": "dashboard/incomes/index.lazy.tsx"
     },
     "/dashboard/orders/": {
       "filePath": "dashboard/orders/index.lazy.tsx"

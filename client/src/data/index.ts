@@ -50,8 +50,8 @@ export const defaultSizes = [
 
 export const orderStatusMapping: { [key: string]: string } = {
   pending: "Chưa hoàn tất đặt hàng",
-  isOrdered: "Đã đặt hàng",
+  isOrdered: "Đang chờ xử lý",
   isDelivering: "Đang giao hàng",
-  isDelivered: "Đã giao hang",
-  isCancel: "Đã huỷ",
+  isDelivered: "Đã giao hàng",
+  isCancelled: "Đã huỷ",
 };

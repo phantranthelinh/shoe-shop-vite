@@ -60,9 +60,21 @@ const OrderController = {
 
   updateOrderStatus: asyncHandler(async (req, res) => {
     const { orderStatus } = req.body;
+
+    const updateData = { orderStatus };
+
+    console.log(
+      "🚀 ~ updateOrderStatus:asyncHandler ~ updateData:",
+      updateData
+    );
+    if (orderStatus === "isDelivered") {
+      updateData.deliveredAt = Date.now();
+    }
+
     const updatedOrder = await Order.findByIdAndUpdate(req.params.id, {
-      orderStatus,
+      ...updateData,
     });
+
     if (updatedOrder) {
       res.status(200).json(updatedOrder);
     } else {
@@ -82,14 +94,26 @@ const OrderController = {
   }),
 
   getPendingOrder: asyncHandler(async (req, res) => {
-    const orders = await Order.find({ orderStatus: "pending" })
+    const orders = await Order.find({ orderStatus: "isOrdered" })
       .populate("shippingInfo.province")
       .populate("shippingInfo.ward")
       .populate("shippingInfo.district")
       .populate("user", "id name email")
 
       .sort({ createdAt: -1 });
-    res.json(orders);
+    res.status(200).json(orders);
+  }),
+
+  cancelOrder: asyncHandler(async (req, res) => {
+    const updatedOrder = await Order.findByIdAndUpdate(req.params.id, {
+      orderStatus: "isCancelled",
+    });
+    if (updatedOrder) {
+      res.status(200).json(updatedOrder);
+    } else {
+      res.status(404);
+      throw new Error("Order not found");
+    }
   }),
 
   getOrderByUser: asyncHandler(async (req, res) => {
@@ -106,12 +130,24 @@ const OrderController = {
     res.status(200).json("Deleted successfully!");
   }),
 
-  deleteOrder: asyncHandler(async (req, res) => {
+  deleteOrderByAdmin: asyncHandler(async (req, res) => {
     const order = await Order.findByIdAndDelete(req.params.id);
     if (!order) {
       res.status(404);
       throw new Error("Order not found");
     }
+    res.json({ message: "Order deleted" });
+  }),
+  deleteOrder: asyncHandler(async (req, res) => {
+    const order = await Order.findOne({
+      _id: req.params.id,
+      user: req.user._id,
+    });
+    if (!order) {
+      res.status(404);
+      throw new Error("Order not found");
+    }
+    await order.remove();
     res.json({ message: "Order deleted" });
   }),
 };

@@ -36,7 +36,7 @@ interface IProps {
   data: Order[];
 }
 export function OrderTable({ data }: IProps) {
-  const { mutate } = useDeleteOrder();
+  const { mutate } = useDeleteOrder({ isAdmin: true });
 
   const handleDeleteOrder = (id: string) => {
     mutate(id, {

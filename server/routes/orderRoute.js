@@ -8,11 +8,19 @@ router.get("/all", protect, admin, orderController.adminGetAllOrder);
 router.get("/pending", protect, admin, orderController.getPendingOrder);
 router.get("/:id", protect, orderController.detail);
 router.put("/:id", protect, orderController.update);
-router.put("/:id/order-status", protect, orderController.updateOrderStatus);
+router.put(
+  "/:id/order-status",
+  protect,
+  admin,
+  orderController.updateOrderStatus
+);
+router.put("/:id/cancel", protect, orderController.cancelOrder);
+
 router.get("/", protect, orderController.getOrderByUser);
 
 router.delete("/", protect, admin, orderController.deleteAllOrder);
 
-router.delete("/:id", protect, admin, orderController.deleteOrder);
+router.delete("/:id", protect, orderController.deleteOrder);
+router.delete("/:id/admin", protect, admin, orderController.deleteOrderByAdmin);
 
 module.exports = router;

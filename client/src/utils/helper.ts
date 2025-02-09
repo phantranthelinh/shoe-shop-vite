@@ -4,3 +4,13 @@ export const getDiscount = (originalPrice: number, discountedPrice: number) =>
 export const getOrderCode = (id: string = "") => {
   return `NIK-${id.slice(0, 6)}`;
 };
+
+export const isShowCancelOrderButton = (orderStatus?: string) => {
+  if (!orderStatus) return false;
+  return orderStatus === "isOrdered";
+};
+
+export const isShowDeleteOrderButton = (orderStatus?: string) => {
+  if (!orderStatus) return false;
+  return orderStatus === "isCancelled" || orderStatus === "pending";
+};

@@ -1,6 +1,7 @@
 import MainLayout from "@/components/client/layout";
 import Wrapper from "@/components/common/Wrapper";
 import { createLazyFileRoute, Link } from "@tanstack/react-router";
+import { MoveRight } from "lucide-react";
 
 export const Route = createLazyFileRoute("/payment-success/")({
   component: PaymentSuccessPage,
@@ -12,7 +13,7 @@ function PaymentSuccessPage() {
       <Wrapper>
         <section className="flex flex-col mx-auto p-5 border border-black rounded-lg max-w-[600px]">
           <h1 className="font-bold text-2xl">
-            Thank you for shopping with us!
+            Cảm ơn bạn đã mua sắm ở shop chúng mình!
           </h1>
 
           <div className="mt-2 font-bold text-lg">
@@ -29,10 +30,18 @@ function PaymentSuccessPage() {
               aslinikecontact@nike.com
             </div>
           </Link>
-
-          <Link href="/" className="mt-5 font-bold cursor-pointer">
-            Tiếp tục mua sắm
-          </Link>
+          <div className="flex justify-between items-center mt-5">
+            <Link to="/orders" className="font-bold underline cursor-pointer">
+              Xem đơn hàng của bạn
+            </Link>
+            <Link
+              to="/"
+              className="flex gap-2 font-bold underline cursor-pointer"
+            >
+              Tiếp tục mua sắm
+              <MoveRight />
+            </Link>
+          </div>
         </section>
       </Wrapper>
     </MainLayout>

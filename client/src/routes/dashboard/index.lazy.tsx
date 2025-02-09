@@ -34,10 +34,11 @@ function DashboardPage() {
           <div className="gap-4 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 mt-4">
             <Card className="relative px-4 py-8 overflow-hidden">
               <div className="-top-10 -left-10 z-0 absolute bg-black/[0.3] rounded-full w-[160px] h-[160px]"></div>
-              <Link to="/dashboard/revenue" className="z-10 flex gap-2">
+              <Link to="/dashboard/incomes" className="z-10 flex gap-2">
                 <DollarSign className="size-8" />
-                <div className="z-10 ml-auto">
-                  Thu nhập trong tháng : {data?.totalOrders}
+                <div className="z-10 ml-auto w-[180px]">
+                  Doanh thu tháng này:{" "}
+                  <b>{formatCurrencyVND(data?.totalMonthlyIncome)}</b>
                 </div>
               </Link>
             </Card>
