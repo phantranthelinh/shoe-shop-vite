@@ -38,7 +38,7 @@ function OrderPage() {
               </span>
 
               <Link
-                className="bg-black hover:opacity-75 mt-8 mb-3 px-8 py-4 rounded-full font-medium text-lg text-white transition-transform active:scale-95"
+                className="bg-black hover:opacity-75 mt-8 mb-3 px-8 py-4 rounded-full font-medium text-white text-lg active:scale-95 transition-transform"
                 href="/"
               >
                 Hãy bắt đầu mua sắm

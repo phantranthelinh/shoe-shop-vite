@@ -19,6 +19,7 @@ import { getOrderCode } from "@/utils/helper";
 import { createLazyFileRoute, Link } from "@tanstack/react-router";
 import { ChevronLeft } from "lucide-react";
 import { useState } from "react";
+import { toast } from "sonner";
 
 export const Route = createLazyFileRoute("/dashboard/orders/$orderId/")({
   component: OrderDetail,
@@ -39,9 +40,29 @@ function OrderDetail() {
 
   const handleSave = async (status?: string) => {
     if (status) {
-      updateOrderStatus({ orderStatus: status });
+      updateOrderStatus(
+        { orderStatus: status },
+        {
+          onSuccess: () => {
+            toast.success("Cập nhật trạng thái đơn hàng thành công!");
+          },
+          onError: () => {
+            toast.success("Lỗi");
+          },
+        }
+      );
     } else {
-      updateOrderStatus({ orderStatus: orderStatus as string });
+      updateOrderStatus(
+        { orderStatus: orderStatus as string },
+        {
+          onSuccess: () => {
+            toast.success("Cập nhật trạng thái đơn hàng thành công!");
+          },
+          onError: () => {
+            toast.success("Lỗi");
+          },
+        }
+      );
     }
   };
   return (
