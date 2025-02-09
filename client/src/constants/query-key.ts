@@ -19,6 +19,9 @@ const QUERY_KEYS = {
   REVIEWS: "reviews",
   USERS: "users",
   PENDING_ORDERS: "pending-orders",
+  REVENUE_EXPECTED_CHART: "revenue-expected-chart",
+  REVENUE_CHART: "revenue-chart",
+  CHART_MONTHLY: "chart-monthly",
 };
 
 export default QUERY_KEYS;

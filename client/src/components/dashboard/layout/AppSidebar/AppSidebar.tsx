@@ -12,7 +12,7 @@ import {
 } from "@/components/ui/sidebar";
 import { useAuth } from "@/hooks/api/useAuth";
 import { Link } from "@tanstack/react-router";
-import { Box, Home, ShoppingCart, Table2 } from "lucide-react";
+import { Box, DollarSign, Home, ShoppingCart, Table2 } from "lucide-react";
 
 const items = [
   {
@@ -24,6 +24,12 @@ const items = [
     title: "Đơn hàng",
     url: "/dashboard/orders",
     icon: ShoppingCart,
+  },
+
+  {
+    title: "Doanh thu",
+    url: "/dashboard/revenue",
+    icon: DollarSign,
   },
   {
     title: "Sản Phẩm",
