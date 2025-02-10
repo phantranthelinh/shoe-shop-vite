@@ -1,18 +1,12 @@
-import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { TAddress } from "@/models/address";
-import { Trash } from "lucide-react";
 
 const Address = ({
   data,
   classNames = "",
-  onDelete = () => {},
-  isDeleted = false,
 }: {
   data: TAddress;
   classNames?: string;
-  onDelete?: () => void;
-  isDeleted?: boolean;
 }) => {
   return (
     <div
@@ -33,11 +27,6 @@ const Address = ({
             {data.addressLine}
           </p>
         </div>
-        {isDeleted && (
-          <Button onClick={onDelete} variant={"outline"} size={"icon"}>
-            <Trash className="fill-current text-red-500" />
-          </Button>
-        )}
       </div>
     </div>
   );

@@ -22,6 +22,7 @@ import {
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { useCreateAddress } from "@/hooks/api/address/useCreateAddress";
+import { useDeleteAddress } from "@/hooks/api/address/useDeleteAddress";
 import { useUpdateAddress } from "@/hooks/api/address/useUpdateAddress";
 import useGetDistrict from "@/hooks/api/provinces/useGetDistricts";
 import useGetProvinces from "@/hooks/api/provinces/useGetProvinces";
@@ -34,6 +35,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { createLazyFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
+import { toast } from "sonner";
 import { z } from "zod";
 
 export const Route = createLazyFileRoute("/my-address/")({
@@ -44,7 +46,7 @@ function MyAddress() {
   const form = useForm<z.infer<typeof AddressSchema>>({
     resolver: zodResolver(AddressSchema),
     defaultValues: {
-      address: "",
+      addressLine: "",
       province: "",
       district: "",
       ward: "",
@@ -69,7 +71,7 @@ function MyAddress() {
 
   const handleSelectAddress = (address: TAddress) => {
     setIsVisible(true);
-    form.setValue("address", address.addressLine);
+    form.setValue("addressLine", address.addressLine);
     setAddressId(address._id);
     form.setValue("province", address.province._id);
     form.setValue("district", address.district._id);
@@ -79,6 +81,7 @@ function MyAddress() {
 
   const { mutate: updateAddress } = useUpdateAddress();
   const { mutate: createAddress } = useCreateAddress();
+  const { mutate: deleteAddress } = useDeleteAddress();
 
   const handleSave = () => {
     if (addressId) {
@@ -88,16 +91,27 @@ function MyAddress() {
     }
   };
 
+  const handleDelete = () => {
+    deleteAddress(addressId, {
+      onSuccess: () => {
+        toast.success("Xóa địa chỉ thành công");
+      },
+      onError: () => {
+        toast.error("Xóa địa chỉ thất bại");
+      },
+    });
+  };
+
   return (
     <MainLayout>
       <Wrapper>
-        <div className="flex gap-8">
+        <div className="flex lg:flex-row flex-col gap-8">
           <div className="flex-none w-[500px]">
             <h2 className="mb-4 text-xl">Địa chỉ </h2>
             {isLoading ? (
               <Loading />
             ) : (
-              <ScrollArea className="h-[400px]">
+              <ScrollArea className="max-h-[400px]">
                 <div className="flex flex-col gap-2 mr-4">
                   {addresses?.length === 0 && <p>Chưa cập nhật</p>}
                   {addresses?.map((address: TAddress) => {
@@ -105,11 +119,11 @@ function MyAddress() {
                       <div
                         className="cursor-pointer"
                         onClick={() => handleSelectAddress(address)}
+                        key={address?._id}
                       >
                         <Address
                           data={address}
-                          key={address?._id}
-                          classNames={`${addressId === address._id ? "border-2 border-gray-700" : ""}`}
+                          classNames={`${addressId === address._id ? "border-2 border-gray-700" : ""} ${address.isDefault ? "bg-black/[0.05]" : ""}`}
                         />
                       </div>
                     );
@@ -123,6 +137,7 @@ function MyAddress() {
               onClick={() => {
                 toggleVisibility();
                 form.reset();
+                setAddressId("");
               }}
               variant={"outline"}
             >
@@ -134,7 +149,7 @@ function MyAddress() {
               <Form {...form}>
                 <FormField
                   control={control}
-                  name="address"
+                  name="addressLine"
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel className="block mb-2 font-medium text-gray-900 dark:text-white text-sm">
@@ -269,9 +284,20 @@ function MyAddress() {
                   />
                 </div>
               </Form>
-              <Button className="max-w-32" onClick={handleSave}>
-                {addressId ? "Cập nhật" : "Thêm"} địa chỉ
-              </Button>
+              <div className="flex justify-between">
+                <Button className="max-w-32" onClick={handleSave}>
+                  {addressId ? "Cập nhật" : "Thêm"} địa chỉ
+                </Button>
+                {addressId && (
+                  <Button
+                    className="max-w-32"
+                    onClick={handleDelete}
+                    variant={"destructive"}
+                  >
+                    Xoá địa chỉ
+                  </Button>
+                )}
+              </div>
             </div>
           )}
         </div>

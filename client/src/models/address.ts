@@ -10,7 +10,7 @@ export type TAddress = {
   isDefault: boolean;
 };
 export const AddressSchema = z.object({
-  address: z.string(),
+  addressLine: z.string(),
   province: z.string(),
   district: z.string(),
   ward: z.string(),

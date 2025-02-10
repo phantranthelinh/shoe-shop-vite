@@ -10,5 +10,10 @@ router.get("/", protect, admin, userController.getAllUsers);
 
 router.put("/profile", protect, userController.updateProfile);
 router.get("/address", protect, userController.getAddress);
+router.delete("/address/:id", protect, userController.deleteAddress);
+router.put("/address/:id", protect, userController.updateAddress);
+router.post("/address", protect, userController.addAddress);
+
+router.get("/address", protect, userController.getAddress);
 
 module.exports = router;

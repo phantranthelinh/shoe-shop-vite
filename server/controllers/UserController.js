@@ -99,6 +99,27 @@ const UserController = {
     });
     res.status(200).json(address);
   }),
+  addAddress: asyncHandler(async (req, res) => {
+    const address = await Address.create({
+      userId: req.user._id,
+      ...req.body,
+    });
+    res.status(200).json(address);
+  }),
+  updateAddress: asyncHandler(async (req, res) => {
+    await Address.findByIdAndUpdate(req.params.id, req.body);
+  }),
+
+  deleteAddress: asyncHandler(async (req, res) => {
+    const address = await Address.findById(req.params.id);
+    if (address) {
+      await address.remove();
+      res.json({ message: "Address removed" });
+    } else {
+      res.status(404);
+      throw new Error("Address not found");
+    }
+  }),
 
   getAllUsers: asyncHandler(async (req, res) => {
     const users = await User.find();

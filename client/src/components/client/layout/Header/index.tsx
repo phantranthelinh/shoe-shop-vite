@@ -27,14 +27,7 @@ import { useCart } from "@/store/cart.store";
 import { useWishlist } from "@/store/wishlist.store";
 import { formatCurrencyVND } from "@/utils/format-currency";
 import { useQueryClient } from "@tanstack/react-query";
-import {
-  LogOut,
-  MapPinned,
-  Search,
-  ShoppingBasket,
-  User,
-  UserRound,
-} from "lucide-react";
+import { LogOut, Search, ShoppingBasket, User, UserRound } from "lucide-react";
 
 const Header = () => {
   const [mobileMenu, setMobileMenu] = useState(false);
@@ -228,12 +221,12 @@ const Header = () => {
                   </Link>
                 </DropdownMenuItem>
 
-                <DropdownMenuItem className="flex items-center gap-2 focus:ring-0 focus:ring-offset-0 cursor-pointer">
+                {/* <DropdownMenuItem className="flex items-center gap-2 focus:ring-0 focus:ring-offset-0 cursor-pointer">
                   <Link to="/my-address" className="flex items-center gap-2">
                     <MapPinned className="stroke-1" />
                     Địa chỉ của tôi
                   </Link>
-                </DropdownMenuItem>
+                </DropdownMenuItem> */}
                 <DropdownMenuItem
                   className="flex items-center gap-2 focus:ring-0 focus:ring-offset-0 cursor-pointer"
                   onClick={logout}
