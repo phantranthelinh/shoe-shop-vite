@@ -153,7 +153,7 @@ const UpdateProduct: React.FC<IProps> = ({ productId, data }) => {
                   name="name"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel className="block mb-2 font-medium text-gray-900 text-sm dark:text-white">
+                      <FormLabel className="block mb-2 font-medium text-gray-900 dark:text-white text-sm">
                         Tên sản phẩm
                       </FormLabel>
                       <FormControl>
@@ -168,7 +168,7 @@ const UpdateProduct: React.FC<IProps> = ({ productId, data }) => {
                   name="shortDescription"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel className="block mb-2 font-medium text-gray-900 text-sm dark:text-white">
+                      <FormLabel className="block mb-2 font-medium text-gray-900 dark:text-white text-sm">
                         Mô tả ngắn
                       </FormLabel>
                       <FormControl>
@@ -183,7 +183,7 @@ const UpdateProduct: React.FC<IProps> = ({ productId, data }) => {
                   name="category"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel className="block mb-2 font-medium text-gray-900 text-sm dark:text-white">
+                      <FormLabel className="block mb-2 font-medium text-gray-900 dark:text-white text-sm">
                         Danh mục
                       </FormLabel>
                       <FormControl>
@@ -212,7 +212,7 @@ const UpdateProduct: React.FC<IProps> = ({ productId, data }) => {
                   name="description"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel className="block mb-2 font-medium text-gray-900 text-sm dark:text-white">
+                      <FormLabel className="block mb-2 font-medium text-gray-900 dark:text-white text-sm">
                         Mô tả sản phẩm
                       </FormLabel>
                       <FormControl>
@@ -227,7 +227,7 @@ const UpdateProduct: React.FC<IProps> = ({ productId, data }) => {
                   name="price"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel className="block mb-2 font-medium text-gray-900 text-sm dark:text-white">
+                      <FormLabel className="block mb-2 font-medium text-gray-900 dark:text-white text-sm">
                         Giá sản phẩm
                       </FormLabel>
                       <FormControl>
@@ -316,7 +316,7 @@ const UpdateProduct: React.FC<IProps> = ({ productId, data }) => {
                   name="countInStock"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel className="block mb-2 font-medium text-gray-900 text-sm dark:text-white">
+                      <FormLabel className="block mb-2 font-medium text-gray-900 dark:text-white text-sm">
                         Tổng số lượng
                       </FormLabel>
                       <FormControl>
@@ -336,13 +336,17 @@ const UpdateProduct: React.FC<IProps> = ({ productId, data }) => {
                   name="image"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel className="block mb-2 font-medium text-gray-900 text-sm dark:text-white">
+                      <FormLabel className="block mb-2 font-medium text-gray-900 dark:text-white text-sm">
                         Hình ảnh
                       </FormLabel>
+                      <FormControl>
+                        <Input placeholder="Nhập url hình ảnh" {...field} />
+                      </FormControl>
+                      <FormMessage />
                       <div className="flex justify-center items-center w-full">
                         <label
                           htmlFor="dropzone-file"
-                          className="relative flex flex-col justify-center items-center border-2 border-gray-300 dark:hover:border-gray-500 dark:border-gray-600 bg-gray-50 hover:bg-gray-100 dark:hover:bg-gray-600 dark:bg-gray-700 border-dashed rounded-lg w-full h-48 cursor-pointer"
+                          className="relative flex flex-col justify-center items-center bg-gray-50 hover:bg-gray-100 dark:hover:bg-gray-600 dark:bg-gray-700 border-2 border-gray-300 dark:hover:border-gray-500 dark:border-gray-600 border-dashed rounded-lg w-full h-48 cursor-pointer"
                         >
                           {field.value && (
                             <Button
@@ -357,35 +361,36 @@ const UpdateProduct: React.FC<IProps> = ({ productId, data }) => {
                           )}
 
                           <div className="flex flex-col justify-center items-center pt-5 pb-6 w-full h-48">
-                            {field.value ? (
+                            {isUploading ? (
+                              <Loading />
+                            ) : field.value ? (
                               <img
                                 src={field.value}
                                 alt="image"
-                                className="w-[200px] h-[200px] object-cover"
+                                className="w-[200px] h-[200px] object-cover" // Fixed dimensions
                               />
                             ) : (
                               <>
                                 <UploadIcon />
-                                <p className="mb-2 text-gray-500 text-sm dark:text-gray-400">
+                                <p className="mb-2 text-gray-500 dark:text-gray-400 text-sm">
                                   <span className="font-semibold">
-                                    Click to upload
+                                    Chọn hình ảnh
                                   </span>
                                 </p>
-                                <p className="text-gray-500 text-xs dark:text-gray-400">
+                                <p className="text-gray-500 dark:text-gray-400 text-xs">
                                   SVG, PNG, JPG or GIF (MAX. 800x400px)
                                 </p>
                               </>
                             )}
                           </div>
-
                           <FormControl>
                             <Input
                               id="dropzone-file"
                               type="file"
                               placeholder="Hình ảnh"
                               className="hidden"
-                              onChange={(e) => {
-                                uploadImage(e.target.files);
+                              onChange={async (e) => {
+                                await uploadImage(e.target.files);
                                 field.onChange(e.target.files);
                                 if (!isUploading) {
                                   field.onChange(uploadedUrl);
