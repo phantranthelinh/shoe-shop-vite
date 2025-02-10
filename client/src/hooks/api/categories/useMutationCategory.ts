@@ -1,18 +1,18 @@
 import { API } from "@/app/api";
 import QUERY_KEYS from "@/constants/query-key";
-import { TCategory } from "@/types/category.type";
-import { methodType } from "@/types/method.type";
+import { Category } from "@/models/category";
+import { methodType } from "@/models/common";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 export const useMutationCategory = () => {
   const queryClient = useQueryClient();
   const apiMethods = {
-    create: (data: TCategory) => API.post("/api/categories", data),
-    update: (data: TCategory) => {
+    create: (data: Category) => API.post("/api/categories", data),
+    update: (data: Category) => {
       const { id, ...rest } = data;
       return API.put(`/api/categories/${id}`, rest);
     },
-    delete: (data: TCategory) => API.delete(`/api/categories/${data._id}`),
+    delete: (data: Category) => API.delete(`/api/categories/${data._id}`),
   };
 
   const mutationFn = async ({
@@ -26,7 +26,7 @@ export const useMutationCategory = () => {
     if (!method) {
       throw new Error(`Invalid type: ${type}`);
     }
-    return method(data as TCategory);
+    return method(data as Category);
   };
 
   return useMutation({

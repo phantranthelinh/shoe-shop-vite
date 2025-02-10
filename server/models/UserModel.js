@@ -21,16 +21,6 @@ const userSchema = mongoose.Schema(
       default: false,
     },
     phoneNumber: { type: String, default: "" },
-    addresses: {
-      type: [
-        {
-          type: mongoose.Schema.Types.ObjectId,
-          ref: "Address",
-          unique: true,
-        },
-      ],
-      default: [],
-    },
   },
   {
     timestamps: true,

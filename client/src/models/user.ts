@@ -8,3 +8,7 @@ export type User = {
   updatedAt: string;
   phoneNumber: string;
 };
+export type UpsertProfile = {
+  name: string;
+  password: string;
+};

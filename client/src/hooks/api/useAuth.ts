@@ -1,6 +1,6 @@
 import { API } from "@/app/api";
 import QUERY_KEYS from "@/constants/query-key";
-import { TUser } from "@/types/user.type";
+import { User } from "@/models/user";
 import {
   getFromLocal,
   removeFromLocal,
@@ -25,7 +25,7 @@ export const useAuth = () => {
   });
 
   const { mutateAsync: login } = useMutation({
-    mutationFn: async (data: TUser) => {
+    mutationFn: async (data: User) => {
       const response = await API.post("/api/users/login", data);
       return response.data;
     },
@@ -43,7 +43,7 @@ export const useAuth = () => {
   });
 
   const { mutate: register } = useMutation({
-    mutationFn: async (data: TUser) => {
+    mutationFn: async (data: User) => {
       const response = await API.post("/api/users/register", data);
       return response.data;
     },

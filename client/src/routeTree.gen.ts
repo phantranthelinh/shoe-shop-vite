@@ -25,6 +25,7 @@ const ProductsIndexLazyImport = createFileRoute('/products/')()
 const PaymentSuccessIndexLazyImport = createFileRoute('/payment-success/')()
 const PaymentFailedIndexLazyImport = createFileRoute('/payment-failed/')()
 const OrdersIndexLazyImport = createFileRoute('/orders/')()
+const MyAddressIndexLazyImport = createFileRoute('/my-address/')()
 const LoginIndexLazyImport = createFileRoute('/login/')()
 const DashboardIndexLazyImport = createFileRoute('/dashboard/')()
 const ContactIndexLazyImport = createFileRoute('/contact/')()
@@ -111,6 +112,14 @@ const OrdersIndexLazyRoute = OrdersIndexLazyImport.update({
   path: '/orders/',
   getParentRoute: () => rootRoute,
 } as any).lazy(() => import('./routes/orders/index.lazy').then((d) => d.Route))
+
+const MyAddressIndexLazyRoute = MyAddressIndexLazyImport.update({
+  id: '/my-address/',
+  path: '/my-address/',
+  getParentRoute: () => rootRoute,
+} as any).lazy(() =>
+  import('./routes/my-address/index.lazy').then((d) => d.Route),
+)
 
 const LoginIndexLazyRoute = LoginIndexLazyImport.update({
   id: '/login/',
@@ -286,6 +295,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LoginIndexLazyImport
       parentRoute: typeof rootRoute
     }
+    '/my-address/': {
+      id: '/my-address/'
+      path: '/my-address'
+      fullPath: '/my-address'
+      preLoaderRoute: typeof MyAddressIndexLazyImport
+      parentRoute: typeof rootRoute
+    }
     '/orders/': {
       id: '/orders/'
       path: '/orders'
@@ -411,6 +427,7 @@ export interface FileRoutesByFullPath {
   '/contact': typeof ContactIndexLazyRoute
   '/dashboard': typeof DashboardIndexLazyRoute
   '/login': typeof LoginIndexLazyRoute
+  '/my-address': typeof MyAddressIndexLazyRoute
   '/orders': typeof OrdersIndexLazyRoute
   '/payment-failed': typeof PaymentFailedIndexLazyRoute
   '/payment-success': typeof PaymentSuccessIndexLazyRoute
@@ -437,6 +454,7 @@ export interface FileRoutesByTo {
   '/contact': typeof ContactIndexLazyRoute
   '/dashboard': typeof DashboardIndexLazyRoute
   '/login': typeof LoginIndexLazyRoute
+  '/my-address': typeof MyAddressIndexLazyRoute
   '/orders': typeof OrdersIndexLazyRoute
   '/payment-failed': typeof PaymentFailedIndexLazyRoute
   '/payment-success': typeof PaymentSuccessIndexLazyRoute
@@ -464,6 +482,7 @@ export interface FileRoutesById {
   '/contact/': typeof ContactIndexLazyRoute
   '/dashboard/': typeof DashboardIndexLazyRoute
   '/login/': typeof LoginIndexLazyRoute
+  '/my-address/': typeof MyAddressIndexLazyRoute
   '/orders/': typeof OrdersIndexLazyRoute
   '/payment-failed/': typeof PaymentFailedIndexLazyRoute
   '/payment-success/': typeof PaymentSuccessIndexLazyRoute
@@ -492,6 +511,7 @@ export interface FileRouteTypes {
     | '/contact'
     | '/dashboard'
     | '/login'
+    | '/my-address'
     | '/orders'
     | '/payment-failed'
     | '/payment-success'
@@ -517,6 +537,7 @@ export interface FileRouteTypes {
     | '/contact'
     | '/dashboard'
     | '/login'
+    | '/my-address'
     | '/orders'
     | '/payment-failed'
     | '/payment-success'
@@ -542,6 +563,7 @@ export interface FileRouteTypes {
     | '/contact/'
     | '/dashboard/'
     | '/login/'
+    | '/my-address/'
     | '/orders/'
     | '/payment-failed/'
     | '/payment-success/'
@@ -569,6 +591,7 @@ export interface RootRouteChildren {
   ContactIndexLazyRoute: typeof ContactIndexLazyRoute
   DashboardIndexLazyRoute: typeof DashboardIndexLazyRoute
   LoginIndexLazyRoute: typeof LoginIndexLazyRoute
+  MyAddressIndexLazyRoute: typeof MyAddressIndexLazyRoute
   OrdersIndexLazyRoute: typeof OrdersIndexLazyRoute
   PaymentFailedIndexLazyRoute: typeof PaymentFailedIndexLazyRoute
   PaymentSuccessIndexLazyRoute: typeof PaymentSuccessIndexLazyRoute
@@ -595,6 +618,7 @@ const rootRouteChildren: RootRouteChildren = {
   ContactIndexLazyRoute: ContactIndexLazyRoute,
   DashboardIndexLazyRoute: DashboardIndexLazyRoute,
   LoginIndexLazyRoute: LoginIndexLazyRoute,
+  MyAddressIndexLazyRoute: MyAddressIndexLazyRoute,
   OrdersIndexLazyRoute: OrdersIndexLazyRoute,
   PaymentFailedIndexLazyRoute: PaymentFailedIndexLazyRoute,
   PaymentSuccessIndexLazyRoute: PaymentSuccessIndexLazyRoute,
@@ -631,6 +655,7 @@ export const routeTree = rootRoute
         "/contact/",
         "/dashboard/",
         "/login/",
+        "/my-address/",
         "/orders/",
         "/payment-failed/",
         "/payment-success/",
@@ -669,6 +694,9 @@ export const routeTree = rootRoute
     },
     "/login/": {
       "filePath": "login/index.lazy.tsx"
+    },
+    "/my-address/": {
+      "filePath": "my-address/index.lazy.tsx"
     },
     "/orders/": {
       "filePath": "orders/index.lazy.tsx"

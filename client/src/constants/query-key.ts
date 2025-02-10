@@ -22,6 +22,7 @@ const QUERY_KEYS = {
   REVENUE_EXPECTED_CHART: "revenue-expected-chart",
   REVENUE_CHART: "revenue-chart",
   CHART_MONTHLY: "chart-monthly",
+  USER_ADDRESSES: "user-addresses",
 };
 
 export default QUERY_KEYS;

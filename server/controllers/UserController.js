@@ -64,33 +64,42 @@ const UserController = {
     }
   }),
 
-  //UPDATE PROFILE
   updateProfile: asyncHandler(async (req, res) => {
     const user = await User.findById(req.user._id);
-    if (user) {
-      const address = req.body.address;
-      const newAddress = await Address.create({
-        ...address,
-        userId: req.params.id,
-      });
-      user.name = req.body.name || user.name;
-      user.email = req.body.email || user.email;
-      if (req.body.password) {
-        user.password = req.body.password;
-      }
-      user.addresses.push(newAddress._id);
-      const updatedUser = await user.save();
-      res.json({
-        _id: updatedUser._id,
-        name: updatedUser.name,
-        email: updatedUser.email,
-        addresses: updatedUser.addresses,
-      });
-    } else {
+    const { name, password } = req.body;
+
+    if (!user) {
       res.status(404);
       throw new Error("User not found");
     }
+    user.name = name || user.name;
+    user.password = password || user.password;
+
+    const updatedUser = await user.save();
+
+    res.status(200).json({
+      id: updatedUser._id,
+    });
   }),
+
+  getAddress: asyncHandler(async (req, res) => {
+    const data = await Address.find({
+      userId: req.user._id,
+    })
+      .populate("province")
+      .populate("ward")
+      .populate("district");
+    res.status(200).json(data);
+  }),
+
+  addAddress: asyncHandler(async (req, res) => {
+    const address = await Address.create({
+      userId: req.user._id,
+      ...req.body,
+    });
+    res.status(200).json(address);
+  }),
+
   getAllUsers: asyncHandler(async (req, res) => {
     const users = await User.find();
     res.json(users);

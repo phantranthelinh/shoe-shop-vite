@@ -27,7 +27,14 @@ import { useCart } from "@/store/cart.store";
 import { useWishlist } from "@/store/wishlist.store";
 import { formatCurrencyVND } from "@/utils/format-currency";
 import { useQueryClient } from "@tanstack/react-query";
-import { LogOut, Search, ShoppingBasket, User, UserRound } from "lucide-react";
+import {
+  LogOut,
+  MapPinned,
+  Search,
+  ShoppingBasket,
+  User,
+  UserRound,
+} from "lucide-react";
 
 const Header = () => {
   const [mobileMenu, setMobileMenu] = useState(false);
@@ -119,7 +126,7 @@ const Header = () => {
             )}
           </>
         )}
-        <div className="relative w-full max-w-[300px]">
+        <div className="hidden lg:block relative w-full max-w-[300px]">
           <div className="flex items-center gap-2">
             <Search className="size-5" />
             <input
@@ -218,6 +225,13 @@ const Header = () => {
                   <Link to="/orders" className="flex items-center gap-2">
                     <ShoppingBasket className="stroke-1" />
                     Xem đơn hàng
+                  </Link>
+                </DropdownMenuItem>
+
+                <DropdownMenuItem className="flex items-center gap-2 focus:ring-0 focus:ring-offset-0 cursor-pointer">
+                  <Link to="/my-address" className="flex items-center gap-2">
+                    <MapPinned className="stroke-1" />
+                    Địa chỉ của tôi
                   </Link>
                 </DropdownMenuItem>
                 <DropdownMenuItem

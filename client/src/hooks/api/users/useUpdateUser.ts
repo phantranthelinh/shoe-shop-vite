@@ -1,10 +1,11 @@
 import { API } from "@/app/api";
+import { UpsertProfile } from "@/models/user";
 import { useMutation } from "@tanstack/react-query";
 
-export const useUpdateUser = (userId?: string) => {
+export const useUpdateUser = () => {
   return useMutation({
-    mutationFn: async (data: any) => {
-      const response = await API.put(`/api/users/${userId}/profile`, data);
+    mutationFn: async (data: Partial<UpsertProfile>) => {
+      const response = await API.put(`/api/users/profile`, data);
       return response.data;
     },
   });
