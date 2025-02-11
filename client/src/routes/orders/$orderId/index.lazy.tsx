@@ -37,9 +37,10 @@ function OrderDetail() {
           <div className="font-bold text-2xl">Chi tiết đơn hàng</div>
           <div>Mã đơn: {getOrderCode(data?._id)}</div>
           <div>Ngày đặt hàng: {formatDate(data?.createdAt ?? "")}</div>
-          <div>
+          <div className="flex gap-2">
             Trạng thái: <OrderStatusText status={data?.orderStatus} />
           </div>
+
           <hr className="my-4" />
           {data?.orderItems?.map((item: Order["orderItems"][0]) => (
             <div key={item._id}>
@@ -50,14 +51,14 @@ function OrderDetail() {
                     className="w-[50px] h-[50px] object-cover"
                   />
                   <div className="flex flex-col gap-2">
-                    <span className="text-base text-black/[.8]">
+                    <span className="text-black/[.8] text-base">
                       {item.name}
                     </span>
-                    <span className="text-base text-black/[.8]">
+                    <span className="text-black/[.8] text-base">
                       size: {item.size}
                     </span>
 
-                    <span className="text-base text-black/[.8]">
+                    <span className="text-black/[.8] text-base">
                       x{item.qty}
                     </span>
                   </div>
@@ -72,6 +73,14 @@ function OrderDetail() {
           <div className="grid grid-cols-2">
             <div className="flex flex-col gap-2">
               <div className="font-bold text-lg">Thanh toán</div>
+              {data?.isPaid ? (
+                <OrderStatusText
+                  classNames="text-green-500"
+                  status="Đã thanh toán"
+                />
+              ) : (
+                <OrderStatusText status={"Chưa thanh toán"} />
+              )}
               <div>
                 Tổng cộng:{" "}
                 <span className="font-bold">

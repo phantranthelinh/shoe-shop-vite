@@ -130,6 +130,19 @@ const OrderController = {
     res.status(200).json("Deleted successfully!");
   }),
 
+  paidOrder: asyncHandler(async (req, res) => {
+    const updatedOrder = await Order.findByIdAndUpdate(req.params.id, {
+      isPaid: true,
+      paidAt: Date.now(),
+    });
+    if (updatedOrder) {
+      res.status(200).json(updatedOrder);
+    } else {
+      res.status(404);
+      throw new Error("Order not found");
+    }
+  }),
+
   deleteOrderByAdmin: asyncHandler(async (req, res) => {
     const order = await Order.findByIdAndDelete(req.params.id);
     if (!order) {

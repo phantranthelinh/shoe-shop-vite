@@ -15,6 +15,7 @@ router.put(
   orderController.updateOrderStatus
 );
 router.put("/:id/cancel", protect, orderController.cancelOrder);
+router.put("/:id/paid", protect, orderController.paidOrder);
 
 router.get("/", protect, orderController.getOrderByUser);
 

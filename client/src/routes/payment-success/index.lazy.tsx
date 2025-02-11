@@ -1,23 +1,39 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import MainLayout from "@/components/client/layout";
 import Wrapper from "@/components/common/Wrapper";
+import { usePaidOrder } from "@/hooks/api/orders/usePaidOrder";
+import { PaymentParams } from "@/models/payment";
 import { createLazyFileRoute, Link } from "@tanstack/react-router";
 import { MoveRight } from "lucide-react";
+import { useEffect } from "react";
 
 export const Route = createLazyFileRoute("/payment-success/")({
   component: PaymentSuccessPage,
 });
 
 function PaymentSuccessPage() {
+  const search = Route.useSearch() as PaymentParams;
+
+  const orderId = search?.vnp_OrderInfo?.split(":")[1];
+  const success = search.vnp_ResponseCode === "00";
+  const { mutate: paidOrder } = usePaidOrder(orderId as string);
+
+  useEffect(() => {
+    if (success) paidOrder();
+  }, [orderId, success]);
+
   return (
     <MainLayout classNames="min-h-[60vh]">
       <Wrapper>
         <section className="flex flex-col mx-auto p-5 border border-black rounded-lg max-w-[600px]">
           <h1 className="font-bold text-2xl">
-            Cảm ơn bạn đã mua sắm ở shop chúng mình!
+            {success ? "Thanh toán thành công!" : "Đặt hàng thành công"}{" "}
           </h1>
 
           <div className="mt-2 font-bold text-lg">
-            Đơn hàng của bạn đã được đặt thành công.
+            {success
+              ? "Vui lòng tiếp tục qua trình đặt hàng."
+              : " Đơn hàng của bạn đã được đặt thành công."}
           </div>
 
           <div className="mt-5 text-base">
@@ -31,7 +47,10 @@ function PaymentSuccessPage() {
             </div>
           </Link>
           <div className="flex justify-between items-center mt-5">
-            <Link to="/orders" className="font-bold underline cursor-pointer">
+            <Link
+              to={success ? `/checkout/${orderId}` : "/orders"}
+              className="font-bold underline cursor-pointer"
+            >
               Xem đơn hàng của bạn
             </Link>
             <Link

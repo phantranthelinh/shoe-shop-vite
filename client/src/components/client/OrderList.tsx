@@ -38,6 +38,7 @@ const OrderList = ({ data }: OrderListProps) => {
             <th className="px-4 py-2 text-left">Tổng tiền</th>
             <th className="px-4 py-2 text-left">Ngày đặt hàng</th>
             <th className="px-4 py-2 text-left">Trạng thái</th>
+            <th className="px-4 py-2 text-left">Thanh toán</th>
             <th className="px-4 py-2 text-left">Thao tác</th>
           </tr>
         </thead>
@@ -73,6 +74,17 @@ const OrderList = ({ data }: OrderListProps) => {
               <td className="px-4 py-2">{formatDate(item.createdAt)}</td>
               <td className="px-4 py-2">
                 <OrderStatusText status={item.orderStatus} />
+              </td>
+
+              <td className="px-4 py-2">
+                {item.isPaid ? (
+                  <OrderStatusText
+                    classNames="text-green-500"
+                    status="Đã thanh toán"
+                  />
+                ) : (
+                  <OrderStatusText status={"Chưa thanh toán"} />
+                )}
               </td>
               <td className="px-4 py-2">
                 {isShowCancelOrderButton(item.orderStatus) && (

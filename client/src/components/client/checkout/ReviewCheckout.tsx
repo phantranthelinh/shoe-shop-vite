@@ -3,23 +3,22 @@ import { Loading } from "@/components/common/Loading";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { useGetOrder } from "@/hooks/api/orders/useGetOrder";
+import { Order } from "@/models/order";
 import { formatCurrencyVND } from "@/utils/format-currency";
-import { Link, useParams } from "@tanstack/react-router";
+import { Link } from "@tanstack/react-router";
 import { ChevronLeft } from "lucide-react";
 
 const ReviewCheckout = ({
   handleOrder,
   form,
+  data,
+  isLoading,
 }: {
   handleOrder: (data: any) => void;
   form: any;
+  data?: Partial<Order>;
+  isLoading: boolean;
 }) => {
-  const { checkoutId } = useParams({
-    from: "/checkout/$checkoutId/",
-  });
-  const { isLoading, data } = useGetOrder(checkoutId);
-
   return (
     <>
       {isLoading ? (

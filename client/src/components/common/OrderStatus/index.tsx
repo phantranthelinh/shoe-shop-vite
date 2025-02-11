@@ -15,7 +15,7 @@ const OrderStatusText = ({
         "text-green-500": status === "isDelivered",
       })}
     >
-      {orderStatusMapping[status]}
+      {orderStatusMapping[status] ?? status}
     </div>
   );
 };

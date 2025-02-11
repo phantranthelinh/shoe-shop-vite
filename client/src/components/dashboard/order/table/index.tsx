@@ -4,6 +4,7 @@ import { ChevronDown, Eye, Trash2 } from "lucide-react";
 
 import DataTable from "@/components/common/DataTable";
 import DataTablePagination from "@/components/common/DataTable/DataTablePagination";
+import OrderStatusText from "@/components/common/OrderStatus";
 import { Badge } from "@/components/ui/badge";
 import { Button, buttonVariants } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -133,6 +134,17 @@ export function OrderTable({ data }: IProps) {
         );
       },
     },
+    {
+      accessorKey: "isPaid",
+      header: "Thanh toán",
+      cell: ({ row }) => {
+        return row.original?.isPaid ? (
+          <OrderStatusText classNames="text-green-500" status="Đã thanh toán" />
+        ) : (
+          <OrderStatusText status={"Chưa thanh toán"} />
+        );
+      },
+    },
 
     {
       id: "actions",
@@ -153,7 +165,7 @@ export function OrderTable({ data }: IProps) {
               size="icon"
               onClick={() => handleDeleteOrder(row.original._id)}
             >
-              <Trash2 className="text-red-500 size-4" />
+              <Trash2 className="size-4 text-red-500" />
             </Button>
           </div>
         );

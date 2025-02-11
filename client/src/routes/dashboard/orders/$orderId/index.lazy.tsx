@@ -1,4 +1,5 @@
 import { Loading } from "@/components/common/Loading";
+import OrderStatusText from "@/components/common/OrderStatus";
 import Layout from "@/components/dashboard/layout";
 import OrderItems from "@/components/dashboard/order/OrderItems";
 import ShippingAddress from "@/components/dashboard/order/ShippingAddress";
@@ -75,34 +76,39 @@ function OrderDetail() {
             <ChevronLeft />
             Trở về trang đơn hàng
           </Link>
-          <div className="flex gap-4">
+          <div className="flex gap-10">
             <div className="flex flex-col flex-1 gap-4">
               <div className="font-bold text-2xl">Đơn hàng</div>
               <div className="space-y-2">
                 <div>Mã đơn hàng: {getOrderCode(data?._id)} </div>
                 <div>Ngày đặt hàng: {formatDate(data?.createdAt ?? "")}</div>
-                <div className="flex items-center gap-2">
-                  Trạng thái:
-                  <Select
-                    onValueChange={handleChangeOrderStatus}
-                    value={orderStatus}
-                  >
-                    <SelectTrigger className="w-[160px]">
-                      <SelectValue placeholder="Đã đặt hàng" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="pending">
-                        Chưa hàng tất đặt hàng
-                      </SelectItem>
-                      <SelectItem value="isOrdered">Đã đặt hàng</SelectItem>
-                      <SelectItem value="isDelivering">
-                        Đang giao hàng
-                      </SelectItem>
-                      <SelectItem value="isDelivered">Đã giao hàng</SelectItem>
-                      <SelectItem value="isCancelled">Đã huỷ</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
+
+                {data?.orderStatus !== "pending" && (
+                  <div className="flex items-center gap-2">
+                    Trạng thái:
+                    <Select
+                      onValueChange={handleChangeOrderStatus}
+                      value={orderStatus}
+                    >
+                      <SelectTrigger className="w-[160px]">
+                        <SelectValue placeholder="Đã đặt hàng" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="pending">
+                          Chưa hàng tất đặt hàng
+                        </SelectItem>
+                        <SelectItem value="isOrdered">Đã đặt hàng</SelectItem>
+                        <SelectItem value="isDelivering">
+                          Đang giao hàng
+                        </SelectItem>
+                        <SelectItem value="isDelivered">
+                          Đã giao hàng
+                        </SelectItem>
+                        <SelectItem value="isCancelled">Đã huỷ</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                )}
               </div>
 
               <OrderItems data={data?.orderItems as Order["orderItems"]} />
@@ -121,7 +127,14 @@ function OrderDetail() {
 
                   <div className="flex justify-between">
                     Thành tiền:
-                    <b>{formatCurrencyVND(data?.totalPrice)}</b>
+                    {data?.isPaid ? (
+                      <OrderStatusText
+                        classNames="text-green-500"
+                        status="Đã thanh toán"
+                      />
+                    ) : (
+                      <b>{formatCurrencyVND(data?.totalPrice)}</b>
+                    )}
                   </div>
                   <hr />
                 </div>
@@ -134,15 +147,17 @@ function OrderDetail() {
                 >
                   Lưu
                 </Button>
-                <Button
-                  className=""
-                  variant={"destructive"}
-                  onClick={() => {
-                    handleSave("isCancelled");
-                  }}
-                >
-                  Huỷ đơn
-                </Button>
+                {!data?.isPaid && (
+                  <Button
+                    className=""
+                    variant={"destructive"}
+                    onClick={() => {
+                      handleSave("isCancelled");
+                    }}
+                  >
+                    Huỷ đơn
+                  </Button>
+                )}
               </div>
             </div>
 

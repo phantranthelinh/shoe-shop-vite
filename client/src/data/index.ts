@@ -15,7 +15,7 @@ export const paymentMethods = [
   {
     id: 2,
     name: "Thanh toán online",
-    value: "credit_card",
+    value: "pay_online",
     icon: "/icons/payment-card.png",
   },
 ];

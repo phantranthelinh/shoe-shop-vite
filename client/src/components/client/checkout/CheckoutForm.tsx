@@ -18,8 +18,13 @@ import useGetProvinces from "@/hooks/api/provinces/useGetProvinces";
 import useGetWards from "@/hooks/api/provinces/useGetWards";
 import { useAuth } from "@/hooks/api/useAuth";
 import { cn } from "@/lib/utils";
+import { Order } from "@/models/order";
+import { District, Province, Ward } from "@/models/province";
 import { Link } from "@tanstack/react-router";
 import { UserRound } from "lucide-react";
+import moment from "moment-timezone";
+import * as forge from "node-forge";
+import * as qs from "qs";
 import {
   Select,
   SelectContent,
@@ -28,10 +33,15 @@ import {
   SelectValue,
 } from "../../ui/select";
 import { Textarea } from "../../ui/textarea";
-import { District, Province, Ward } from "@/models/province";
-
-const CheckoutForm = ({ form }: { form: any }) => {
-  const { control, watch } = form;
+import OrderStatusText from "@/components/common/OrderStatus";
+const CheckoutForm = ({
+  form,
+  orderData,
+}: {
+  form: any;
+  orderData?: Partial<Order>;
+}) => {
+  const { control, watch, setValue } = form;
 
   const { data: provinces } = useGetProvinces();
   const { isLogged } = useAuth();
@@ -41,6 +51,74 @@ const CheckoutForm = ({ form }: { form: any }) => {
 
   const { data: districts } = useGetDistrict(provinceId);
   const { data: wards } = useGetWards(districtId);
+
+  function sortObject(obj: any) {
+    return Object.entries(obj)
+      .sort(([key1], [key2]) => key1.toString().localeCompare(key2.toString()))
+      .reduce((result, item: any) => {
+        result = {
+          ...result,
+          [item[0]]: encodeURIComponent(item[1].toString().replace(/ /g, "+")),
+        };
+
+        return result;
+      }, {});
+  }
+
+  const generatePaymentUrl = () => {
+    const vnpTmnCode = "1VYBIYQP"; // VNPay Merchant Code
+    const vnpHashSecret = "NOH6MBGNLQL9O9OMMFMZ2AX8NIEP50W1"; // VNPay Hash Secret
+    const vnpUrl = "https://sandbox.vnpayment.vn/paymentv2/vpcpay.html"; // VNPay URL
+    const vnpReturnUrl = "http://localhost:5173/payment-success"; // Return URL
+
+    const vnpCreateDate = moment
+      .tz("Asia/Ho_Chi_Minh")
+      .format("YYYYMMDDHHmmss"); // VN timezone
+
+    const vnpExpireDate = moment
+      .tz("Asia/Ho_Chi_Minh")
+      .add(15, "minutes")
+      .format("YYYYMMDDHHmmss"); // Expire +15m
+
+    const orderId = orderData?._id ?? moment().format("DDHHmmss"); // Unique transaction ID
+    const vnpParams = {
+      vnp_Version: "2.1.0",
+      vnp_Command: "pay",
+      vnp_TmnCode: vnpTmnCode,
+      vnp_Locale: "vn",
+      vnp_CurrCode: "VND",
+      vnp_TxnRef: orderId,
+
+      vnp_Amount: (orderData?.totalPrice ?? 50000) * 100,
+      vnp_OrderInfo: `Thanh toan cho maGD:${orderId}`,
+      vnp_OrderType: "other",
+      vnp_ReturnUrl: vnpReturnUrl,
+      vnp_IpAddr: "127.0.0.1",
+      vnp_BankCode: "VNBANK",
+      vnp_CreateDate: vnpCreateDate,
+      vnp_ExpireDate: vnpExpireDate,
+    };
+    // Sort parameters
+    const sortedVnpParams = sortObject(vnpParams);
+
+    // Create query string
+    const vnpParamsString = qs.stringify(sortedVnpParams, { encode: false });
+
+    // Generate HMAC-SHA512 hash using `forge`
+    const hmac = forge.hmac.create();
+    hmac.start("sha512", vnpHashSecret);
+    hmac.update(vnpParamsString);
+    const hashValue = hmac.digest().toHex();
+
+    // Construct final payment URL
+    const paymentUrl = `${vnpUrl}?${vnpParamsString}&vnp_SecureHash=${hashValue}`;
+
+    window.open(paymentUrl, "_blank");
+  };
+
+  if (orderData?.isPaid) {
+    setValue("paymentMethod", "pay_online");
+  }
 
   return (
     <div className="pr-6 w-full">
@@ -226,40 +304,53 @@ const CheckoutForm = ({ form }: { form: any }) => {
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>Thanh toán</FormLabel>
-                    <FormControl>
-                      <RadioGroup
-                        onValueChange={field.onChange}
-                        defaultValue={field.value}
-                        className="flex flex-col gap-2"
-                      >
-                        {paymentMethods.map((method) => (
-                          <div key={method.id}>
-                            <RadioGroupItem
-                              value={method.value}
-                              id={method.value}
-                              hidden
-                            />
-                            <Label
-                              htmlFor={method.value}
-                              className={cn(
-                                "flex items-center justify-between  gap-2 p-4 border rounded-lg w-full cursor-pointer",
-                                {
-                                  "border-primary":
-                                    method.value === field.value,
-                                }
-                              )}
-                            >
-                              <span>{method.name}</span>
-                              <img
-                                src={method.icon}
-                                alt={method.name}
-                                className="size-8"
+                    {orderData?.isPaid ? (
+                      <OrderStatusText
+                        classNames="text-green-500"
+                        status="Đã thanh toán"
+                      />
+                    ) : (
+                      <FormControl>
+                        <RadioGroup
+                          onValueChange={field.onChange}
+                          defaultValue={field.value}
+                          className="flex flex-col gap-2"
+                        >
+                          {paymentMethods.map((method) => (
+                            <div key={method.id}>
+                              <RadioGroupItem
+                                value={method.value}
+                                id={method.value}
+                                hidden
                               />
-                            </Label>
-                          </div>
-                        ))}
-                      </RadioGroup>
-                    </FormControl>
+                              <Label
+                                htmlFor={method.value}
+                                onClick={async () => {
+                                  if (method.value === "pay_online") {
+                                    await generatePaymentUrl();
+                                  }
+                                }}
+                                className={cn(
+                                  "flex items-center justify-between  gap-2 p-4 border rounded-lg w-full cursor-pointer",
+                                  {
+                                    "border-primary":
+                                      method.value === field.value,
+                                  }
+                                )}
+                              >
+                                <span>{method.name}</span>
+                                <img
+                                  src={method.icon}
+                                  alt={method.name}
+                                  className="size-8"
+                                />
+                              </Label>
+                            </div>
+                          ))}
+                        </RadioGroup>
+                      </FormControl>
+                    )}
+
                     <FormDescription />
                     <FormMessage />
                   </FormItem>

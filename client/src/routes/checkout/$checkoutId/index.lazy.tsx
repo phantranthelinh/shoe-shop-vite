@@ -1,6 +1,7 @@
 import CheckoutForm from "@/components/client/checkout/CheckoutForm";
 import ReviewCheckout from "@/components/client/checkout/ReviewCheckout";
 import { useUpdateOrder } from "@/hooks/api/orders/useCreateOrder";
+import { useGetOrder } from "@/hooks/api/orders/useGetOrder";
 import { useAuth } from "@/hooks/api/useAuth";
 import { CheckoutSchema, CheckoutSchemaType } from "@/lib/schemas/checkout";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -44,18 +45,20 @@ function CheckoutPage() {
 
   const navigate = useNavigate();
 
-  const handleOrder = async (data: CheckoutSchemaType) => {
+  const { isLoading, data: order } = useGetOrder(checkoutId);
+
+  const handleOrder = async (formData: CheckoutSchemaType) => {
     const dataSubmit = {
       shippingInfo: {
-        customerName: data.customerName,
-        email: data.email,
-        phoneNumber: data.phoneNumber,
-        province: data.province,
-        district: data.district,
-        ward: data.ward,
-        address: data.address,
+        customerName: formData.customerName,
+        email: formData.email,
+        phoneNumber: formData.phoneNumber,
+        province: formData.province,
+        district: formData.district,
+        ward: formData.ward,
+        address: formData.address,
       },
-      paymentMethod: data.paymentMethod,
+      paymentMethod: formData.paymentMethod,
     };
 
     updateOrder(dataSubmit, {
@@ -79,8 +82,13 @@ function CheckoutPage() {
   return (
     <div className="flex justify-center items-center h-[100vh]">
       <div className="flex w-full max-w-screen-xl">
-        <CheckoutForm form={form} />
-        <ReviewCheckout form={form} handleOrder={handleOrder} />
+        <CheckoutForm form={form} orderData={order} />
+        <ReviewCheckout
+          form={form}
+          handleOrder={handleOrder}
+          data={order}
+          isLoading={isLoading}
+        />
       </div>
     </div>
   );
