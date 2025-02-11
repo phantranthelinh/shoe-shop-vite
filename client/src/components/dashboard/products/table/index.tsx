@@ -35,10 +35,10 @@ export function ProductTable({ data }: IProps) {
     };
     mutate(payload as any, {
       onSuccess: () => {
-        toast("Xóa sản phẩm thành công!");
+        toast.success("Xóa sản phẩm thành công!");
       },
       onError: () => {
-        toast("Xóa sản phẩm thất bại!");
+        toast.error("Xóa sản phẩm thất bại!");
       },
     });
   };
@@ -129,7 +129,7 @@ export function ProductTable({ data }: IProps) {
               size="icon"
               onClick={() => handleDelete(row.original)}
             >
-              <Trash2 className="text-red-500 size-4" />
+              <Trash2 className="size-4 text-red-500" />
             </Button>
           </div>
         );

@@ -33,10 +33,10 @@ export function CategoryTable({ data = [] }: IProps) {
     };
     mutate(payload as any, {
       onSuccess: () => {
-        toast("Xóa danh mục thành công!");
+        toast.success("Xóa danh mục thành công!");
       },
       onError: () => {
-        toast("Xóa danh mục thất bại!");
+        toast.error("Xóa danh mục thất bại!");
       },
     });
   };
@@ -80,13 +80,6 @@ export function CategoryTable({ data = [] }: IProps) {
     },
 
     {
-      accessorKey: "products",
-      header: "Số lượng sản phẩm",
-      cell: ({ row }) => {
-        return <div className="">{row.original.products.length}</div>;
-      },
-    },
-    {
       accessorKey: "slug",
       header: "Đường dẫn",
       cell: ({ row }) => {
@@ -107,7 +100,7 @@ export function CategoryTable({ data = [] }: IProps) {
               size="icon"
               onClick={() => handleDelete(row.original)}
             >
-              <Trash2 className="text-red-500 size-4" />
+              <Trash2 className="size-4 text-red-500" />
             </Button>
           </div>
         );
