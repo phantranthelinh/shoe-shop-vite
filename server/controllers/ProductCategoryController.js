@@ -1,5 +1,5 @@
 const asyncHandler = require("express-async-handler");
-
+const Product = require("../models/ProductModel");
 const ProductCategory = require("../models/ProductCategoryModel");
 const ProductCategoryController = {
   getCategory: asyncHandler(async (req, res) => {
@@ -18,9 +18,8 @@ const ProductCategoryController = {
   }),
   deleteCategory: asyncHandler(async (req, res) => {
     const category = await ProductCategory.findById(req.params.id);
-
     const existingProduct = await Product.findOne({
-      "category.id": req.params.id,
+      category: req.params.id,
     });
 
     if (existingProduct) {
