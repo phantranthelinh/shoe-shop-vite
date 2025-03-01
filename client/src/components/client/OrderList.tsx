@@ -87,7 +87,7 @@ const OrderList = ({ data }: OrderListProps) => {
                 )}
               </td>
               <td className="px-4 py-2">
-                {isShowCancelOrderButton(item.orderStatus) && (
+                {!item.isPaid && isShowCancelOrderButton(item.orderStatus) && (
                   <Button
                     variant={"outline"}
                     onClick={() => handleCancelOrder(item._id)}

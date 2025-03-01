@@ -104,7 +104,7 @@ function OrderDetail() {
               </p>
             </div>
           </div>
-          {isShowCancelOrderButton(data?.orderStatus) && (
+          {!data?.isPaid && isShowCancelOrderButton(data?.orderStatus) && (
             <Button
               onClick={handleCancelOrder}
               className="max-w-[100px]"

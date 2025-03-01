@@ -136,21 +136,21 @@ function CartPage() {
                     Tiếp tục mua hàng
                   </Link>
                   <div className="rounded-xl">
-                    <table className="border-collapse border-gray-300 mb-4 border w-full">
+                    <table className="mb-4 border border-gray-300 w-full border-collapse">
                       <tbody>
                         <tr>
-                          <td className="border-gray-300 p-2 border text-base text-black md:text-lg">
+                          <td className="p-2 border border-gray-300 text-black text-base md:text-lg">
                             Tạm tính
                           </td>
-                          <td className="border-gray-300 p-2 border text-base text-black md:text-lg">
+                          <td className="p-2 border border-gray-300 text-black text-base md:text-lg">
                             {formatCurrencyVND(subTotal)}
                           </td>
                         </tr>
                         <tr>
-                          <td className="border-gray-300 p-2 border text-base text-black md:text-lg">
+                          <td className="p-2 border border-gray-300 text-black text-base md:text-lg">
                             Tổng tiền thanh toán
                           </td>
-                          <td className="border-gray-300 p-2 border text-base text-black md:text-lg">
+                          <td className="p-2 border border-gray-300 text-black text-base md:text-lg">
                             {formatCurrencyVND(subTotal)}
                           </td>
                         </tr>
@@ -160,7 +160,7 @@ function CartPage() {
                     <Button
                       onClick={handleCheckout}
                       disabled={selectedItems.length === 0}
-                      className="flex justify-center items-center gap-5 bg-black hover:opacity-75 mb-3 py-4 w-full font-medium text-lg text-white transition-transform active:scale-95"
+                      className="flex justify-center items-center gap-5 bg-black hover:opacity-75 mb-3 py-4 w-full font-medium text-white text-lg active:scale-95 transition-transform"
                     >
                       Tiến hàng thanh toán
                     </Button>
@@ -190,7 +190,7 @@ function CartPage() {
               </span>
 
               <Link
-                className="bg-black hover:opacity-75 mt-8 mb-3 px-8 py-4 rounded-full font-medium text-lg text-white transition-transform active:scale-95"
+                className="bg-black hover:opacity-75 mt-8 mb-3 px-8 py-4 rounded-full font-medium text-white text-lg active:scale-95 transition-transform"
                 href="/"
               >
                 Tiếp tục mua sắm

@@ -55,7 +55,7 @@ const UpdateProduct: React.FC<IProps> = ({ productId, data }) => {
       price: data.price,
       description: data.description,
       countInStock: data.countInStock,
-      category: data.category._id,
+      category: data.category?._id,
       sizes: data.sizes.map((item, index) => ({
         id: index + 1,
         size: item.size,
